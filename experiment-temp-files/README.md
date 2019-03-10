@@ -1,0 +1,1 @@
+Temporary files of the experiments. Some of them come from old experiments, those are added to git (e.g. if you need to put new data to the same plot).
