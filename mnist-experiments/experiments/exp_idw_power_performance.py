@@ -9,16 +9,45 @@ import os
 
 idw_power_options = np.arange(0.1, 50.1, step=0.1)
 idw_percentile_options = [90, 95, 99, 100]
-idw_power_performance_file_prefix = '../results/idw_power_'
+idw_power_performance_file_prefix = '../results/idw_power'
+idw_power_plot_file_prefix = '../results/idw_power_plot'
 
-def generate_idw_power_performance(regenerate=False, recursive_regenerate=False, parameters=settings.parameters):
+
+def generate_idw_power_filename(parameters=settings.parameters):
+    return idw_power_performance_file_prefix +\
+                    generate_data.combine_prefixes(settings.x_neighbors_selection_parameter_set, parameters)
+
+
+def generate_idw_power_plot_filename(parameters=settings.parameters):
+    return idw_power_plot_file_prefix + generate_data.combine_prefixes(settings.nn_accuracy_parameter_set, parameters)
+
+
+def load_idw_power_performance(*, regenerate=False, recursive_regenerate=False, parameters=settings.parameters):
+    idw_power_plot_data_file = generate_idw_power_filename(parameters)
+    if not os.path.isfile(idw_power_plot_data_file) or regenerate:
+        generate_idw_power_performance(regenerate=True,
+                                        recursive_regenerate=recursive_regenerate, parameters=parameters)
+    with open(idw_power_plot_data_file, 'rb') as f:
+        return pickle.load(f)
+
+
+def load_idw_power_plot(*, regenerate=False, recursive_regenerate=False, parameters=settings.parameters):
+    idw_power_plot_data_file = generate_idw_power_plot_filename(parameters)
+    if not os.path.isfile(idw_power_plot_data_file) or regenerate:
+        generate_idw_power_performance(regenerate=True,
+                                        recursive_regenerate=recursive_regenerate, parameters=parameters)
+    with open(idw_power_plot_data_file, 'rb') as f:
+        return pickle.load(f)
+
+
+def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=False, parameters=settings.parameters):
     global_idw_power_performance = dict()  # Start from scratch
     global_idw_power_performance_abs = dict()  # Start from scratch
 
     start_time = datetime.datetime.now()
     logging.info("IDW power experiment started: %s", start_time)
-    idw_power_performance_file = idw_power_performance_file_prefix +\
-                                 generate_data.combine_prefixes(parameters.keys(), parameters)
+    idw_power_performance_file = generate_idw_power_filename(parameters)
+    idw_power_plot_file = generate_idw_power_plot_filename(parameters)
 
     X_mnist = generate_data.load_x_mnist(parameters=parameters, regenerate=recursive_regenerate,
                                          recursive_regenerate=recursive_regenerate)
@@ -70,11 +99,24 @@ def generate_idw_power_performance(regenerate=False, recursive_regenerate=False,
         with open(idw_power_performance_file, 'wb') as f:
             pickle.dump((global_idw_power_performance, global_idw_power_performance_abs), f)
 
-        end_time = datetime.datetime.now()
+    EPS = 1e-5
+    y = list()
+    x_global = list()
+    for cur_power in idw_power_options:
+        closest_power = [i for i in global_idw_power_performance_abs if np.abs(i - cur_power) < EPS]
+        if len(closest_power) > 0:
+            x_global.append(cur_power)
+            y.append(global_idw_power_performance[closest_power[0]])
+    idw_optimal_power = x_global[np.argmin(y)]
+
+    with open(idw_power_plot_file, 'wb') as f:
+        pickle.dump((x_global, y, idw_optimal_power), f)
+
+    end_time = datetime.datetime.now()
     logging.info("IDW power experiment ended: %s", end_time)
     logging.info("IDW power experiment duration: %s", end_time - start_time)
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    generate_idw_power_performance(True)
+    generate_idw_power_performance(regenerate=False)

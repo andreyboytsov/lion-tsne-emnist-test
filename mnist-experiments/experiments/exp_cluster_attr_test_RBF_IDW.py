@@ -20,7 +20,8 @@ def main():
     parameters = settings.parameters
     start_time = datetime.datetime.now()
     logging.info("IDW/RBF cluster attribution experiment started: %s", start_time)
-    cluster_results_file = cluster_results_file_prefix + generate_data.combine_prefixes(parameters.keys(), parameters)
+    cluster_results_file = cluster_results_file_prefix + generate_data.combine_prefixes(
+        settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters)
 
     dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
     picked_neighbors = generate_data.load_picked_neighbors(parameters=parameters)

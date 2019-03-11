@@ -25,13 +25,10 @@ nearest_training_indices_prefix = data_dir_prefix+'nearest_training_indices'
 chosen_labels_prefix = data_dir_prefix+'chosen_labels'
 suffix = '.p'
 
-
-default_parameters = settings.parameters
-
 def combine_prefixes(prefixes, parameters):
     res = ""
-    for i in prefixes:
-        prefix_value = parameters.get(i, default_parameters[i])
+    for i in sorted(prefixes):
+        prefix_value = parameters.get(i, settings.parameters[i])
         res += "_"+str(prefix_value)
     res += suffix
     return res
@@ -56,86 +53,55 @@ def load_or_remake(get_filename_function, generator_function, parameters, regene
         return pickle.load(f)
 
 
-def get_x_mnist_raw_filename(parameters={}):
-    return x_mnist_raw_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw"
-    ), parameters)
+def get_x_mnist_raw_filename(parameters=settings.parameters):
+    return x_mnist_raw_prefix + combine_prefixes(settings.raw_parameter_set, parameters)
 
 
-def get_labels_mnist_filename(parameters={}):
-    return labels_mnist_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw"
-    ), parameters)
+def get_labels_mnist_filename(parameters=settings.parameters):
+    return labels_mnist_prefix + combine_prefixes(settings.raw_parameter_set, parameters)
 
 
-def get_mnist_chosen_indices_filename(parameters={}):
-    return mnist_chosen_indices_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw"
-    ), parameters)
+def get_mnist_chosen_indices_filename(parameters=settings.parameters):
+    return mnist_chosen_indices_prefix + combine_prefixes(settings.raw_parameter_set, parameters)
 
 
-def get_mnist_pca_filename(parameters={}):
-    return mnist_pca_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw", "num_pca_dimensions", "pca_random_seed"
-    ), parameters)
+def get_mnist_pca_filename(parameters=settings.parameters):
+    return mnist_pca_prefix + combine_prefixes(settings.pca_parameter_set, parameters)
 
 
-def get_x_mnist_filename(parameters={}):
-    return x_mnist_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw", "num_pca_dimensions", "pca_random_seed"
-    ), parameters)
+def get_x_mnist_filename(parameters=settings.parameters):
+    return x_mnist_prefix + combine_prefixes(settings.pca_parameter_set, parameters)
 
 
-def get_y_mnist_filename(parameters={}):
-    return y_mnist_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw", "num_pca_dimensions", "pca_random_seed",
-        "tsne_random_seed", "tsne_perplexity", "tsne_momentum", "tsne_n_iters", "tsne_early_exaggeration_iters"
-    ), parameters)
+def get_y_mnist_filename(parameters=settings.parameters):
+    return y_mnist_prefix + combine_prefixes(settings.tsne_parameter_set, parameters)
 
 
-def get_dtsne_mnist_filename(parameters={}):
-    return dtsne_mnist_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw", "num_pca_dimensions", "pca_random_seed",
-        "tsne_random_seed", "tsne_perplexity", "tsne_momentum", "tsne_n_iters", "tsne_early_exaggeration_iters"
-    ), parameters)
+def get_dtsne_mnist_filename(parameters=settings.parameters):
+    return dtsne_mnist_prefix + combine_prefixes(settings.tsne_parameter_set, parameters)
 
 
-def get_picked_neighbors_filename(parameters={}):
-    return picked_neighbors_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw", "num_pca_dimensions", "pca_random_seed",
-        "neighbor_indices_to_pick", "neighbor_picking_random_seed"
-    ), parameters)
+def get_picked_neighbors_filename(parameters=settings.parameters):
+    return picked_neighbors_prefix + combine_prefixes(settings.x_neighbors_selection_parameter_set, parameters)
 
 
-def get_picked_neighbors_labels_filename(parameters={}):
-    return picked_neighbors_labels_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw", "num_pca_dimensions", "pca_random_seed",
-        "neighbor_indices_to_pick", "neighbor_picking_random_seed"
-    ), parameters)
+def get_picked_neighbors_labels_filename(parameters=settings.parameters):
+    return picked_neighbors_labels_prefix + combine_prefixes(settings.x_neighbors_selection_parameter_set, parameters)
 
 
-def get_picked_neighbors_raw_filename(parameters={}):
-    return picked_neighbors_raw_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw", "num_pca_dimensions", "pca_random_seed",
-        "neighbor_indices_to_pick", "neighbor_picking_random_seed"
-    ), parameters)
+def get_picked_neighbors_raw_filename(parameters=settings.parameters):
+    return picked_neighbors_raw_prefix + combine_prefixes(settings.x_neighbors_selection_parameter_set, parameters)
 
 
-def get_nearest_training_indices_filename(parameters={}):
-    return nearest_training_indices_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw", "num_pca_dimensions", "pca_random_seed",
-        "neighbor_indices_to_pick", "neighbor_picking_random_seed"
-    ), parameters)
+def get_nearest_training_indices_filename(parameters=settings.parameters):
+    return nearest_training_indices_prefix + combine_prefixes(settings.x_neighbors_selection_parameter_set, parameters)
 
 
-def get_chosen_labels_filename(parameters={}):
-    return chosen_labels_prefix + combine_prefixes((
-        "selection_random_seed", "num_images_raw", "num_pca_dimensions", "pca_random_seed",
-        "neighbor_indices_to_pick", "neighbor_picking_random_seed"
-    ), parameters)
+def get_chosen_labels_filename(parameters=settings.parameters):
+    return chosen_labels_prefix + combine_prefixes(settings.x_neighbors_selection_parameter_set, parameters)
 
 
-def generate_keras_mnist(parameters={}, recursive_regenerate=False):
+def generate_keras_mnist(*, parameters=settings.parameters, recursive_regenerate=False):
     """
     Imports MNIST data from Tensorflow-Keras example and re-saves it to file.
     Use to lock the dataset in place.
@@ -157,7 +123,7 @@ def generate_keras_mnist(parameters={}, recursive_regenerate=False):
     return all_mnist_trained_images, all_mnist_labels
 
 
-def load_keras_mnist(*, parameters={}, regenerate=False):
+def load_keras_mnist(*, parameters=settings.parameters, regenerate=False):
     """
     Loads previously saved data from Tensorflow-Keras. If necessary, regenerates.
 
@@ -172,7 +138,7 @@ def load_keras_mnist(*, parameters={}, regenerate=False):
     return load_or_remake(lambda parameters: keras_mnist_file, generate_keras_mnist, parameters, regenerate, False)
 
 
-def generate_raw_and_labels(*, parameters={}, recursive_regenerate=False):
+def generate_raw_and_labels(*, parameters=settings.parameters, recursive_regenerate=False):
     """
     Generates 2500x784 raw MNIST data, coresponding 2500 labels, and a 2500-long list of indices for correspondence
     between entire MNIST and a sample.
@@ -183,15 +149,14 @@ def generate_raw_and_labels(*, parameters={}, recursive_regenerate=False):
         "num_images_raw": Number of the images to select from MNIST. Later only non-similar images will
         be kept.
         "selection_random_seed": Random seed for selecting random images from entire MNIST.
-    Remaining parameter values will be ignored. See default_num_images_raw and default_selection_random_seed for
-    defaults.
+    Remaining parameter values will be ignored. See settings.parameters for defaults.
     :param recursive_regenerate: Regenerate predecessors
     """
     logging.info("STARTED Generating raw MNIST dataset")
     all_mnist_trained_images, all_mnist_labels = load_keras_mnist(parameters=parameters,
                                                                   regenerate=recursive_regenerate)
-    selection_random_seed = parameters.get("selection_random_seed", default_parameters["selection_random_seed"])
-    num_images_raw = parameters.get("num_images_raw", default_parameters["num_images_raw"])
+    selection_random_seed = parameters.get("selection_random_seed", settings.parameters["selection_random_seed"])
+    num_images_raw = parameters.get("num_images_raw", settings.parameters["num_images_raw"])
 
     np.random.seed(selection_random_seed)
     ind = np.random.choice(np.arange(len(all_mnist_trained_images)), size=num_images_raw)
@@ -211,7 +176,7 @@ def generate_raw_and_labels(*, parameters={}, recursive_regenerate=False):
     logging.info("COMPLETED Generating raw MNIST dataset")
 
 
-def load_x_mnist_raw(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_x_mnist_raw(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     """
     Loads 2500x784 raw MNIST data. Generates those data, if the file does not exist.
 
@@ -234,7 +199,7 @@ def load_x_mnist_raw(*, parameters={}, regenerate=False, recursive_regenerate=Fa
                           recursive_regenerate)
 
 
-def load_labels_mnist(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_labels_mnist(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     """
     Loads 2500-long list of labels. Generates those data, if the file does not exist.
 
@@ -257,7 +222,7 @@ def load_labels_mnist(*, parameters={}, regenerate=False, recursive_regenerate=F
                           recursive_regenerate)
 
 
-def load_mnist_chosen_indices(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_mnist_chosen_indices(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     """
     Loads 2500-long list of indices. Each value is the index of i-th sampled value in the entire MNISt dataset.
     Generates those data, if the file does not exist.
@@ -281,7 +246,7 @@ def load_mnist_chosen_indices(*, parameters={}, regenerate=False, recursive_rege
                    recursive_regenerate)
 
 
-def generate_pca_mnist(*, parameters={}, recursive_regenerate=False):
+def generate_pca_mnist(*, parameters=settings.parameters, recursive_regenerate=False):
     """
     Generates PCA processor form MNIST data and its effect on X_mnist_raw.
 
@@ -302,8 +267,8 @@ def generate_pca_mnist(*, parameters={}, recursive_regenerate=False):
     from sklearn.decomposition import PCA
     from scipy.spatial import distance
 
-    num_pca_dimensions = parameters.get("num_pca_dimensions", default_parameters["num_pca_dimensions"])
-    pca_random_seed = parameters.get("pca_random_seed", default_parameters["pca_random_seed"])
+    num_pca_dimensions = parameters.get("num_pca_dimensions", settings.parameters["num_pca_dimensions"])
+    pca_random_seed = parameters.get("pca_random_seed", settings.parameters["pca_random_seed"])
     X_mnist_raw = load_x_mnist_raw(parameters=parameters, regenerate=recursive_regenerate,
                                    recursive_regenerate=recursive_regenerate)
     mnist_pca = PCA(n_components=num_pca_dimensions, random_state=pca_random_seed)
@@ -317,7 +282,7 @@ def generate_pca_mnist(*, parameters={}, recursive_regenerate=False):
     logging.info("After PCA - minimum distance between samples is %f", min_dist)
 
 
-def load_pca_mnist(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_pca_mnist(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     """
     PCA transformer for MNIST data.
 
@@ -341,7 +306,7 @@ def load_pca_mnist(*, parameters={}, regenerate=False, recursive_regenerate=Fals
     return load_or_remake(get_mnist_pca_filename, generate_pca_mnist, parameters, regenerate, recursive_regenerate)
 
 
-def load_x_mnist(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_x_mnist(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     """
     PCA transformer for MNIST data.
 
@@ -365,7 +330,7 @@ def load_x_mnist(*, parameters={}, regenerate=False, recursive_regenerate=False)
     return load_or_remake(get_x_mnist_filename, generate_pca_mnist, parameters, regenerate, recursive_regenerate)
 
 
-def generate_y_mnist(*, parameters={}, recursive_regenerate=False):
+def generate_y_mnist(*, parameters=settings.parameters, recursive_regenerate=False):
     """
 
     PREDECESSOR: X_mnist
@@ -381,12 +346,12 @@ def generate_y_mnist(*, parameters={}, recursive_regenerate=False):
     :param recursive_regenerate: Regenerate predecessors as well
     """
     import lion_tsne
-    tsne_random_seed = parameters.get("tsne_random_seed", default_parameters["tsne_random_seed"])
-    tsne_perplexity = parameters.get("tsne_perplexity", default_parameters["tsne_perplexity"])
-    tsne_momentum = parameters.get("tsne_momentum", default_parameters["tsne_momentum"])
-    tsne_n_iters = parameters.get("tsne_n_iters", default_parameters["tsne_n_iters"])
+    tsne_random_seed = parameters.get("tsne_random_seed", settings.parameters["tsne_random_seed"])
+    tsne_perplexity = parameters.get("tsne_perplexity", settings.parameters["tsne_perplexity"])
+    tsne_momentum = parameters.get("tsne_momentum", settings.parameters["tsne_momentum"])
+    tsne_n_iters = parameters.get("tsne_n_iters", settings.parameters["tsne_n_iters"])
     tsne_early_exaggeration_iters = parameters.get("tsne_early_exaggeration_iters",
-                                                   default_parameters["tsne_early_exaggeration_iters"])
+                                                   settings.parameters["tsne_early_exaggeration_iters"])
 
     X_mnist=load_x_mnist(parameters=parameters,regenerate=recursive_regenerate,
                          recursive_regenerate=recursive_regenerate)
@@ -400,7 +365,7 @@ def generate_y_mnist(*, parameters={}, recursive_regenerate=False):
     save_and_report(get_dtsne_mnist_filename, parameters, dTSNE_mnist)
 
 
-def load_y_mnist(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_y_mnist(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     """
     tSNE-transformed MNIST data
 
@@ -425,7 +390,7 @@ def load_y_mnist(*, parameters={}, regenerate=False, recursive_regenerate=False)
     return load_or_remake(get_y_mnist_filename, generate_y_mnist, parameters, regenerate, recursive_regenerate)
 
 
-def load_dtsne_mnist(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_dtsne_mnist(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     """
     LION-tSNE transformer for MNIST data.
 
@@ -450,7 +415,7 @@ def load_dtsne_mnist(*, parameters={}, regenerate=False, recursive_regenerate=Fa
     return load_or_remake(get_dtsne_mnist_filename, generate_y_mnist, parameters, regenerate, recursive_regenerate)
 
 
-def generate_picked_neighbors(parameters={}, recursive_regenerate=False):
+def generate_picked_neighbors(parameters=settings.parameters, recursive_regenerate=False):
     """
     Generates temp file with
 
@@ -469,9 +434,9 @@ def generate_picked_neighbors(parameters={}, recursive_regenerate=False):
     labels_mnist = load_labels_mnist(parameters=parameters)
     (all_mnist_images, all_mnist_labels) = load_keras_mnist(parameters=parameters)
 
-    ind_to_pick = parameters.get("neighbor_indices_to_pick", default_parameters["neighbor_indices_to_pick"])
+    ind_to_pick = parameters.get("neighbor_indices_to_pick", settings.parameters["neighbor_indices_to_pick"])
     neighbor_picking_random_seed = parameters.get("neighbor_picking_random_seed",
-                                                  default_parameters["neighbor_picking_random_seed"])
+                                                  settings.parameters["neighbor_picking_random_seed"])
 
     ind_unchosen = [i for i in range(len(all_mnist_labels)) if i not in mnist_chosen_indices]
     np.random.seed(neighbor_picking_random_seed)  # Any seed, just don't use it again for selecting indices from same dataset
@@ -530,27 +495,27 @@ def generate_picked_neighbors(parameters={}, recursive_regenerate=False):
     save_and_report(get_chosen_labels_filename, parameters, chosen_labels)
 
 
-def load_picked_neighbors(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_picked_neighbors(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     return load_or_remake(get_picked_neighbors_filename, generate_picked_neighbors, parameters, regenerate,
                           recursive_regenerate)
 
 
-def load_picked_neighbors_labels(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_picked_neighbors_labels(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     return load_or_remake(get_picked_neighbors_labels_filename, generate_picked_neighbors, parameters, regenerate,
                           recursive_regenerate)
 
 
-def load_picked_neighbors_raw(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_picked_neighbors_raw(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     return load_or_remake(get_picked_neighbors_raw_filename, generate_picked_neighbors, parameters, regenerate,
                           recursive_regenerate)
 
 
-def load_nearest_training_indices(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_nearest_training_indices(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     return load_or_remake(get_nearest_training_indices_filename, generate_picked_neighbors, parameters, regenerate,
                           recursive_regenerate)
 
 
-def load_chosen_labels(*, parameters={}, regenerate=False, recursive_regenerate=False):
+def load_chosen_labels(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     return load_or_remake(get_chosen_labels_filename, generate_picked_neighbors, parameters, regenerate,
                           recursive_regenerate)
 
