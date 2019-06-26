@@ -111,6 +111,7 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
 
     with open(idw_power_plot_file, 'wb') as f:
         pickle.dump((x_global, y, idw_optimal_power), f)
+    logging.info("IDW optial power: %f", idw_optimal_power)
 
     end_time = datetime.datetime.now()
     logging.info("IDW power experiment ended: %s", end_time)

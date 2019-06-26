@@ -3,6 +3,9 @@ from matplotlib.font_manager import FontProperties
 import exp_lion_power_performance
 import exp_idw_power_performance
 import numpy as np
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 # CAREFUL: It is not just a plot, it also searches optimal power parameter.
 # TODO Separate it
@@ -15,9 +18,8 @@ font_properties.set_name('Times New Roman')
 font_properties.set_size(8)
 
 legend_list = list()
-f, ax = plt.subplots()
-f.set_dpi(300)
-f.set_size_inches(3.3, 3.3)
+plt.figure(dpi=300)
+plt.gcf().set_size_inches(3.3, 3.3)
 
 lion_power_plot_data = exp_lion_power_performance.load_lion_power_performance()
 global_idw_power_performance, global_idw_power_performance_abs = exp_idw_power_performance.load_idw_power_performance()
@@ -50,8 +52,10 @@ plt.title("IDW - Accuracy vs Power") # We'd better use figure caption
 l = plt.legend(legend_lines, legend_list, bbox_to_anchor=[1.00, -0.15], ncol=2, prop=font_properties)
 plt.xlabel("LION-tSNE: Power", fontproperties=font_properties)
 plt.ylabel("Average Square Distance", fontproperties=font_properties)
-plt.ylim([75, 200])
+
+plt.ylim([50, 200])
 plt.xlim([0, 50])
+
 # f.tight_layout()
 
 ax = plt.gca()

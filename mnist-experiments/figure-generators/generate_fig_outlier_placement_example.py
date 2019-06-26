@@ -1,0 +1,65 @@
+import matplotlib.pyplot as plt
+import generate_data
+import numpy as np
+import settings
+from matplotlib.font_manager import FontProperties
+
+# Step 1. Load all data.
+parameters = settings.parameters
+
+Y_mnist= generate_data.load_y_mnist(parameters=parameters)
+X_mnist= generate_data.load_x_mnist(parameters=parameters)
+dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
+lion_toy_interp = dTSNE_mnist.generate_lion_tsne_embedder(verbose=0, random_state=0, function_kwargs={'y_safety_margin':0,
+                                                                                                     'radius_y_percentile':100})
+
+# Step 2. Generate outliers and embed them
+# Usually we separate data generation and figure generation, but here calculations are just too fast and
+# data should never be used anywhere else.
+n_outl = 255
+x_outl = np.zeros([n_outl, X_mnist.shape[1]])
+np.random.seed(0)
+for i in range(n_outl):
+    n = np.random.choice(30,15)
+    x_sample = np.array([-100]*X_mnist.shape[1]).reshape(1,-1)
+    x_sample[0,n] = 100
+    x_outl[i,:] = x_sample
+
+y_outl = lion_toy_interp(x_outl, verbose=0) #Verbose 2 produce quite a bit of output. Verbose 3 produce a lot.
+
+
+# Step 3. Generating the plot
+font_properties = FontProperties()
+font_properties.set_family('serif')
+font_properties.set_name('Times New Roman')
+font_properties.set_size(9)
+
+f,ax = plt.subplots(dpi=300)
+f.set_size_inches(6,6) #Let's set the plot sizes that just fit paper margins
+legend_list = list()
+ax.scatter(Y_mnist[:, 0], Y_mnist[:, 1], marker = '.', s=5, c='gray')
+#l = plt.legend([dc,dcr],["Data Radius","Data Radius + $r_y$"], loc=2, borderaxespad = 0)
+#ax.plot(y_outl[:, 0], y_outl[:, 1], marker = '.', ms=5,linestyle=":", c='red')
+n_o = 111
+n_o_2 = 179
+g1 = ax.scatter(y_outl[:n_o, 0], y_outl[:n_o, 1], marker = 'o', s=5,c='red', lw=0)
+g2 = ax.scatter(y_outl[n_o:n_o_2, 0], y_outl[n_o:n_o_2, 1], marker = 'o', s=5,c='blue',lw=0)
+g3 = ax.scatter(y_outl[n_o_2:, 0], y_outl[n_o_2:, 1], marker = 'o', s=5,c='green',lw=0)
+ax.plot([min(Y_mnist[:, 0]), min(Y_mnist[:, 0]), max(Y_mnist[:, 0]), max(Y_mnist[:, 0]), min(Y_mnist[:, 0])],
+        [min(Y_mnist[:, 1]), max(Y_mnist[:, 1]), max(Y_mnist[:, 1]), min(Y_mnist[:, 1]), min(Y_mnist[:, 1])],
+        linestyle='--', c='black',lw=1)
+ax.plot([min(Y_mnist[:, 0])-15, min(Y_mnist[:, 0])-15, max(Y_mnist[:, 0])+15, max(Y_mnist[:, 0])+15, min(Y_mnist[:, 0])-15],
+        [min(Y_mnist[:, 1])-15, max(Y_mnist[:, 1])+15, max(Y_mnist[:, 1])+15, min(Y_mnist[:, 1])-15, min(Y_mnist[:, 1])-15],
+        linestyle='--', c='black',lw=1)
+ax.set_ylim([-160,160])
+ax.set_xlim([-160,160])
+
+plt.tick_params(axis='both', which='both',bottom=False,top=False,labelbottom=False,
+                                          left=False,right=False,labelleft=False)
+# f.tight_layout()
+l = plt.legend([g1,g2,g3],["First outliers will be mapped to those positions",
+                       "... then outliers will be mapped to outer layer positions",
+                       "... and then to even more distant layer(s)"],loc=6, bbox_to_anchor=[0.0,-0.15],
+                       prop=font_properties)
+f.savefig("../figures/outlier_placement_example.png", bbox_extra_artists=[l],bbox_inches='tight')
+# plt.show(f)

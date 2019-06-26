@@ -11,10 +11,15 @@ import settings
 
 data_dir_prefix = '..'+os.sep+'data'+os.sep
 keras_mnist_file = data_dir_prefix+'keras_mnist.p'
+keras_mnist_old_file = data_dir_prefix+'images_old.p'
 x_mnist_raw_prefix = data_dir_prefix+'X_mnist_raw'
+x_raw_old_file = data_dir_prefix+'x_raw_old.p'
 labels_mnist_prefix = data_dir_prefix+'labels_mnist'
+labels_mnist_old_file = data_dir_prefix+'labels_old.p'
 mnist_chosen_indices_prefix = data_dir_prefix+'mnist_chosen_indices'
+mnist_chosen_indices_old_file = data_dir_prefix+'mnist_chosen_indices_old.p'
 mnist_pca_prefix = data_dir_prefix+'mnist_pca'
+mnist_pca_old_file = data_dir_prefix+'pca_old.p'
 x_mnist_prefix = data_dir_prefix+'x_mnist'
 y_mnist_prefix = data_dir_prefix+'y_mnist'
 dtsne_mnist_prefix = data_dir_prefix+'dstne_mnist'
@@ -23,14 +28,15 @@ picked_neighbors_labels_prefix = data_dir_prefix+'picked_neighbor_labels'
 picked_neighbors_raw_prefix = data_dir_prefix+'picked_neighbors_raw'
 nearest_training_indices_prefix = data_dir_prefix+'nearest_training_indices'
 chosen_labels_prefix = data_dir_prefix+'chosen_labels'
-suffix = '.p'
 
-def combine_prefixes(prefixes, parameters):
+
+def combine_prefixes(prefixes, parameters, postfix='.p'):
     res = ""
     for i in sorted(prefixes):
-        prefix_value = parameters.get(i, settings.parameters[i])
-        res += "_"+str(prefix_value)
-    res += suffix
+        if i in parameters:
+            prefix_value = parameters.get(i, settings.parameters[i])
+            res += "_"+str(prefix_value)
+    res += postfix
     return res
 
 
@@ -135,7 +141,11 @@ def load_keras_mnist(*, parameters=settings.parameters, regenerate=False):
     [0] all_mnist_trained_images - (Nx28x28), grayscale, each pixel between 0 and 1
     [1] all_mnist_labels - Vector of labels
     """
-    return load_or_remake(lambda parameters: keras_mnist_file, generate_keras_mnist, parameters, regenerate, False)
+    if parameters["old"]:
+        with open(keras_mnist_old_file, 'rb') as f:
+            return pickle.load(f)
+    else:
+        return load_or_remake(lambda parameters: keras_mnist_file, generate_keras_mnist, parameters, regenerate, False)
 
 
 def generate_raw_and_labels(*, parameters=settings.parameters, recursive_regenerate=False):
@@ -195,7 +205,11 @@ def load_x_mnist_raw(*, parameters=settings.parameters, regenerate=False, recurs
            required).
     :return: 2500x784 raw MNIST data
     """
-    return load_or_remake(get_x_mnist_raw_filename, generate_raw_and_labels, parameters, regenerate,
+    if parameters["old"]:
+        with open(x_raw_old_file, 'rb') as f:
+            return pickle.load(f)
+    else:
+        return load_or_remake(get_x_mnist_raw_filename, generate_raw_and_labels, parameters, regenerate,
                           recursive_regenerate)
 
 
@@ -218,7 +232,11 @@ def load_labels_mnist(*, parameters=settings.parameters, regenerate=False, recur
            required).
     :return: 2500-long list of labels
     """
-    return load_or_remake(get_labels_mnist_filename, generate_raw_and_labels, parameters, regenerate,
+    if parameters["old"]:
+        with open(labels_mnist_old_file, 'rb') as f:
+            return pickle.load(f)
+    else:
+        return load_or_remake(get_labels_mnist_filename, generate_raw_and_labels, parameters, regenerate,
                           recursive_regenerate)
 
 
@@ -242,7 +260,11 @@ def load_mnist_chosen_indices(*, parameters=settings.parameters, regenerate=Fals
            required).
     :return: 2500-long list of labels
     """
-    return load_or_remake(get_mnist_chosen_indices_filename, generate_raw_and_labels, parameters, regenerate,
+    if parameters["old"]:
+        with open(mnist_chosen_indices_old_file, 'rb') as f:
+            return pickle.load(f)
+    else:
+        return load_or_remake(get_mnist_chosen_indices_filename, generate_raw_and_labels, parameters, regenerate,
                    recursive_regenerate)
 
 
@@ -267,11 +289,14 @@ def generate_pca_mnist(*, parameters=settings.parameters, recursive_regenerate=F
     from sklearn.decomposition import PCA
     from scipy.spatial import distance
 
-    num_pca_dimensions = parameters.get("num_pca_dimensions", settings.parameters["num_pca_dimensions"])
-    pca_random_seed = parameters.get("pca_random_seed", settings.parameters["pca_random_seed"])
     X_mnist_raw = load_x_mnist_raw(parameters=parameters, regenerate=recursive_regenerate,
                                    recursive_regenerate=recursive_regenerate)
-    mnist_pca = PCA(n_components=num_pca_dimensions, random_state=pca_random_seed)
+    num_pca_dimensions = parameters.get("num_pca_dimensions", settings.parameters["num_pca_dimensions"])
+    pca_random_seed = parameters.get("pca_random_seed", settings.parameters["pca_random_seed"])
+    if pca_random_seed != 'full':
+        mnist_pca = PCA(n_components=num_pca_dimensions, random_state=pca_random_seed)
+    else:
+        mnist_pca = PCA(n_components=num_pca_dimensions, svd_solver='full')
     X_mnist = mnist_pca.fit_transform(X_mnist_raw)
 
     save_and_report(get_mnist_pca_filename, parameters, mnist_pca)

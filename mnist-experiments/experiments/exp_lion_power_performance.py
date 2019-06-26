@@ -159,6 +159,7 @@ def generate_lion_power_performance(*, regenerate=False, recursive_regenerate=Fa
 
     with open(lion_power_plot_data_file, 'wb') as f:
         pickle.dump((lion_power_options, lion_power_plot_y, lion_optimal_power), f)
+    logging.info("LION optimal power: %s", lion_optimal_power)
 
 
     end_time = datetime.datetime.now()
