@@ -7,9 +7,6 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-# CAREFUL: It is not just a plot, it also searches optimal power parameter.
-# TODO Separate it
-
 lion_optimal_power = dict()
 
 font_properties = FontProperties()
@@ -45,7 +42,7 @@ h, = plt.plot(x_global, y_global, c='purple', linestyle=":")
 legend_lines.append(h)
 legend_list.append("Non-local IDW")
 
-plt.title("IDW - Accuracy vs Power") # We'd better use figure caption
+# plt.title("IDW - Accuracy vs Power") # We'd better use figure caption
 # ax.legend([h1,h2,h3,h4,h5,h6], ["Closest Training Set Image"]+idw_method_list)
 # h = plt.axhline(y=baseline_accuracy, c = 'black', linestyle='--')
 

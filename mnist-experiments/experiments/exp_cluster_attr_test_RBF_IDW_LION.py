@@ -211,7 +211,6 @@ def main(*, regenerate=False, parameters=settings.parameters):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     main(regenerate=False)
-
 # # Doing it from scratch takes REALLY long time. If possible, save results & pre-load
 #
 # # These are consequences of parallelization
