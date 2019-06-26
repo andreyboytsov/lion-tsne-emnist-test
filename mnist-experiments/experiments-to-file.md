@@ -66,7 +66,7 @@ Data comes directly from generate_data.py (MNIST after LION-tSNE)
 
 ## Figure 2
 
-**TODO** Use the copies from other . 
+**TODO** Use the copies from home machine, beautify, etc. 
 
 File: outlier_placement_example.png
 Figure generate by: generate_fig_outlier_placement_example.py
