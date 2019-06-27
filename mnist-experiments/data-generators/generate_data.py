@@ -545,6 +545,39 @@ def load_chosen_labels(*, parameters=settings.parameters, regenerate=False, recu
                           recursive_regenerate)
 
 
+def get_baseline_accuracy(*, parameters=settings.parameters):
+    accuracy_nn = parameters.get("accuracy_nn", settings.parameters["accuracy_nn"])
+
+    def get_nearest_neighbors_in_y(y, n=10):
+        y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
+        return np.argsort(y_distances)[:n]
+
+    parameters = settings.parameters
+    picked_neighbors = load_picked_neighbors(parameters=parameters)
+    picked_neighbor_labels = load_picked_neighbors_labels(parameters=parameters)
+    picked_indices = load_nearest_training_indices(parameters=parameters)
+    Y_mnist = load_y_mnist(parameters=parameters)
+    picked_indices_y_mnist = Y_mnist[picked_indices, :]
+    labels_mnist = load_labels_mnist(parameters=parameters)
+
+    # Baseline accuracy: sometimes the point is in the mixed cluster, and K nearest neighbors of it belong to different clusters
+    # themselves. Accuracy 100% would not be achieved that way.
+    # TODO Should we call our metric accuracy at all?
+    # Should we count sample itself, when calculating baseline accuracy? On one hand, no - training sample is obviously its own NN.
+    # On another hand, we are looking for accuracy upper bound. And it is not training sample itself we are avaluating, it is
+    # "in upper bound case we would have had embedding very close to ..." etc.
+    # If we say "keep training sample", our target accuracy will be higher.
+    # So let's make sure that errors are not in our favor.
+    # Actaully, see the paper.
+    per_sample_accuracy = np.zeros((len(picked_neighbors),))
+    for i in range(len(picked_neighbors)):
+        expected_label = picked_neighbor_labels[i]
+        nn_indices = get_nearest_neighbors_in_y(picked_indices_y_mnist[i, :], n=accuracy_nn)
+        obtained_labels = labels_mnist[nn_indices]
+        per_sample_accuracy[i] = sum(obtained_labels == expected_label) / len(obtained_labels)
+    return np.mean(per_sample_accuracy)
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     #load_y_mnist(regenerate=True, recursive_regenerate=True)

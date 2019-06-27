@@ -19,7 +19,7 @@ plt.figure(dpi=300)
 plt.gcf().set_size_inches(3.3, 3.3)
 
 lion_power_plot_data = exp_lion_power_performance.load_lion_power_performance()
-global_idw_power_performance, global_idw_power_performance_abs = exp_idw_power_performance.load_idw_power_performance()
+global_idw_power_performance, global_idw_power_performance_abs, _ = exp_idw_power_performance.load_idw_power_performance()
 x_global, y_global, _ = exp_idw_power_performance.load_idw_power_plot()
 x, y, _ = exp_lion_power_performance.load_lion_power_plot()
 

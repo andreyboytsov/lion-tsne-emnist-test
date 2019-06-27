@@ -5,7 +5,6 @@ emnist/
 **/PCA_and_tSNE/
 lion-tsne-code/
 mnist-experiments/data
-mnist-experiments/results
 experiment-temp-files/*.p
 
 .idea/

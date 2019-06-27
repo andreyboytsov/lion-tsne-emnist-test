@@ -43,6 +43,7 @@ def load_idw_power_plot(*, regenerate=False, recursive_regenerate=False, paramet
 def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=False, parameters=settings.parameters):
     global_idw_power_performance = dict()  # Start from scratch
     global_idw_power_performance_abs = dict()  # Start from scratch
+    global_idw_accuracy = dict()
 
     start_time = datetime.datetime.now()
     logging.info("IDW power experiment started: %s", start_time)
@@ -53,6 +54,16 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
                                          recursive_regenerate=recursive_regenerate)
     Y_mnist = generate_data.load_y_mnist(parameters=parameters, regenerate=recursive_regenerate,
                                          recursive_regenerate=recursive_regenerate)
+    dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
+    picked_neighbors = generate_data.load_picked_neighbors(parameters=parameters)
+    picked_neighbor_labels = generate_data.load_picked_neighbors_labels(parameters=parameters)
+    labels_mnist = generate_data.load_labels_mnist(parameters=settings.parameters, regenerate=recursive_regenerate,
+                                         recursive_regenerate=recursive_regenerate)
+    accuracy_nn = parameters.get("accuracy_nn", settings.parameters["accuracy_nn"])
+
+    def get_nearest_neighbors_in_y(y, n=10):
+        y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
+        return np.argsort(y_distances)[:n]
 
     distance_matrix = distance.squareform(distance.pdist(X_mnist))
     np.fill_diagonal(distance_matrix, np.inf)  # We are not interested in distance to itself
@@ -63,11 +74,25 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
 
     if os.path.isfile(idw_power_performance_file) and not regenerate:
         with open(idw_power_performance_file, 'rb') as f:
-            global_idw_power_performance, global_idw_power_performance_abs = pickle.load(f)
+            global_idw_power_performance, global_idw_power_performance_abs, global_idw_accuracy = pickle.load(f)
     else:
         logging.info("Regeneration requested")
 
     for p in idw_power_options:
+
+        interpolator = dTSNE_mnist.generate_embedding_function(
+            embedding_function_type='weighted-inverse-distance',
+            function_kwargs={'power': p})
+
+        per_sample_accuracy = np.zeros((len(picked_neighbors),))
+        for i in range(len(picked_neighbors)):
+            expected_label = picked_neighbor_labels[i]
+            result = interpolator(picked_neighbors[i], verbose=0)
+            nn_indices = get_nearest_neighbors_in_y(result, n=accuracy_nn)
+            obtained_labels = labels_mnist[nn_indices]
+            per_sample_accuracy[i] = sum(obtained_labels == expected_label) / len(obtained_labels)
+        cur_acc = np.mean(per_sample_accuracy)
+
         if p in global_idw_power_performance:
             logging.info("Loaded p %f", p)
             continue
@@ -92,12 +117,14 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
 
         global_idw_power_performance[p] = y_sum_square_dist / y_count
         global_idw_power_performance_abs[p] = y_sum_abs_dist / y_count
+        global_idw_accuracy[p] = cur_acc
+
         # Just in case it will become unstable due to too few neighbors
         # lion_power_plot_data[(p, perc)]['PowerSquareDistSum'] = y_sum_square_dist
         # lion_power_plot_data[(p, perc)]['PowerSquareDistCount'] = y_count
 
         with open(idw_power_performance_file, 'wb') as f:
-            pickle.dump((global_idw_power_performance, global_idw_power_performance_abs), f)
+            pickle.dump((global_idw_power_performance, global_idw_power_performance_abs, global_idw_accuracy), f)
 
     EPS = 1e-5
     y = list()
