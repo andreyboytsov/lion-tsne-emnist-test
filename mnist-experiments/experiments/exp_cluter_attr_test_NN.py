@@ -10,6 +10,11 @@ from tensorflow import keras
 import pickle
 
 
+def generate_cluster_results_filename(parameters=settings.parameters):
+    output_file_prefix = '../results/cluster_attr_nn_'
+    return output_file_prefix + generate_data.combine_prefixes(
+        settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters)
+
 def main(regenerate_model1=False, regenerate_model2=False, regenerate_model3=False,
          parameters=settings.parameters):
     X_mnist = generate_data.load_x_mnist(parameters=parameters)
@@ -122,11 +127,11 @@ def main(regenerate_model1=False, regenerate_model2=False, regenerate_model3=Fal
     nn_models_orig = [Y_nn1_mnist, Y_nn2_mnist, Y_nn3_mnist]
     nn_method_list = ['NN - 2L; 250N; ReLu; D0.25','NN - 2L; 500N; ReLu; D0.5', 'NN - 1L; 500N; tanh']
 
-    output_file_prefix = '../results/cluster_attr_nn_'
-    output_file = output_file_prefix + generate_data.combine_prefixes(
-        settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters)
+    output_file = generate_cluster_results_filename(parameters)
 
     with open(output_file, 'wb') as f:
         pickle.dump((nn_method_results, nn_models_orig, nn_method_list), f)
 
-main(regenerate_model1=False, parameters = settings.parameters)
+
+if __name__ == "__main__":
+    main(regenerate_model1=False, parameters = settings.parameters)

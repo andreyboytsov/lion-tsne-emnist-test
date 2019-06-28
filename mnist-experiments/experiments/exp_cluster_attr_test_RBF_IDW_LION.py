@@ -184,17 +184,21 @@ def process_single_embedder(*, embedder, embedder_name, results, regenerate, com
         pickle.dump(results, f)
 
 
+def generate_cluster_results_filename(parameters=settings.parameters):
+    return cluster_results_file_prefix + generate_data.combine_prefixes(
+        settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters)
+
+
 def main(*, regenerate=False, parameters=settings.parameters):
     start_time = datetime.datetime.now()
     logging.info("IDW/RBF cluster attribution experiment started: %s", start_time)
-    cluster_results_file = cluster_results_file_prefix + generate_data.combine_prefixes(
-        settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters)
+    cluster_results_file = generate_cluster_results_filename(parameters)
 
     common_info = get_common_info(parameters)
     results = dict()
     embedders = generate_all_embedders(common_info['dTSNE_mnist'])
 
-    if os.path.isfile(cluster_results_file):
+    if os.path.isfile(cluster_results_file) and not regenerate:
         with open(cluster_results_file, 'rb') as f:
             results = pickle.load(f)
 
