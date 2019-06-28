@@ -11,10 +11,14 @@ parameters = {
     "tsne_random_seed": 1,
     "neighbor_indices_to_pick": 1000,
     "neighbor_picking_random_seed": 10,
-    "accuracy_nn" : 10}
+    "accuracy_nn" : 10,
+    "outlier_indices_to_pick" : 1000,
+    "outlier_random_seed" : 23412,
+    }
 
 raw_parameter_set = {"selection_random_seed", "num_images_raw", "old"}
 pca_parameter_set = raw_parameter_set | {"num_pca_dimensions", "pca_random_seed"}
+outlier_parameter_set = pca_parameter_set | {"outlier_indices_to_pick", "outlier_random_seed"}
 tsne_parameter_set = pca_parameter_set | {"tsne_random_seed", "tsne_perplexity", "tsne_momentum",
                                           "tsne_n_iters", "tsne_early_exaggeration_iters"}
 x_neighbors_selection_parameter_set = pca_parameter_set | {"neighbor_indices_to_pick", "neighbor_picking_random_seed"}

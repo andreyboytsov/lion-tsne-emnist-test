@@ -8,6 +8,7 @@ import pickle
 import numpy as np
 import logging
 import settings
+from scipy.spatial import distance
 
 data_dir_prefix = '..'+os.sep+'data'+os.sep
 keras_mnist_file = data_dir_prefix+'keras_mnist.p'
@@ -28,6 +29,7 @@ picked_neighbors_labels_prefix = data_dir_prefix+'picked_neighbor_labels'
 picked_neighbors_raw_prefix = data_dir_prefix+'picked_neighbors_raw'
 nearest_training_indices_prefix = data_dir_prefix+'nearest_training_indices'
 chosen_labels_prefix = data_dir_prefix+'chosen_labels'
+outliers_prefix = data_dir_prefix+'generated_outliers'
 
 
 def combine_prefixes(prefixes, parameters, postfix='.p'):
@@ -57,6 +59,10 @@ def load_or_remake(get_filename_function, generator_function, parameters, regene
     with open(fname, 'rb') as f:
         logging.info("Loading %s", fname)
         return pickle.load(f)
+
+
+def get_outliers_filename(parameters=settings.parameters):
+    return outliers_prefix + combine_prefixes(settings.outlier_parameter_set, parameters)
 
 
 def get_x_mnist_raw_filename(parameters=settings.parameters):
@@ -105,6 +111,55 @@ def get_nearest_training_indices_filename(parameters=settings.parameters):
 
 def get_chosen_labels_filename(parameters=settings.parameters):
     return chosen_labels_prefix + combine_prefixes(settings.x_neighbors_selection_parameter_set, parameters)
+
+
+def generate_outliers(*, parameters=settings.parameters, recursive_regenerate=False):
+    logging.info("STARTED outlier generation")
+    X_mnist = load_x_mnist(parameters=parameters, regenerate=recursive_regenerate,
+                           recursive_regenerate=recursive_regenerate)
+    X_mnist_raw = load_x_mnist_raw(parameters=parameters, regenerate=recursive_regenerate,
+                                   recursive_regenerate=recursive_regenerate)
+    mnist_pca = load_pca_mnist(parameters=parameters)
+    ind_to_pick = parameters.get("outlier_indices_to_pick", settings.parameters["outlier_indices_to_pick"])
+    outlier_random_seed = parameters.get("outlier_random_seed", settings.parameters["outlier_random_seed"])
+
+    D = distance.squareform(distance.pdist(X_mnist))
+    # Now find distance to closest neighbor
+    np.fill_diagonal(D, np.inf)  # ... but not to itself
+    nearest_neighbors_dist = np.min(D, axis=1)  # Actually, whatever axis
+
+    np.random.seed(outlier_random_seed)  # Whatever number
+    # For speed generating PCA and applying inverse_Tran
+    outlier_samples = np.zeros((ind_to_pick, X_mnist.shape[1]))
+    outlier_samples_raw = np.zeros((ind_to_pick, X_mnist_raw.shape[1]))
+    # boundary = np.percentile(nearest_neighbors_dist**2, 99)
+    max_nearest_dist = max(nearest_neighbors_dist)
+    max_nearest_dist_sqr = max_nearest_dist ** 2
+
+    boundary = max_nearest_dist_sqr
+    i = 0
+    num_found = 0
+    logging.info("... actually generating outliers")
+    while num_found < ind_to_pick:
+        # Step 1. Generate some sample. A few ways to generate outliers:
+        # Option 1. Uniform over PCA. Generates outliers very infrequently + no guarantee that inverse transform is in bounds.
+        # x_candidate = np.random.uniform(low=0,high=1, size = (1,X_mnist.shape[1]))
+        # Option 2. Binomial over PCA. Generates outliers very infrequently + again no guarantee that inverse transform is in bounds.
+        # x_candidate = np.random.binomial(n=1, p=0.5, size = (1,X_mnist.shape[1]))
+        # TODO Try PCAs, but check that inverse transform is within [0,1]? might work
+        # Option 3. Generate randomly over original space. Seems to be the best option by far.
+        x_candidate_raw = np.random.uniform(low=0, high=1, size=(1, X_mnist_raw.shape[1]))
+        x_candidate = mnist_pca.transform(x_candidate_raw)
+        # Step 2. Check the distance.
+        # Subtracting from each row, sqaring and summing up to get sqr distances, then minimizing
+        closest_square_dist = np.min(np.sum((X_mnist - x_candidate) ** 2, axis=1))
+        if closest_square_dist > boundary:
+            outlier_samples[num_found, :] = x_candidate
+            outlier_samples_raw[num_found, :] = x_candidate_raw
+            num_found += 1
+            logging.info("Got one! %d %d %f", i, num_found, closest_square_dist)
+        i += 1
+    save_and_report(get_outliers_filename, parameters, (outlier_samples, outlier_samples_raw))
 
 
 def generate_keras_mnist(*, parameters=settings.parameters, recursive_regenerate=False):
@@ -576,6 +631,11 @@ def get_baseline_accuracy(*, parameters=settings.parameters):
         obtained_labels = labels_mnist[nn_indices]
         per_sample_accuracy[i] = sum(obtained_labels == expected_label) / len(obtained_labels)
     return np.mean(per_sample_accuracy)
+
+
+def load_outliers(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
+    return load_or_remake(get_outliers_filename, generate_outliers, parameters, regenerate,
+                          recursive_regenerate)
 
 
 if __name__ == "__main__":
