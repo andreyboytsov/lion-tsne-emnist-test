@@ -12,6 +12,11 @@ import generate_data
 
 parameters = settings.parameters
 
+def generate_cluster_results_filename(parameters):
+    output_file_prefix = '../results/cluster_attr_gd_'
+    return output_file_prefix + generate_data.combine_prefixes(
+        settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters)
+
 def main(regenerate):
     dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
     Y_mnist= generate_data.load_y_mnist(parameters=parameters)
@@ -21,9 +26,7 @@ def main(regenerate):
 
     # These are consequences of parallelization
     # input_files = ['gd_results' + str(100 * i) + '_' + str(100 * i + 100) + '.p' for i in range(10)]
-    output_file_prefix = '../results/cluster_attr_gd_'
-    output_file = output_file_prefix + generate_data.combine_prefixes(
-        settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters)
+    output_file = generate_cluster_results_filename(parameters)
     covered_samples = list()
 
     first_sample_inc = 0  # Change only if it is one of "Other notebooks just for parallelization"

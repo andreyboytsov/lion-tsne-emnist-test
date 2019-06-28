@@ -137,7 +137,7 @@ def get_common_info(parameters):
     res['labels_mnist'] = generate_data.load_labels_mnist(parameters=parameters)
     res['picked_neighbors'] = generate_data.load_picked_neighbors(parameters=parameters)
     res['picked_neighbors_labels'] = generate_data.load_picked_neighbors_labels(parameters=parameters)
-    res['accuracy_nn'] = parameters.get("accuracy_nn", parameters["accuracy_nn"])
+    res['accuracy_nn'] = parameters.get("accuracy_nn", settings.parameters["accuracy_nn"])
     D_Y = distance.squareform(distance.pdist(res['Y_mnist']))
     # Now find distance to closest neighbor
     np.fill_diagonal(D_Y, np.inf)  # ... but not to itself

@@ -5,8 +5,12 @@ import generate_data
 import settings
 import exp_cluster_attr_test_RBF_IDW_LION
 import exp_cluter_attr_test_NN
+import exp_cluster_attr_test_kernelized
 import exp_lion_power_performance
+import exp_cluster_attr_test_GD
 import pickle
+
+# ========================= LOADING ALL THE DATA
 
 shown_indices = 10
 parameters = settings.parameters
@@ -64,7 +68,29 @@ picked_neighbors_y_lion100 = all_RBF_IDW_LION_results[lion100_name]['EmbeddedPoi
 lion_method_list = ["LION; $r_x$ at %dth perc.; $p$=%.1f"%(i, lion_optimal_power[i])
                     for i in sorted(lion_optimal_power)]
 
-exit(-1)
+kernelized_results_file = exp_cluster_attr_test_kernelized.generate_cluster_results_filename(parameters)
+with open(kernelized_results_file, 'rb') as f:
+    kernelized_detailed_tsne_method_results, kernelized_detailed_tsne_accuracy, \
+            kernelized_detailed_tsne_method_list = pickle.load(f)
+ind = [4,24,49]
+kernelized_tsne_method_list = [kernelized_detailed_tsne_method_list[i][:10]+kernelized_detailed_tsne_method_list[i][-8:]
+                               for i in ind]
+kernelized_tsne_method_results = [kernelized_detailed_tsne_method_results[i] for i in ind]
+
+
+gd_results_file = exp_cluster_attr_test_GD.generate_cluster_results_filename(parameters=parameters)
+with open(gd_results_file, 'rb') as f:
+    (picked_neighbors_y_gd_transformed, picked_neighbors_y_gd_variance_recalc_transformed,
+     picked_neighbors_y_gd_transformed_random, picked_neighbors_y_gd_variance_recalc_transformed_random,
+     picked_neighbors_y_gd_early_exagg_transformed_random,
+     picked_neighbors_y_gd_early_exagg_transformed,
+     picked_neighbors_y_gd_variance_recalc_early_exagg_transformed_random,
+     picked_random_starting_positions,
+     picked_neighbors_y_gd_variance_recalc_early_exagg_transformed, covered_samples) = pickle.load(f)
+
+print("DATA LOADED")
+
+# ====================== BUILDING ALL THE PLOTS
 
 legend_list = list()
 lion_X = 1
