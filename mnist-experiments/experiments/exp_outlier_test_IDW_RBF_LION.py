@@ -36,13 +36,13 @@ def get_nearest_neighbors_in_y(y, Y_mnist, n=10):
 
 
 def calc_accuracy(*, common_info, embedded_neighbors, parameters):
-    picked_neighbors = common_info['picked_neighbors']
+    outlier_samples = common_info["outlier_samples"]
     accuracy_nn = common_info["accuracy_nn"]
     picked_neighbors_labels = common_info["picked_neighbors_labels"]
     labels_mnist = common_info["labels_mnist"]
     Y_mnist = common_info["Y_mnist"]
     per_sample_accuracy = list()
-    for j in range(len(picked_neighbors)):
+    for j in range(len(outlier_samples)):
         y = embedded_neighbors[j, :]
         expected_label = picked_neighbors_labels[j]
         nn_indices = get_nearest_neighbors_in_y(y, Y_mnist, n=accuracy_nn)
@@ -52,11 +52,11 @@ def calc_accuracy(*, common_info, embedded_neighbors, parameters):
 
 
 def calc_distance_perc(*, common_info, embedded_neighbors, parameters):
-    picked_neighbors = common_info['picked_neighbors']
+    outlier_samples = common_info["outlier_samples"]
     Y_mnist = common_info["Y_mnist"]
     nearest_neighbors_y_dist = common_info["nearest_neighbors_y_dist"]
     per_sample_nearest_neighbors_percentiles = list()
-    for j in range(len(picked_neighbors)):
+    for j in range(len(outlier_samples)):
         y = embedded_neighbors[j, :]
         nn_dist = np.min(np.sqrt(np.sum((Y_mnist - y) ** 2, axis=1)))
         per_sample_nearest_neighbors_percentiles.append(stats.percentileofscore(nearest_neighbors_y_dist, nn_dist))

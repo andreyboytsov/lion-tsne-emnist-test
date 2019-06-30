@@ -4,7 +4,7 @@ from matplotlib import gridspec
 import generate_data
 import settings
 import exp_cluster_attr_test_RBF_IDW_LION
-import exp_cluter_attr_test_NN
+import exp_cluster_attr_test_NN
 import exp_cluster_attr_test_kernelized
 import exp_lion_power_performance
 import exp_cluster_attr_test_GD
@@ -34,7 +34,7 @@ cluster_results_file = exp_cluster_attr_test_RBF_IDW_LION.generate_cluster_resul
 with open(cluster_results_file, "rb") as f:
     all_RBF_IDW_LION_results = pickle.load(f)
 
-nn_results_file = exp_cluter_attr_test_NN.generate_cluster_results_filename(parameters)
+nn_results_file = exp_cluster_attr_test_NN.generate_cluster_results_filename(parameters)
 with open(nn_results_file, 'rb') as f:
         nn_method_results, nn_models_orig, nn_method_list = pickle.load(f)
 

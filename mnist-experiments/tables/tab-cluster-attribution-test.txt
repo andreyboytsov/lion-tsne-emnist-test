@@ -1,0 +1,85 @@
+\begin{table} \small\sf\centering \caption{Cluster attribution test: methods comparison}  \label{tab_cluster_methods_comparison}
+    \begin{tabular}{ m{0.18\textwidth}  m{0.07\textwidth}  m{0.07\textwidth}  m{0.06\textwidth} }
+        \toprule
+            \textbf{Method}
+            & \textbf{Accuracy}
+            & \textbf{Distance Percentile}
+            & \textbf{KL Divergence}
+        \\ \midrule	\textbf{Baseline} & 86.39\% & - & 1.11654
+	\\
+\multicolumn{4}{c}{\textbf{RBF Interpolation}}
+	\\
+	 Multiquadric & 72.82\% & 56.965 & 1.11777
+	\\
+	 Gaussian & 72.84\% & 57.255 & 1.11776
+	\\
+	 Inverse Multiquadric & 73.08\% & 55.140 & 1.11769
+	\\
+	 Linear & 70.20\% & 55.237 & 1.11780
+	\\
+	 Cubic & 72.45\% & 57.302 & 1.11779
+	\\
+	 Quintic & 67.58\% & 63.136 & 1.11828
+	\\
+	 Thin Plate & 72.26\% & 54.938 & 1.11774
+	\\
+\multicolumn{4}{c}{\textbf{IDW Interpolation}}
+	\\
+	 Power 1 & 8.66\% & 36.501 & 1.12114
+	\\
+	 Power 10 & 83.23\% & 25.042 & 1.11687
+	\\
+	 Power 20 & 87.36\% & 5.229 & 1.11656
+	\\
+	 Power 27.1 & 87.51\% & 1.934 & 1.11655
+	\\
+	 Power 40 & 87.48\% & 3.173 & 1.11655
+	\\
+\multicolumn{4}{c}{\textbf{Gradient Descent}}
+	\\
+	 Closest $Y_{init}$ & 87.55\% & 11.429 & 1.11998
+	\\
+	 Random $Y_{init}$ & 36.33\% & 75.391 & 1.11957
+	\\
+	 Closest $Y_{init}$; new $\sigma$ & 87.44\% & 15.630 & 1.11995
+	\\
+	 Random $Y_{init}$; new $\sigma$ & 35.43\% & 77.591 & 1.11956
+	\\
+	 Closest $Y_{init}$; EE & 87.55\% & 11.378 & 1.11999
+	\\
+	 Random $Y_{init}$; EE & 50.87\% & 53.706 & 1.11967
+	\\
+	 Closest $Y_{init}$; new $\sigma$; EE & 87.49\% & 15.729 & 1.11995
+	\\
+	 Random $Y_{init}$; new $\sigma$; EE & 49.23\% & 58.799 & 1.11964
+	\\
+\multicolumn{4}{c}{\textbf{Neural Networks}}
+	\\
+	 2L; 250N; ReLu; D0.25 & 76.57\% & 46.377 & 1.12184
+	\\
+	 2L; 500N; ReLu; D0.5 & 76.69\% & 45.800 & 1.12184
+	\\
+	 1L; 500N; tanh & 72.19\% & 53.582 & 1.12182
+	\\
+\multicolumn{4}{c}{\textbf{Kernelized tSNE}}
+	\\
+	 K=0.05 & 87.64\% & 0.210 & 1.12217
+	\\
+	 K=0.25 & 86.15\% & 11.240 & 1.12210
+	\\
+	 K=0.50 & 71.33\% & 52.553 & 1.12173
+	\\
+\multicolumn{4}{c}{\textbf{LION tSNE}}
+	\\
+	  $r_x$ at 90th perc.; $p$=16.4 & \textbf{85.71\%} & \textbf{8.554} & \textbf{1.11665}
+	\\
+	  $r_x$ at 95th perc.; $p$=18.4 & \textbf{86.51\%} & \textbf{6.801} & \textbf{1.11660}
+	\\
+	  $r_x$ at 99th perc.; $p$=18.8 & \textbf{87.24\%} & \textbf{6.263} & \textbf{1.11657}
+	\\
+	  $r_x$ at 100th perc.; $p$=24.0 & \textbf{87.54\%} & \textbf{3.796} & \textbf{1.11655}
+	\\
+
+    \bottomrule
+    \end{tabular}
+\end{table}
