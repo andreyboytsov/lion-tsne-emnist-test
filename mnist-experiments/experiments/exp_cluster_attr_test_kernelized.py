@@ -9,6 +9,7 @@ import settings
 import matplotlib.pyplot as plt
 from scipy import stats
 import kernelized_tsne
+import logging
 
 
 def generate_cluster_results_filename(parameters=settings.parameters):
@@ -57,7 +58,7 @@ def main(parameters=settings.parameters,regenerate_parameters_cache=False):
             obtained_labels = labels_mnist[nn_indices]
             per_sample_accuracy[i] = sum(obtained_labels == expected_label) / len(obtained_labels)
         kernelized_detailed_tsne_accuracy[j] = np.mean(per_sample_accuracy)
-        print(kernelized_detailed_tsne_method_list[j], kernelized_detailed_tsne_accuracy[j])
+        logging.info(kernelized_detailed_tsne_method_list[j], kernelized_detailed_tsne_accuracy[j])
 
     # Accuracy-vs-power plot
     legend_list = list()

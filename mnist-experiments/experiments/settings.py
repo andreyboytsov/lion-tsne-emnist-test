@@ -14,6 +14,7 @@ parameters = {
     "accuracy_nn" : 10,
     "outlier_indices_to_pick" : 1000,
     "outlier_random_seed" : 23412,
+    "keras_random_seed" : 123, # Anything will do, just keep it consistent
     }
 
 raw_parameter_set = {"selection_random_seed", "num_images_raw", "old"}

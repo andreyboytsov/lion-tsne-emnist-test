@@ -1,5 +1,5 @@
 """
-Post-processing cluster attribution test results for NN:
+Post-processing cluster attribution test results for kernelized tSNE:
 - Accuracy
 - Distance percentile
 - KL divergence

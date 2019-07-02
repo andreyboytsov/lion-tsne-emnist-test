@@ -55,7 +55,25 @@ We do our best that each file contains all the necessary parameters, even if the
 
 # Experiments
 
-TODO
+Folder structure:  
+- *experiments/* contains the scripts for experiments. The name prefix
+*exp_cluster* is for cluster attribution test file, and
+*exp_outlier* is for outlier placement test file (there are a few scripts
+that do not belong to either).
+- *results/* contains the results themselves. Naming convention is the same as
+described above - all relevant parameters are contained in the filename. That
+ensures both efficient reuse of intermediate results and the ability to
+hold different results (for different experiment settings) in the same folder.
+
+Experiment are designed to be reproducible. Should you run the same files,
+you should get the same results as we did.
+
+TODO describe the experiments
+
+For some methods we split getting the results themselves (emebdding into existing
+tSNE) and post-processing them (finding accuracy, KL divergence and distance
+percentiles). For neural networks, repeated gradient descent and kernelized tSNE,
+run corresponding post-processing script after running the main one.
 
 # Figures
 

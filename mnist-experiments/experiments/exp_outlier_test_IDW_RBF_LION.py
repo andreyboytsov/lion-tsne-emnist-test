@@ -1,7 +1,7 @@
 """
 EXPERIMENT:
 
-Cluster attribution test, RBF interpolation, IDW interpolation, LION interpolation.
+Outlier placement test: RBF interpolation, IDW interpolation, LION interpolation.
 """
 import logging
 import pickle

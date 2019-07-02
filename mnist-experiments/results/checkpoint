@@ -1,2 +1,2 @@
-model_checkpoint_path: "model3_1000_10_30_True_full_300_0.8_3000_30_1.hd5"
-all_model_checkpoint_paths: "model3_1000_10_30_True_full_300_0.8_3000_30_1.hd5"
+model_checkpoint_path: "model3_123_1000_10_30_True_full_300_0.8_3000_30_1.hd5"
+all_model_checkpoint_paths: "model3_123_1000_10_30_True_full_300_0.8_3000_30_1.hd5"
