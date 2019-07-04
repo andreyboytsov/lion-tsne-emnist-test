@@ -13,7 +13,7 @@ def set_all_random_seeds(keras_random_seed):
     rn.seed(keras_random_seed)
     os.environ['PYTHONHASHSEED'] = str(keras_random_seed)
 
-required_prefixes = settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set | {"keras_random_seed"}
+nn_model_prefixes = settings.tsne_parameter_set | {"keras_random_seed"}
 
 
 def train_or_load_models(regenerate_model1=False, regenerate_model2=False, regenerate_model3=False,
@@ -35,18 +35,18 @@ def train_or_load_models(regenerate_model1=False, regenerate_model2=False, regen
     model3_weights_file_prefix = '../results/model3'
     model3_json_file_prefix = '../results/model3'
 
-    model1_weights_file = model1_weights_file_prefix + generate_data.combine_prefixes(required_prefixes, parameters,
-            postfix='.hd5')
-    model1_json_file = model1_json_file_prefix + generate_data.combine_prefixes(required_prefixes, parameters,
-            postfix='.json')
-    model2_weights_file = model2_weights_file_prefix + generate_data.combine_prefixes(required_prefixes, parameters,
-            postfix='.hd5')
-    model2_json_file = model2_json_file_prefix + generate_data.combine_prefixes(required_prefixes, parameters,
-            postfix='.json')
-    model3_weights_file = model3_weights_file_prefix + generate_data.combine_prefixes(required_prefixes, parameters,
-            postfix='.hd5')
-    model3_json_file = model3_json_file_prefix + generate_data.combine_prefixes(required_prefixes, parameters,
-            postfix='.json')
+    model1_weights_file = model1_weights_file_prefix + generate_data.combine_prefixes(nn_model_prefixes, parameters,
+                                                                                      postfix='.hd5')
+    model1_json_file = model1_json_file_prefix + generate_data.combine_prefixes(nn_model_prefixes, parameters,
+                                                                                postfix='.json')
+    model2_weights_file = model2_weights_file_prefix + generate_data.combine_prefixes(nn_model_prefixes, parameters,
+                                                                                      postfix='.hd5')
+    model2_json_file = model2_json_file_prefix + generate_data.combine_prefixes(nn_model_prefixes, parameters,
+                                                                                postfix='.json')
+    model3_weights_file = model3_weights_file_prefix + generate_data.combine_prefixes(nn_model_prefixes, parameters,
+                                                                                      postfix='.hd5')
+    model3_json_file = model3_json_file_prefix + generate_data.combine_prefixes(nn_model_prefixes, parameters,
+                                                                                postfix='.json')
 
     if not os.path.isfile(model1_weights_file) or regenerate_model1:
         # 2 layers, 250 nodes per layer, ReLu activation, dropout regularization with rate of 0.25.]

@@ -14,6 +14,7 @@ import os
 from scipy.spatial import distance
 import lion_tsne
 from scipy import stats
+import neural_network_commons
 
 
 distance_matrix_dir_prefix = '../data/UpdatedPMatrices-outliers'
@@ -22,13 +23,13 @@ distance_matrix_dir_prefix = '../data/UpdatedPMatrices-outliers'
 def generate_nn_kl_temp_filename(parameters):
     output_file_prefix = '../results/outlier_nn_kl_temp_'
     return output_file_prefix + generate_data.combine_prefixes(
-        settings.tsne_parameter_set | settings.outlier_parameter_set, parameters)
+        neural_network_commons.nn_model_prefixes | settings.outlier_parameter_set, parameters)
 
 
 def generate_nn_postprocess_filename(parameters):
     output_file_prefix = '../results/outlier_nn_postprocess_'
     return output_file_prefix + generate_data.combine_prefixes(
-        settings.tsne_parameter_set | settings.outlier_parameter_set, parameters)
+        neural_network_commons.nn_model_prefixes | settings.outlier_parameter_set, parameters)
 
 
 def main(parameters = settings.parameters):
@@ -62,7 +63,7 @@ def main(parameters = settings.parameters):
             continue
         print("Processing sample ", i)
         distance_matrix_dir = distance_matrix_dir_prefix + generate_data.combine_prefixes(
-            settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters, os.sep)
+            settings.tsne_parameter_set | settings.outlier_parameter_set_parameter_set, parameters, os.sep)
         distance_matrix_file = distance_matrix_dir + 'item' + str(j) + '.p'
         # Make sure you can load them one-by-one.
         if os.path.isfile(distance_matrix_file):

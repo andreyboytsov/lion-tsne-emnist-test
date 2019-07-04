@@ -12,7 +12,7 @@ import pickle
 def generate_outlier_results_filename(parameters=settings.parameters):
     outlier_results_file_prefix = '../results/cluster_outlier_nn_'
     return outlier_results_file_prefix + generate_data.combine_prefixes(
-        settings.tsne_parameter_set | settings.outlier_parameter_set, parameters)
+        neural_network_commons.nn_model_prefixes | settings.outlier_parameter_set, parameters)
 
 
 def main(regenerate_model1=False, regenerate_model2=False, regenerate_model3=False,

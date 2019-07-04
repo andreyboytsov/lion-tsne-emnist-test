@@ -4,16 +4,15 @@ EXPERIMENT:
 Cluster attribution test, neural networks
 """
 import generate_data
-import os
 import settings
-from tensorflow import keras
 import pickle
 import neural_network_commons
 
 
 def generate_cluster_results_filename(parameters=settings.parameters):
     output_file_prefix = '../results/cluster_attr_nn_'
-    return output_file_prefix + generate_data.combine_prefixes(neural_network_commons.required_prefixes, parameters)
+    return output_file_prefix + generate_data.combine_prefixes(
+        neural_network_commons.nn_model_prefixes | settings.x_neighbors_selection_parameter_set, parameters)
 
 
 def main(regenerate_model1=False, regenerate_model2=False, regenerate_model3=False,
