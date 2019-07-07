@@ -26,7 +26,7 @@ def generate_gd_kl_temp_filename(parameters):
 def generate_gd_postprocess_filename(parameters):
     output_file_prefix = '../results/outlier_gd_postprocess_'
     return output_file_prefix + generate_data.combine_prefixes(
-        settings.tsne_parameter_set | settings.outlier_parameter_sett, parameters)
+        settings.tsne_parameter_set | settings.outlier_parameter_set, parameters)
 
 
 def main(parameters = settings.parameters):
@@ -89,7 +89,7 @@ def main(parameters = settings.parameters):
         logging.info("Processing sample %d", i)
         distance_matrix_dir = distance_matrix_dir_prefix + generate_data.combine_prefixes(
             settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters, os.sep)
-        distance_matrix_file = distance_matrix_dir + 'item' + str(j) + '.p'
+        distance_matrix_file = distance_matrix_dir + 'item' + str(i) + '.p'
         # Make sure you can load them one-by-one.
         if os.path.isfile(distance_matrix_file):
             logging.info("\tP-matrix file found. Loading.")
