@@ -9,6 +9,7 @@ import numpy as np
 import logging
 import settings
 from scipy.spatial import distance
+import pandas as pd
 
 data_dir_prefix = '..'+os.sep+'data'+os.sep
 keras_mnist_file = data_dir_prefix+'keras_mnist.p'
@@ -30,6 +31,7 @@ picked_neighbors_raw_prefix = data_dir_prefix+'picked_neighbors_raw'
 nearest_training_indices_prefix = data_dir_prefix+'nearest_training_indices'
 chosen_labels_prefix = data_dir_prefix+'chosen_labels'
 outliers_prefix = data_dir_prefix+'generated_outliers'
+letters_prefix = data_dir_prefix+'generated_letters'
 
 
 def combine_prefixes(prefixes, parameters, postfix='.p'):
@@ -63,6 +65,10 @@ def load_or_remake(get_filename_function, generator_function, parameters, regene
 
 def get_outliers_filename(parameters=settings.parameters):
     return outliers_prefix + combine_prefixes(settings.outlier_parameter_set, parameters)
+
+
+def get_letters_filename(parameters=settings.parameters):
+    return letters_prefix + combine_prefixes(settings.letter_parameter_set, parameters)
 
 
 def get_x_mnist_raw_filename(parameters=settings.parameters):
@@ -111,6 +117,12 @@ def get_nearest_training_indices_filename(parameters=settings.parameters):
 
 def get_chosen_labels_filename(parameters=settings.parameters):
     return chosen_labels_prefix + combine_prefixes(settings.x_neighbors_selection_parameter_set, parameters)
+
+
+def generate_letters(*, parameters=settings.parameters, recursive_regenerate=False):
+    # 1000 EMMIST letters: raw and processed format
+    emnist_balanced_train = pd.read_csv('../../../emnist/emnist_balanced.csv')
+    save_and_report(get_letters_filename, parameters, (letters_samples, letters_samples_raw))
 
 
 def generate_outliers(*, parameters=settings.parameters, recursive_regenerate=False):
@@ -635,6 +647,11 @@ def get_baseline_accuracy(*, parameters=settings.parameters):
 
 def load_outliers(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     return load_or_remake(get_outliers_filename, generate_outliers, parameters, regenerate,
+                          recursive_regenerate)
+
+
+def load_letters(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
+    return load_or_remake(get_letters_filename, generate_letters, parameters, regenerate,
                           recursive_regenerate)
 
 

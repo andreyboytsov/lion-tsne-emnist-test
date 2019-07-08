@@ -15,11 +15,14 @@ parameters = {
     "outlier_indices_to_pick" : 1000,
     "outlier_random_seed" : 23412,
     "keras_random_seed" : 123, # Anything will do, just keep it consistent
+    "letter_random_seed" : 0,
+    "letter_indices_to_pick" : 1000,
     }
 
 raw_parameter_set = {"selection_random_seed", "num_images_raw", "old"}
 pca_parameter_set = raw_parameter_set | {"num_pca_dimensions", "pca_random_seed"}
 outlier_parameter_set = pca_parameter_set | {"outlier_indices_to_pick", "outlier_random_seed"}
+letter_parameter_set = pca_parameter_set | {"letter_indices_to_pick", "letter_random_seed"}
 tsne_parameter_set = pca_parameter_set | {"tsne_random_seed", "tsne_perplexity", "tsne_momentum",
                                           "tsne_n_iters", "tsne_early_exaggeration_iters"}
 x_neighbors_selection_parameter_set = pca_parameter_set | {"neighbor_indices_to_pick", "neighbor_picking_random_seed"}

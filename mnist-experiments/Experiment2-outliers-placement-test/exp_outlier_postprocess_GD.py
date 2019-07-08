@@ -75,7 +75,7 @@ def main(parameters = settings.parameters):
 
     processed_indices = list()
 
-    kl_gd_outliers_performance_file = 'kl_outliers_gd_performance.p'
+    kl_gd_outliers_performance_file = generate_gd_kl_temp_filename(parameters)
     if os.path.isfile(kl_gd_outliers_performance_file):
         with open(kl_gd_outliers_performance_file, 'rb') as f:
             gd_outliers_kl, processed_indices = pickle.load(f)
