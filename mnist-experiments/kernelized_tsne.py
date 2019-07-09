@@ -14,6 +14,7 @@ import generate_data
 import numpy as np
 from scipy.spatial import distance
 import os
+import logging
 
 
 def generate_cache_filename(parameters=settings.parameters):
@@ -57,7 +58,7 @@ def load_all_kernelized_tsne_embedders(parameters=settings.parameters, regenerat
                 coefs = np.linalg.inv(kernel_matrix).dot(Y_mnist)
                 kernelized_tsne_parameters_cache[key]['coefs'] = coefs
                 kernelized_tsne_parameters_cache[key]['sigma'] = sigma_matrix[0,:]
-                print("Got coefs for coefficient ", k)
+                logging.info("Got coefs for coefficient %f", k)
         with open(cache_filename, 'wb') as f:
             pickle.dump(kernelized_tsne_parameters_cache, f)
     return kernelized_tsne_parameters_cache

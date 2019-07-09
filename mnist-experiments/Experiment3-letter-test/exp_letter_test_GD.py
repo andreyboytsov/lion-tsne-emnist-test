@@ -11,7 +11,7 @@ import pickle
 
 
 def generate_letter_results_filename(parameters=settings.parameters):
-    letter_results_file_prefix = '../results/cluster_letter_gd_'
+    letter_results_file_prefix = '../results/letter_gd_'
     return letter_results_file_prefix + generate_data.combine_prefixes(
         settings.tsne_parameter_set | settings.letter_parameter_set, parameters)
 
@@ -19,7 +19,7 @@ def generate_letter_results_filename(parameters=settings.parameters):
 def main(parameters=settings.parameters):
     dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
     Y_mnist= generate_data.load_y_mnist(parameters=parameters)
-    letter_samples, _ = generate_data.load_letters(parameters=parameters)
+    letter_samples, _, _ = generate_data.load_letters(parameters=parameters)
 
     # Doing it from scratch takes REALLY long time. If possible, save results & pre-load
 

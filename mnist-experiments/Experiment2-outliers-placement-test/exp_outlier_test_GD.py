@@ -11,7 +11,7 @@ import pickle
 
 
 def generate_outlier_results_filename(parameters=settings.parameters):
-    outlier_results_file_prefix = '../results/cluster_outlier_gd_'
+    outlier_results_file_prefix = '../results/outlier_gd_'
     return outlier_results_file_prefix + generate_data.combine_prefixes(
         settings.tsne_parameter_set | settings.outlier_parameter_set, parameters)
 

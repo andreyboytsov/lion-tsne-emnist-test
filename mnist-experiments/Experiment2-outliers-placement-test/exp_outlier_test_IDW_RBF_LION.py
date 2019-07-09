@@ -35,22 +35,6 @@ def get_nearest_neighbors_in_y(y, Y_mnist, n=10):
     return np.argsort(y_distances)[:n]
 
 
-def calc_accuracy(*, common_info, embedded_neighbors, parameters):
-    outlier_samples = common_info["outlier_samples"]
-    accuracy_nn = common_info["accuracy_nn"]
-    picked_neighbors_labels = common_info["picked_neighbors_labels"]
-    labels_mnist = common_info["labels_mnist"]
-    Y_mnist = common_info["Y_mnist"]
-    per_sample_accuracy = list()
-    for j in range(len(outlier_samples)):
-        y = embedded_neighbors[j, :]
-        expected_label = picked_neighbors_labels[j]
-        nn_indices = get_nearest_neighbors_in_y(y, Y_mnist, n=accuracy_nn)
-        obtained_labels = labels_mnist[nn_indices]
-        per_sample_accuracy.append(sum(obtained_labels == expected_label) / len(obtained_labels))
-    return np.mean(per_sample_accuracy)
-
-
 def calc_distance_perc(*, common_info, embedded_neighbors, parameters):
     outlier_samples = common_info["outlier_samples"]
     Y_mnist = common_info["Y_mnist"]
@@ -71,7 +55,7 @@ def calc_kl(*, common_info, embedded_neighbors, parameters):
     per_sample_kl_divergences = list()
     for j in range(len(outlier_samples)):
         distance_matrix_dir = distance_matrix_dir_prefix + generate_data.combine_prefixes(
-            settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters, os.sep)
+            settings.tsne_parameter_set | settings.outlier_parameter_set, parameters, os.sep)
         distance_matrix_file = distance_matrix_dir + 'item' + str(j) + '.p'
         # Don't store those matrices in a single file. Way too large.
 

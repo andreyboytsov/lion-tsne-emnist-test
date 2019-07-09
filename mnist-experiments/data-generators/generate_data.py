@@ -121,8 +121,23 @@ def get_chosen_labels_filename(parameters=settings.parameters):
 
 def generate_letters(*, parameters=settings.parameters, recursive_regenerate=False):
     # 1000 EMMIST letters: raw and processed format
-    emnist_balanced_train = pd.read_csv('../../../emnist/emnist_balanced.csv')
-    save_and_report(get_letters_filename, parameters, (letters_samples, letters_samples_raw))
+    # letters, letters_raw = generate_data.load_letters(parameters=settings.parameters)
+    mnist_pca = load_pca_mnist(parameters=parameters, regenerate=recursive_regenerate,
+                                   recursive_regenerate=recursive_regenerate)
+
+    letters_random_seed = parameters.get("letter_random_seed", settings.parameters["letter_random_seed"])
+    ind_to_pick = parameters.get("letter_indices_to_pick", settings.parameters["letter_indices_to_pick"])
+    np.random.seed(letters_random_seed)
+    emnist_balanced_train = np.genfromtxt('../../../emnist/emnist-balanced-train.csv', delimiter=',')
+    emnist_balanced_train = emnist_balanced_train[np.where(emnist_balanced_train[:, 0] >= 10)[0], :]
+
+    ind = np.random.choice(np.arange(len(emnist_balanced_train)), size=ind_to_pick)
+
+    letters_raw = emnist_balanced_train[ind, 1:].reshape((-1, 28, 28)).transpose((0, 2, 1)).reshape((-1, 784)) / 255.0
+    letters_labels = (emnist_balanced_train[ind, 0] - 10).astype(int)
+    letters = mnist_pca.transform(letters_raw)
+
+    save_and_report(get_letters_filename, parameters, (letters, letters_raw, letters_labels))
 
 
 def generate_outliers(*, parameters=settings.parameters, recursive_regenerate=False):
@@ -131,7 +146,8 @@ def generate_outliers(*, parameters=settings.parameters, recursive_regenerate=Fa
                            recursive_regenerate=recursive_regenerate)
     X_mnist_raw = load_x_mnist_raw(parameters=parameters, regenerate=recursive_regenerate,
                                    recursive_regenerate=recursive_regenerate)
-    mnist_pca = load_pca_mnist(parameters=parameters)
+    mnist_pca = load_pca_mnist(parameters=parameters, regenerate=recursive_regenerate,
+                                   recursive_regenerate=recursive_regenerate)
     ind_to_pick = parameters.get("outlier_indices_to_pick", settings.parameters["outlier_indices_to_pick"])
     outlier_random_seed = parameters.get("outlier_random_seed", settings.parameters["outlier_random_seed"])
 

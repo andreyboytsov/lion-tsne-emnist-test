@@ -3,12 +3,13 @@ import numpy as np
 import pickle
 import generate_data
 import kernelized_tsne
+import logging
 
 
 def generate_outlier_results_filename(parameters=settings.parameters):
-    cluster_results_file_prefix = '../results/outlier_test_kernelized_'
+    cluster_results_file_prefix = '../results/outlier_kernelized_'
     return cluster_results_file_prefix + generate_data.combine_prefixes(
-        settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters)
+        settings.tsne_parameter_set | settings.outlier_parameter_set, parameters)
 
 
 def main(parameters = settings.parameters, regenerate_parameters_cache=False):
@@ -29,4 +30,5 @@ def main(parameters = settings.parameters, regenerate_parameters_cache=False):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     main(parameters=settings.parameters, regenerate_parameters_cache=False)

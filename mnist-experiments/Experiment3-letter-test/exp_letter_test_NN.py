@@ -10,7 +10,7 @@ import pickle
 
 
 def generate_letter_results_filename(parameters=settings.parameters):
-    letter_results_file_prefix = '../results/cluster_letter_nn_'
+    letter_results_file_prefix = '../results/letter_nn_'
     return letter_results_file_prefix + generate_data.combine_prefixes(
         neural_network_commons.nn_model_prefixes | settings.letter_parameter_set, parameters)
 

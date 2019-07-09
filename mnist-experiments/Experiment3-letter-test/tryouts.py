@@ -4,24 +4,11 @@ import settings
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import settings
 
 parameters = settings.parameters
 X_mnist_raw = generate_data.load_x_mnist_raw(parameters=parameters)
-
-#letters, letters_raw = generate_data.load_letters(parameters=settings.parameters)
-letters_random_seed = parameters.get("letter_random_seed", settings.parameters["letter_random_seed"])
-ind_to_pick = parameters.get("letter_indices_to_pick", settings.parameters["letter_indices_to_pick"])
-np.random.seed(letters_random_seed)
-emnist_balanced_train = np.genfromtxt('../../../emnist/emnist-balanced-train.csv', delimiter=',')
-emnist_balanced_train = emnist_balanced_train[np.where(emnist_balanced_train[:,0] >= 10)[0], :]
-
-ind = np.random.choice(np.arange(len(emnist_balanced_train)), size=ind_to_pick)
-
-print(X_mnist_raw.shape, np.max(X_mnist_raw[0,:]), np.min(X_mnist_raw[0,:]))
-print(emnist_balanced_train.shape)
-
-letters_raw = emnist_balanced_train[ind, 1:].reshape((-1, 28, 28)).transpose((0,2,1)).reshape((-1, 784)) / 255.0
-letters_labels = (emnist_balanced_train[ind, 0]-10).astype(int)
+letters, letters_raw, letters_labels = generate_data.load_letters(parameters=parameters)
 
 print(letters_raw.shape, np.max(letters_raw[0,:]), np.min(letters_raw[0,:]))
 print(letters_labels[:100])
