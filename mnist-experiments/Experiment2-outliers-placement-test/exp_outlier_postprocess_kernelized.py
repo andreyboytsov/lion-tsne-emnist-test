@@ -83,7 +83,7 @@ def main(parameters = settings.parameters):
             continue
         logging.info("Processing sample %d", i)
         distance_matrix_dir = distance_matrix_dir_prefix + generate_data.combine_prefixes(
-            settings.tsne_parameter_set | settings.x_neighbors_selection_parameter_set, parameters, os.sep)
+            settings.tsne_parameter_set | settings.outlier_parameter_set, parameters, os.sep)
         distance_matrix_file = distance_matrix_dir + 'item' + str(j) + '.p'
         # Make sure you can load them one-by-one.
         if os.path.isfile(distance_matrix_file):

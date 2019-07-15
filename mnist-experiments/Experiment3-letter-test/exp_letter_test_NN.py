@@ -17,7 +17,7 @@ def generate_letter_results_filename(parameters=settings.parameters):
 
 def main(regenerate_model1=False, regenerate_model2=False, regenerate_model3=False,
          parameters=settings.parameters):
-    letter_samples, _ = generate_data.load_letters(parameters=parameters)
+    letter_samples, _, _ = generate_data.load_letters(parameters=parameters)
 
     models_and_results = neural_network_commons.train_or_load_models(regenerate_model1=regenerate_model1,
         regenerate_model3=regenerate_model3,regenerate_model2=regenerate_model2,parameters=parameters)

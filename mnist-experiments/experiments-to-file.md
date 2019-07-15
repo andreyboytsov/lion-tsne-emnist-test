@@ -140,4 +140,5 @@ File: ./table-generators/tab-cluster-attribution-test.py
 Table file: ./tables/tab-cluster-attribution-test.txt
 
 ## Table III
-TODO
+File: ./table-generators/tab-outlier-test.py  
+Table file: ./tables/tab-outlier-test.txt

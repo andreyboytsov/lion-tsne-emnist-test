@@ -61,10 +61,10 @@ def main(parameters = settings.parameters):
         if i in processed_indices:
             logging.info("Sample %d already processed. Results loaded.", i)
             continue
-        print("Processing sample ", i)
+        logging.info("Processing sample %d", i)
         distance_matrix_dir = distance_matrix_dir_prefix + generate_data.combine_prefixes(
-            settings.tsne_parameter_set | settings.outlier_parameter_set_parameter_set, parameters, os.sep)
-        distance_matrix_file = distance_matrix_dir + 'item' + str(j) + '.p'
+            settings.tsne_parameter_set | settings.outlier_parameter_set, parameters, os.sep)
+        distance_matrix_file = distance_matrix_dir + 'item' + str(i) + '.p'
         # Make sure you can load them one-by-one.
         if os.path.isfile(distance_matrix_file):
             logging.info("\tP-matrix file found. Loading.")
