@@ -17,22 +17,7 @@ import exp_lion_power_performance
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 
-lion_percentiles = (90, )#, 95, 99, 100)
-n_digits = 1
-
-
-def generate_all_embedders(dTSNE_mnist):
-    _, _, lion_optimal_powers = exp_lion_power_performance.load_lion_power_plot()
-
-    embedders = dict()
-    for p in lion_percentiles:
-        embedders["LION-"+str(p)+"-"+str(round(lion_optimal_powers[p], n_digits))] = \
-            dTSNE_mnist.generate_embedding_function(random_state=p,
-                    function_kwargs={'radius_x_percentile':p, 'power': lion_optimal_powers[p]})
-        logging.info("Generated embedder LION-%d (%f)",p, lion_optimal_powers[p])
-
-    return embedders
-
+import exp_letter_test_LION
 
 def get_common_info(parameters):
     res = {}
@@ -81,11 +66,11 @@ def process_single_embedder(*, embedder, embedder_name, results, regenerate, com
 
 def main(*, regenerate=False, parameters=settings.parameters):
     start_time = datetime.datetime.now()
-    logging.info("IDW/RBF/LION letter experiment started: %s", start_time)
+    logging.info("LION debug letter experiment started: %s", start_time)
 
     common_info = get_common_info(parameters)
     results = dict()
-    embedders = generate_all_embedders(common_info['dTSNE_mnist'])
+    embedders = exp_letter_test_LION.generate_all_embedders(common_info['dTSNE_mnist'])
 
     for embedder_name in embedders.keys():
         process_single_embedder(embedder=embedders[embedder_name], embedder_name=embedder_name, results=results,
@@ -102,27 +87,15 @@ def main(*, regenerate=False, parameters=settings.parameters):
 
     lion90_name = [i for i in results.keys() if i.startswith('LION-90')][0]
     letters_y_lion90 = results[lion90_name]['EmbeddedPoints']
-    #lion95_name = [i for i in results.keys() if i.startswith('LION-95')][0]
-    #letters_y_lion95 = results[lion95_name]['EmbeddedPoints']
-    #lion99_name = [i for i in results.keys() if i.startswith('LION-99')][0]
-    #letters_y_lion99 = results[lion99_name]['EmbeddedPoints']
-    #lion100_name = [i for i in results.keys() if i.startswith('LION-100')][0]
-    #letters_y_lion100 = results[lion100_name]['EmbeddedPoints']
-
-    # Number 19 looks weird (and some more look weird too):
-    # Cannot be placed far apart as an outlier (other outlier positions not taken yet)
-    # Cannot be placed that far apart as non-outlier (IDW, local or not, cannot place "outside the box")
-    # So why placed that far?
-    # Randomization problems? It is in different place each time
-    # So, first tests showed that this is a single-neighbor case, which is treated as an outlier.
-    # Then why so weird cell? Why so far outside?
-    # Because single-neighbor cases are treated after (!) the main outlier list.
-    # By that time all the close outlier cells are already taken
-    # Solution: treat those examples one-by-one rather than in a bulk
-    # Conclusion: not a bug, just the peculiarity.
+    lion95_name = [i for i in results.keys() if i.startswith('LION-95')][0]
+    letters_y_lion95 = results[lion95_name]['EmbeddedPoints']
+    lion99_name = [i for i in results.keys() if i.startswith('LION-99')][0]
+    letters_y_lion99 = results[lion99_name]['EmbeddedPoints']
+    lion100_name = [i for i in results.keys() if i.startswith('LION-100')][0]
+    letters_y_lion100 = results[lion100_name]['EmbeddedPoints']
 
     cur_shown_letter_indices_begin = 0
-    cur_shown_letter_indices_end = 500
+    cur_shown_letter_indices_end = 20
 
     #for k in ['LION-90-16.4']:  # embedders.keys():
     #    print(k ,embedders[k](common_info['letter_samples']
@@ -153,17 +126,17 @@ def main(*, regenerate=False, parameters=settings.parameters):
     h1 = plt.scatter(letters_y_lion90[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
                     letters_y_lion90[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
                      c='red', zorder=1, label=None, marker='.', s = point_size_interest)
-    #h2 = plt.scatter(letters_y_lion95[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
-    #                letters_y_lion95[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
-    #                 c='blue', zorder=1, label=None, marker='.', s = point_size_interest)
-    #h3 = plt.scatter(letters_y_lion99[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
-    #                letters_y_lion99[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
-    #                 c='green', zorder=1, label=None, marker='.', s = point_size_interest)
-    #h4 = plt.scatter(letters_y_lion100[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
-    #                letters_y_lion100[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
-    #                 c='purple', zorder=1, label=None, marker='.', s = point_size_interest)
-    #plt.legend([h1,h2,h3,h4], lion_method_list, ncol=1, prop=font_properties, borderpad=0.1,handlelength=2,
-    #                       columnspacing = 0, loc = 1, handletextpad=-0.7,frameon=True)
+    h2 = plt.scatter(letters_y_lion95[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
+                    letters_y_lion95[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
+                     c='blue', zorder=1, label=None, marker='.', s = point_size_interest)
+    h3 = plt.scatter(letters_y_lion99[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
+                    letters_y_lion99[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
+                     c='green', zorder=1, label=None, marker='.', s = point_size_interest)
+    h4 = plt.scatter(letters_y_lion100[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
+                    letters_y_lion100[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
+                     c='purple', zorder=1, label=None, marker='.', s = point_size_interest)
+    plt.legend([h1,h2,h3,h4], lion_method_list, ncol=1, prop=font_properties, borderpad=0.1,handlelength=2,
+                           columnspacing = 0, loc = 1, handletextpad=-0.7,frameon=True)
     plt.show()
 
 

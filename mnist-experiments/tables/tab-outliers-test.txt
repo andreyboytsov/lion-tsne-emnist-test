@@ -57,13 +57,13 @@
 	\\
 	 K=0.50 & 47.22\% & 1.11864
 	\\
-	 \textbf{LION} -  $r_x$ at 90th perc. & \textbf{100.000} &\textbf{1.11878}
+	 \textbf{LION} -  $r_x$ at 90th perc. & \textbf{100.000} &\textbf{1.11853}
 	\\ \hline
-	 \textbf{LION} -  $r_x$ at 95th perc. & \textbf{100.000} &\textbf{1.11878}
+	 \textbf{LION} -  $r_x$ at 95th perc. & \textbf{100.000} &\textbf{1.11879}
 	\\ \hline
-	 \textbf{LION} -  $r_x$ at 99th perc. & \textbf{100.000} &\textbf{1.11878}
+	 \textbf{LION} -  $r_x$ at 99th perc. & \textbf{100.000} &\textbf{1.11877}
 	\\ \hline
-	 \textbf{LION} -  $r_x$ at 100th perc. & \textbf{100.000} &\textbf{1.11878}
+	 \textbf{LION} -  $r_x$ at 100th perc. & \textbf{100.000} &\textbf{1.11809}
 	\\ \hline
 
     \end{tabular}

@@ -30,7 +30,7 @@ def generate_all_embedders(dTSNE_mnist):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    outlier_lion_RBF_IDW_commons.main(regenerate=False, parameters=settings.parameters,
+    outlier_lion_RBF_IDW_commons.main(regenerate=True, parameters=settings.parameters,
          generate_all_embedders=generate_all_embedders,
          outlier_results_file_prefix=outlier_results_file_prefix,
          experiment_name="LION")

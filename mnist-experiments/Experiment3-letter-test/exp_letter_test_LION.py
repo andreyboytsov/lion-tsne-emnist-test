@@ -9,7 +9,7 @@ import settings
 import letter_lion_RBF_IDW_commons
 import exp_lion_power_performance
 
-letter_results_file_prefix = '../results/letter_RBF_IDW'
+letter_results_file_prefix = '../results/letter_LION'
 
 lion_percentiles = (90, 95, 99, 100)
 n_digits = 1
@@ -30,7 +30,7 @@ def generate_all_embedders(dTSNE_mnist):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    letter_lion_RBF_IDW_commons.main(regenerate=False, parameters=settings.parameters,
+    letter_lion_RBF_IDW_commons.main(regenerate=True, parameters=settings.parameters,
          generate_all_embedders=generate_all_embedders,
          letter_results_file_prefix=letter_results_file_prefix,
          experiment_name="LION")

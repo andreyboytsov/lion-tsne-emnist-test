@@ -3,7 +3,9 @@ from matplotlib.font_manager import FontProperties
 from matplotlib import gridspec
 import generate_data
 import settings
-import exp_cluster_attr_test_RBF_IDW_LION
+import exp_cluster_attr_test_IDW_RBF
+import exp_cluster_attr_test_LION
+import cluster_lion_RBF_IDW_commons
 import exp_cluster_attr_test_NN
 import exp_cluster_attr_test_kernelized
 import exp_lion_power_performance
@@ -23,47 +25,53 @@ lion_power_plot_data_file = exp_lion_power_performance.generate_lion_power_plot_
 with open(lion_power_plot_data_file, 'rb') as f:
     _, _, lion_optimal_power = pickle.load(f)
 
-cluster_results_file = exp_cluster_attr_test_RBF_IDW_LION.generate_cluster_results_filename(parameters)
-with open(cluster_results_file, "rb") as f:
-    all_RBF_IDW_LION_results = pickle.load(f)
+idw_rbf_cluster_results_file = cluster_lion_RBF_IDW_commons.generate_cluster_results_filename(
+    exp_cluster_attr_test_IDW_RBF.cluster_results_file_prefix, parameters)
+with open(idw_rbf_cluster_results_file, "rb") as f:
+    all_RBF_IDW_results = pickle.load(f)
+
+lion_cluster_results_file = cluster_lion_RBF_IDW_commons.generate_cluster_results_filename(
+    exp_cluster_attr_test_LION.cluster_results_file_prefix, parameters)
+with open(lion_cluster_results_file, "rb") as f:
+    all_LION_results = pickle.load(f)
 
 nn_results_file = exp_cluster_attr_test_NN.generate_cluster_results_filename(parameters)
 with open(nn_results_file, 'rb') as f:
         nn_method_results, nn_models_orig, nn_method_list = pickle.load(f)
 
-picked_neighbors_y_multiquadric = all_RBF_IDW_LION_results["RBF-multiquadric"]['EmbeddedPoints']
-picked_neighbors_y_gaussian = all_RBF_IDW_LION_results["RBF-gaussian"]['EmbeddedPoints']
-picked_neighbors_y_linear = all_RBF_IDW_LION_results["RBF-linear"]['EmbeddedPoints']
-picked_neighbors_y_cubic = all_RBF_IDW_LION_results["RBF-cubic"]['EmbeddedPoints']
-picked_neighbors_y_quintic = all_RBF_IDW_LION_results["RBF-quintic"]['EmbeddedPoints']
-picked_neighbors_y_inverse = all_RBF_IDW_LION_results["RBF-inverse"]['EmbeddedPoints']
-picked_neighbors_y_thin_plate = all_RBF_IDW_LION_results["RBF-thin-plate"]['EmbeddedPoints']
+picked_neighbors_y_multiquadric = all_RBF_IDW_results["RBF-multiquadric"]['EmbeddedPoints']
+picked_neighbors_y_gaussian = all_RBF_IDW_results["RBF-gaussian"]['EmbeddedPoints']
+picked_neighbors_y_linear = all_RBF_IDW_results["RBF-linear"]['EmbeddedPoints']
+picked_neighbors_y_cubic = all_RBF_IDW_results["RBF-cubic"]['EmbeddedPoints']
+picked_neighbors_y_quintic = all_RBF_IDW_results["RBF-quintic"]['EmbeddedPoints']
+picked_neighbors_y_inverse = all_RBF_IDW_results["RBF-inverse"]['EmbeddedPoints']
+picked_neighbors_y_thin_plate = all_RBF_IDW_results["RBF-thin-plate"]['EmbeddedPoints']
 
 rbf_method_list = ["RBF - Multiquadric","RBF - Gaussian",
                         "RBF - Inverse Multiquadric","RBF - Linear",'RBF - Cubic','RBF - Quintic',
                         'RBF - Thin Plate']
 
-keys_copy = all_RBF_IDW_LION_results.keys()
+keys_copy = all_RBF_IDW_results.keys()
 keys_copy -= {"IDW-1","IDW-10","IDW-20","IDW-40"}
 idw_optimal_name = [i for i in keys_copy if i.startswith("IDW")][0]
 print(idw_optimal_name)
-picked_neighbors_y_idw1 = all_RBF_IDW_LION_results['IDW-1']['EmbeddedPoints']
-picked_neighbors_y_idw10 = all_RBF_IDW_LION_results['IDW-10']['EmbeddedPoints']
-picked_neighbors_y_idw20 = all_RBF_IDW_LION_results['IDW-20']['EmbeddedPoints']
-picked_neighbors_y_idw40 = all_RBF_IDW_LION_results['IDW-40']['EmbeddedPoints']
-picked_neighbors_y_idw_optimal = all_RBF_IDW_LION_results[idw_optimal_name]['EmbeddedPoints']
+picked_neighbors_y_idw1 = all_RBF_IDW_results['IDW-1']['EmbeddedPoints']
+picked_neighbors_y_idw10 = all_RBF_IDW_results['IDW-10']['EmbeddedPoints']
+picked_neighbors_y_idw20 = all_RBF_IDW_results['IDW-20']['EmbeddedPoints']
+picked_neighbors_y_idw40 = all_RBF_IDW_results['IDW-40']['EmbeddedPoints']
+picked_neighbors_y_idw_optimal = all_RBF_IDW_results[idw_optimal_name]['EmbeddedPoints']
 
 idw_method_list = ["IDW - Power 1","IDW - Power 10", "IDW - Power 20",
     "IDW - Power "+idw_optimal_name[-4:], "IDW - Power 40"]
 
-lion90_name = [i for i in all_RBF_IDW_LION_results.keys() if i.startswith('LION-90')][0]
-picked_neighbors_y_lion90 = all_RBF_IDW_LION_results[lion90_name]['EmbeddedPoints']
-lion95_name = [i for i in all_RBF_IDW_LION_results.keys() if i.startswith('LION-95')][0]
-picked_neighbors_y_lion95 = all_RBF_IDW_LION_results[lion95_name]['EmbeddedPoints']
-lion99_name = [i for i in all_RBF_IDW_LION_results.keys() if i.startswith('LION-99')][0]
-picked_neighbors_y_lion99 = all_RBF_IDW_LION_results[lion99_name]['EmbeddedPoints']
-lion100_name = [i for i in all_RBF_IDW_LION_results.keys() if i.startswith('LION-100')][0]
-picked_neighbors_y_lion100 = all_RBF_IDW_LION_results[lion100_name]['EmbeddedPoints']
+lion90_name = [i for i in all_LION_results.keys() if i.startswith('LION-90')][0]
+picked_neighbors_y_lion90 = all_LION_results[lion90_name]['EmbeddedPoints']
+lion95_name = [i for i in all_LION_results.keys() if i.startswith('LION-95')][0]
+picked_neighbors_y_lion95 = all_LION_results[lion95_name]['EmbeddedPoints']
+lion99_name = [i for i in all_LION_results.keys() if i.startswith('LION-99')][0]
+picked_neighbors_y_lion99 = all_LION_results[lion99_name]['EmbeddedPoints']
+lion100_name = [i for i in all_LION_results.keys() if i.startswith('LION-100')][0]
+picked_neighbors_y_lion100 = all_LION_results[lion100_name]['EmbeddedPoints']
 
 lion_method_list = ["LION; $r_x$ at %dth perc.; $p$=%.1f"%(i, lion_optimal_power[i])
                     for i in sorted(lion_optimal_power)]

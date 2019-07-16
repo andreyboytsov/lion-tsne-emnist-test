@@ -1067,11 +1067,13 @@ class LionTSNE:
             to_remove = list()
             for i in range(len(outlier_representatives)):
                 for j in range(i):
-                    distance = self.get_distance(x[outlier_representatives[i], :],
-                                                 x[outlier_representatives[j], :])
-                    if distance <= radius_x:
-                        to_remove.append(i)
-                        outliers_close_to_representatives[outlier_representatives[i]].append(outlier_representatives[j])
+                    if j not in to_remove:
+                        distance = self.get_distance(x[outlier_representatives[i], :],
+                                                     x[outlier_representatives[j], :])
+                        if distance <= radius_x:
+                            to_remove.append(i)
+                            outliers_close_to_representatives\
+                                [outlier_representatives[j]].append(outlier_representatives[i])
             outlier_representatives = [i for i in outlier_representatives if i not in to_remove]
 
 
