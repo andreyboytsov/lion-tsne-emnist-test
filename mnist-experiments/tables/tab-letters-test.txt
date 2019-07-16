@@ -1,0 +1,70 @@
+\begin{table*}\caption{letters test: methods comparison} \label{tab_letters_methods_comparison}
+    \begin{tabular}{| m{0.39\textwidth} | m{0.20\textwidth} | m{0.20\textwidth} |}
+        \hline
+            \textbf{Method}
+            & \textbf{Distance Percentile}
+            & \textbf{KL Divergence}
+        \\ \hline	\textbf{Baseline} & - & 1.11654
+	\\ \hline	 RBF - Multiquadric & 69.889 & 1.11853
+	\\ \hline
+	 RBF - Gaussian & 68.842 & 1.11856
+	\\ \hline
+	 RBF - Inverse Multiquadric & 69.380 & 1.11853
+	\\ \hline
+	 RBF - Linear & 68.031 & 1.11856
+	\\ \hline
+	 RBF - Cubic & 71.575 & 1.11854
+	\\ \hline
+	 RBF - Quintic & 77.129 & 1.11873
+	\\ \hline
+	 RBF - Thin Plate & 70.037 & 1.11853
+	\\ \hline
+	 IDW - Power 1 & 30.455 &1.11950
+	\\ \hline
+	 IDW - Power 10 & 63.263 &1.11868
+	\\ \hline
+	 IDW - Power 20 & 57.951 &1.11809
+	\\ \hline
+	 IDW - Power 27.1 & 45.081 &1.11772
+	\\ \hline
+	 IDW - Power 40 & 52.426 &1.11790
+	\\ \hline
+	 GD - Closest $Y_{init}$ & 59.798 & 1.11731
+	\\ \hline
+	 GD - Random $Y_{init}$ & 92.955 & 1.11880
+	\\ \hline
+	 GD - Closest $Y_{init}$; new $\sigma$ & 60.310 & 1.11731
+	\\ \hline
+	 GD - Random $Y_{init}$; new $\sigma$ & 93.457 & 1.11881
+	\\ \hline
+	 GD - Closest $Y_{init}$; EE & 59.647 & 1.11731
+	\\ \hline
+	 GD - Random $Y_{init}$; EE & 87.663 & 1.11853
+	\\ \hline
+	 GD - Closest $Y_{init}$; new $\sigma$; EE & 60.145 & 1.11731
+	\\ \hline
+	 GD - Random $Y_{init}$; new $\sigma$; EE & 88.126 & 1.11854
+	\\ \hline
+	 NN - 2L; 250N; ReLu; D0.25 & 62.855 &1.38252
+	\\ \hline
+	 NN - 2L; 500N; ReLu; D0.5 & 63.190 &1.41344
+	\\ \hline
+	 NN - 1L; 500N; tanh & 73.095 &1.13638
+	\\ \hline
+	 K=0.05 & 5.07\% & 1.11940
+	\\
+	 K=0.25 & 62.20\% & 1.11916
+	\\
+	 K=0.50 & 65.45\% & 1.11918
+	\\
+	 \textbf{LION} -  $r_x$ at 90th perc. & \textbf{88.650} &\textbf{1.11899}
+	\\ \hline
+	 \textbf{LION} -  $r_x$ at 95th perc. & \textbf{83.689} &\textbf{1.11878}
+	\\ \hline
+	 \textbf{LION} -  $r_x$ at 99th perc. & \textbf{69.386} &\textbf{1.11837}
+	\\ \hline
+	 \textbf{LION} -  $r_x$ at 100th perc. & \textbf{54.555} &\textbf{1.11795}
+	\\ \hline
+
+    \end{tabular}
+\end{table*}

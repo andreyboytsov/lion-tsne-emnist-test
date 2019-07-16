@@ -1,7 +1,7 @@
 """
 EXPERIMENT:
 
-Outlier placement test: RBF interpolation, IDW interpolation, LION interpolation.
+letter placement test: RBF interpolation, IDW interpolation, LION interpolation.
 """
 import logging
 import pickle
@@ -12,23 +12,10 @@ from scipy import stats
 from scipy.spatial import distance
 
 import generate_data
-import exp_idw_power_performance
-import exp_lion_power_performance
 import os
 import lion_tsne
 
-outlier_results_file_prefix = '../results/outlier_'
-
-distance_matrix_dir_prefix = '../data/UpdatedPMatrices-outliers'
-
-rbf_functions = ('multiquadric', 'linear', 'cubic', 'quintic', 'gaussian',
-                 'inverse', 'thin-plate')
-idw_powers = (1, 10, 20, 40)
-lion_percentiles = (90, 95, 99, 100)
-n_digits = 1
-
-# TODO make parallelizeable?
-
+distance_matrix_dir_prefix = '../data/UpdatedPMatrices-letters'
 
 def get_nearest_neighbors_in_y(y, Y_mnist, n=10):
     y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
@@ -36,11 +23,11 @@ def get_nearest_neighbors_in_y(y, Y_mnist, n=10):
 
 
 def calc_distance_perc(*, common_info, embedded_neighbors, parameters):
-    outlier_samples = common_info["outlier_samples"]
+    letter_samples = common_info["letter_samples"]
     Y_mnist = common_info["Y_mnist"]
     nearest_neighbors_y_dist = common_info["nearest_neighbors_y_dist"]
     per_sample_nearest_neighbors_percentiles = list()
-    for j in range(len(outlier_samples)):
+    for j in range(len(letter_samples)):
         y = embedded_neighbors[j, :]
         nn_dist = np.min(np.sqrt(np.sum((Y_mnist - y) ** 2, axis=1)))
         per_sample_nearest_neighbors_percentiles.append(stats.percentileofscore(nearest_neighbors_y_dist, nn_dist))
@@ -51,11 +38,11 @@ def calc_kl(*, common_info, embedded_neighbors, parameters):
     dTSNE_mnist = common_info["dTSNE_mnist"]
     X_mnist = common_info["X_mnist"]
     Y_mnist = common_info["Y_mnist"]
-    outlier_samples = common_info["outlier_samples"]
+    letter_samples = common_info["letter_samples"]
     per_sample_kl_divergences = list()
-    for j in range(len(outlier_samples)):
+    for j in range(len(letter_samples)):
         distance_matrix_dir = distance_matrix_dir_prefix + generate_data.combine_prefixes(
-            settings.tsne_parameter_set | settings.outlier_parameter_set, parameters, os.sep)
+            settings.tsne_parameter_set | settings.letter_parameter_set, parameters, os.sep)
         distance_matrix_file = distance_matrix_dir + 'item' + str(j) + '.p'
         # Don't store those matrices in a single file. Way too large.
 
@@ -68,7 +55,7 @@ def calc_kl(*, common_info, embedded_neighbors, parameters):
         else:
             if j%50==0:
                 logging.info("\t%d P-matrix file not found. Creating and saving.", j)
-            new_X = np.concatenate((X_mnist, outlier_samples[j, :].reshape((1, -1))), axis=0)
+            new_X = np.concatenate((X_mnist, letter_samples[j, :].reshape((1, -1))), axis=0)
             new_D = distance.squareform(distance.pdist(new_X))
             new_P, new_sigmas = lion_tsne.get_p_and_sigma \
                 (distance_matrix=new_D, perplexity=dTSNE_mnist.perplexity)
@@ -91,36 +78,13 @@ features_to_functions = {
 }
 
 
-def generate_all_embedders(dTSNE_mnist):
-    _, _, idw_optimal_power = exp_idw_power_performance.load_idw_power_plot()
-    _, _, lion_optimal_powers = exp_lion_power_performance.load_lion_power_plot()
-
-    embedders = dict()
-    # Changing random state to make sure outliers do not overlap
-    for p in sorted(lion_percentiles):
-        embedders["LION-"+str(p)+"-"+str(round(lion_optimal_powers[p], n_digits))] = \
-            dTSNE_mnist.generate_embedding_function(random_state=p,
-                    function_kwargs={'radius_x_percentile':p, 'power': lion_optimal_powers[p]})
-        logging.info("Generated embedder LION-%d (%f)",p, lion_optimal_powers[p])
-
-    for i in rbf_functions:
-        embedders["RBF-"+i] = dTSNE_mnist.generate_embedding_function(embedding_function_type='rbf',
-                                                                     function_kwargs={'function': i})
-        logging.info("Generated embedder RBF-%s",i)
-    for p in idw_powers + (idw_optimal_power, ):
-        embedders["IDW-"+str(round(p, n_digits))] = dTSNE_mnist.generate_embedding_function(
-            embedding_function_type='weighted-inverse-distance', function_kwargs={'power': p})
-        logging.info("Generated embedder IDW-%f",round(p, n_digits))
-    return embedders
-
-
 def get_common_info(parameters):
     res = {}
     res['dTSNE_mnist'] = generate_data.load_dtsne_mnist(parameters=parameters)
     res['X_mnist'] = generate_data.load_x_mnist(parameters=parameters)
     res['Y_mnist'] = generate_data.load_y_mnist(parameters=parameters)
-    outlier_samples, _ = generate_data.load_outliers(parameters=settings.parameters)
-    res['outlier_samples'] = outlier_samples
+    letter_samples, _, _ = generate_data.load_letters(parameters=parameters)
+    res['letter_samples'] = letter_samples
     D_Y = distance.squareform(distance.pdist(res['Y_mnist']))
     # Now find distance to closest neighbor
     np.fill_diagonal(D_Y, np.inf)  # ... but not to itself
@@ -129,7 +93,7 @@ def get_common_info(parameters):
 
 
 def process_single_embedder(*, embedder, embedder_name, results, regenerate, common_info,
-                            outlier_results_file, parameters):
+                            letter_results_file, parameters):
     if embedder_name not in results:
         results[embedder_name] = {}
 
@@ -142,13 +106,13 @@ def process_single_embedder(*, embedder, embedder_name, results, regenerate, com
     logging.info("Embedding is%srequired", " " if need_embedding else " NOT ")
 
     embedder_start_time = datetime.datetime.now()
-    embedded_outliers = embedder(common_info['outlier_samples'])\
+    embedded_letters = embedder(common_info['letter_samples'])\
         if need_embedding else results[embedder_name]["EmbeddedPoints"]
     embedder_end_time = datetime.datetime.now()
 
-    results[embedder_name]["TimePerPoint"] = (embedder_end_time - embedder_start_time) / len(embedded_outliers) if save_time \
+    results[embedder_name]["TimePerPoint"] = (embedder_end_time - embedder_start_time) / len(embedded_letters) if save_time \
         else results[embedder_name]["TimePerPoint"]
-    results[embedder_name]["EmbeddedPoints"] = embedded_outliers
+    results[embedder_name]["EmbeddedPoints"] = embedded_letters
     logging.info("Time %s", "SAVED" if save_time else "KEPT")
     logging.info("Embedding %s", "SAVED" if save_embedding else "KEPT")
 
@@ -163,39 +127,36 @@ def process_single_embedder(*, embedder, embedder_name, results, regenerate, com
             logging.info("%s loaded: %s", feat, results[embedder_name][feat])
     logging.info("Time to embed a single point: %s", results[embedder_name]["TimePerPoint"])
 
-    with open(outlier_results_file, 'wb') as f:
+    with open(letter_results_file, 'wb') as f:
         pickle.dump(results, f)
 
 
-def generate_outlier_results_filename(parameters=settings.parameters):
-    return outlier_results_file_prefix + generate_data.combine_prefixes(
-        settings.tsne_parameter_set | settings.outlier_parameter_set, parameters)
+def generate_letter_results_filename(letter_results_file_prefix, parameters=settings.parameters):
+    return letter_results_file_prefix + generate_data.combine_prefixes(
+        settings.tsne_parameter_set | settings.letter_parameter_set, parameters)
 
 
-def main(*, regenerate=False, parameters=settings.parameters):
+def main(*, regenerate=False, parameters=settings.parameters, generate_all_embedders,
+         letter_results_file_prefix, experiment_name):
     start_time = datetime.datetime.now()
-    logging.info("IDW/RBF/LION outlier experiment started: %s", start_time)
-    outlier_results_file = generate_outlier_results_filename(parameters)
+    logging.info("%s letter experiment started: %s", experiment_name, start_time)
+    letter_results_file = generate_letter_results_filename(letter_results_file_prefix, parameters)
 
     common_info = get_common_info(parameters)
     results = dict()
     embedders = generate_all_embedders(common_info['dTSNE_mnist'])
 
-    if os.path.isfile(outlier_results_file) and not regenerate:
-        with open(outlier_results_file, 'rb') as f:
+    if os.path.isfile(letter_results_file) and not regenerate:
+        with open(letter_results_file, 'rb') as f:
             results = pickle.load(f)
 
     for embedder_name in embedders.keys():
         process_single_embedder(embedder=embedders[embedder_name], embedder_name=embedder_name, results=results,
-                regenerate=regenerate, common_info=common_info, outlier_results_file=outlier_results_file,
+                regenerate=regenerate, common_info=common_info, letter_results_file=letter_results_file,
                                 parameters=parameters)
 
     end_time = datetime.datetime.now()
-    logging.info("Outlier experiment ended: %s", end_time)
-    logging.info("Outlier experiment duration: %s", end_time-start_time)
+    logging.info("%s letter experiment ended: %s", experiment_name, end_time)
+    logging.info("%s letter experiment duration: %s", experiment_name, end_time-start_time)
 
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    main(regenerate=True)
 

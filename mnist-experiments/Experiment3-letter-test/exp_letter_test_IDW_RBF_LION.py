@@ -96,11 +96,13 @@ def generate_all_embedders(dTSNE_mnist):
     _, _, lion_optimal_powers = exp_lion_power_performance.load_lion_power_plot()
 
     embedders = dict()
+    # Changing random state to make sure outliers do not overlap
     for p in lion_percentiles:
         embedders["LION-"+str(p)+"-"+str(round(lion_optimal_powers[p], n_digits))] = \
-            dTSNE_mnist.generate_embedding_function(
+            dTSNE_mnist.generate_embedding_function(random_state=p,
                     function_kwargs={'radius_x_percentile':p, 'power': lion_optimal_powers[p]})
         logging.info("Generated embedder LION-%d (%f)",p, lion_optimal_powers[p])
+
     for i in rbf_functions:
         embedders["RBF-"+i] = dTSNE_mnist.generate_embedding_function(embedding_function_type='rbf',
                                                                      function_kwargs={'function': i})
@@ -195,5 +197,5 @@ def main(*, regenerate=False, parameters=settings.parameters):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    main(regenerate=False)
+    main(regenerate=True)
 

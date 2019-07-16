@@ -93,11 +93,6 @@ idw_accuracy = [accuracy_idw1, accuracy_idw10, accuracy_idw20, accuracy_idw40,
 idw_distance_percentiles = [dist_idw1, dist_idw10, dist_idw20, dist_idw40, dist_idw_optimal]
 idw_avg_kl = [kl_idw1, kl_idw10, kl_idw20, kl_idw40, kl_idw_optimal]
 
-for i in range(len(rbf_method_list)):
-    print(rbf_method_list[i], rbf_accuracy[i], rbf_distance_percentiles[i], rbf_avg_kl[i])
-for i in range(len(idw_method_list)):
-    print(idw_method_list[i], idw_accuracy[i], idw_distance_percentiles[i], idw_avg_kl[i])
-
 lion90_name = [i for i in all_RBF_IDW_LION_results.keys() if i.startswith('LION-90')][0]
 accuracy_lion90 = all_RBF_IDW_LION_results[lion90_name]['Accuracy']
 lion95_name = [i for i in all_RBF_IDW_LION_results.keys() if i.startswith('LION-95')][0]
@@ -138,8 +133,35 @@ with open(nn_input_file, "rb") as f:
 
 print("DATA LOADED")
 
+# ==================== PRINTING THE TABLE IN HUMAN-READABLE FORMAT
+
+print("HUMAN-READABLE CLUSTER ATTRIBUTION TEST TABLE")
+print("Baseline accurancy: ", baseline_accuracy, "(exceeding it is unlikely)")
+print("METHOD - ACCURACY - PERCENTILE - KL DIVERGENCE")
+
+for i in range(len(rbf_method_list)):
+    print(rbf_method_list[i], rbf_accuracy[i], rbf_distance_percentiles[i], rbf_avg_kl[i])
+
+for i in range(len(idw_method_list)):
+    print(idw_method_list[i], idw_accuracy[i], idw_distance_percentiles[i], idw_avg_kl[i])
+
+for i in range(len(nn_method_list)):
+    print(nn_method_list[i], nn_accuracy[i], nn_distance_percentiles[i], nn_avg_kl[i])
+
+for i in range(len(kernelized_method_list)):
+    print(kernelized_method_list[i], kernelized_accuracy[i], kernelized_distance_percentiles[i], kernelized_avg_kl[i])
+
+for i in range(len(lion_method_list)):
+    print(lion_method_list[i], lion_accuracy[i], lion_distance_percentiles[i], lion_avg_kl[i])
+
+print("Notes:")
+print("Accuracy - most important")
+print("Distance percentile - lower the better, but not at the expense of accuracy")
+print("KL divergence - lower the better, but accuracy is way more important")
 
 # ==================== Building the table
+
+print("\n\nTABLE FOR COPY-PASTING TO LATEX\n\n")
 
 s = ""
 

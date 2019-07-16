@@ -12,22 +12,10 @@ from scipy import stats
 from scipy.spatial import distance
 
 import generate_data
-import exp_idw_power_performance
-import exp_lion_power_performance
 import os
 import lion_tsne
 
-outlier_results_file_prefix = '../results/outlier_'
-
 distance_matrix_dir_prefix = '../data/UpdatedPMatrices-outliers'
-
-rbf_functions = ('multiquadric', 'linear', 'cubic', 'quintic', 'gaussian',
-                 'inverse', 'thin-plate')
-idw_powers = (1, 10, 20, 40)
-lion_percentiles = (90, 95, 99, 100)
-n_digits = 1
-
-# TODO make parallelizeable?
 
 
 def get_nearest_neighbors_in_y(y, Y_mnist, n=10):
@@ -91,29 +79,6 @@ features_to_functions = {
 }
 
 
-def generate_all_embedders(dTSNE_mnist):
-    _, _, idw_optimal_power = exp_idw_power_performance.load_idw_power_plot()
-    _, _, lion_optimal_powers = exp_lion_power_performance.load_lion_power_plot()
-
-    embedders = dict()
-    # Changing random state to make sure outliers do not overlap
-    for p in sorted(lion_percentiles):
-        embedders["LION-"+str(p)+"-"+str(round(lion_optimal_powers[p], n_digits))] = \
-            dTSNE_mnist.generate_embedding_function(random_state=p,
-                    function_kwargs={'radius_x_percentile':p, 'power': lion_optimal_powers[p]})
-        logging.info("Generated embedder LION-%d (%f)",p, lion_optimal_powers[p])
-
-    for i in rbf_functions:
-        embedders["RBF-"+i] = dTSNE_mnist.generate_embedding_function(embedding_function_type='rbf',
-                                                                     function_kwargs={'function': i})
-        logging.info("Generated embedder RBF-%s",i)
-    for p in idw_powers + (idw_optimal_power, ):
-        embedders["IDW-"+str(round(p, n_digits))] = dTSNE_mnist.generate_embedding_function(
-            embedding_function_type='weighted-inverse-distance', function_kwargs={'power': p})
-        logging.info("Generated embedder IDW-%f",round(p, n_digits))
-    return embedders
-
-
 def get_common_info(parameters):
     res = {}
     res['dTSNE_mnist'] = generate_data.load_dtsne_mnist(parameters=parameters)
@@ -167,15 +132,16 @@ def process_single_embedder(*, embedder, embedder_name, results, regenerate, com
         pickle.dump(results, f)
 
 
-def generate_outlier_results_filename(parameters=settings.parameters):
+def generate_outlier_results_filename(outlier_results_file_prefix, parameters=settings.parameters):
     return outlier_results_file_prefix + generate_data.combine_prefixes(
         settings.tsne_parameter_set | settings.outlier_parameter_set, parameters)
 
 
-def main(*, regenerate=False, parameters=settings.parameters):
+def main(*, regenerate=False, parameters=settings.parameters, generate_all_embedders,
+         outlier_results_file_prefix, experiment_name):
     start_time = datetime.datetime.now()
-    logging.info("IDW/RBF/LION outlier experiment started: %s", start_time)
-    outlier_results_file = generate_outlier_results_filename(parameters)
+    logging.info("%s outlier experiment started: %s", experiment_name, start_time)
+    outlier_results_file = generate_outlier_results_filename(outlier_results_file_prefix, parameters)
 
     common_info = get_common_info(parameters)
     results = dict()
@@ -191,11 +157,6 @@ def main(*, regenerate=False, parameters=settings.parameters):
                                 parameters=parameters)
 
     end_time = datetime.datetime.now()
-    logging.info("Outlier experiment ended: %s", end_time)
-    logging.info("Outlier experiment duration: %s", end_time-start_time)
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    main(regenerate=True)
+    logging.info("%s outlier experiment ended: %s", experiment_name, end_time)
+    logging.info("%s outlier experiment duration: %s", experiment_name, end_time-start_time)
 

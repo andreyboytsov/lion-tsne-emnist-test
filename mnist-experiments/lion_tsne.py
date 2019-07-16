@@ -1059,9 +1059,20 @@ class LionTSNE:
 
             # Third, incorporate outliers.
             # 3.1. See if any outliers are close together. If yes, pick one "representative"
-            outlier_representatives = list(outlier_samples) # Later - group them together
+            outlier_representatives = sorted(list(outlier_samples)) # Later - group them together
             outliers_close_to_representatives = {i: list() for i in outlier_representatives}
-            # TODO Group outliers.
+            # Group outliers.
+            # If one outlier sample happens to be close to another (<= radius_x),
+            # Then remove one of them from the list and add it as "outlier close to representative"
+            to_remove = list()
+            for i in range(len(outlier_representatives)):
+                for j in range(i):
+                    distance = self.get_distance(x[outlier_representatives[i], :],
+                                                 x[outlier_representatives[j], :])
+                    if distance <= radius_x:
+                        to_remove.append(i)
+                        outliers_close_to_representatives[outlier_representatives[i]].append(outlier_representatives[j])
+            outlier_representatives = [i for i in outlier_representatives if i not in to_remove]
 
 
             if outlier_placement_method == 'circular':
@@ -1147,7 +1158,6 @@ class LionTSNE:
                     y_result[j, :] = y_result[i, :]
                     random_dist = np.random.uniform(low=0, high=radius_y_close)
                     random_angle = np.random.uniform(low=0,high=2*np.pi)
-                    y_result[j, :] = self.Y[single_neighbor_index, :]
                     y_result[j, 0] += random_dist*np.cos(random_angle) # Considering 0 is X. Does not matter, really
                     y_result[j, 1] += random_dist*np.sin(random_angle)
 

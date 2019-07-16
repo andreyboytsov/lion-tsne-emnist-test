@@ -1,13 +1,13 @@
 import lion_tsne
 import settings
 import generate_data
-import exp_outlier_test_IDW_RBF_LION
+import exp_letter_test_IDW_RBF_LION
 import numpy as np
 import pickle
 import exp_lion_power_performance
-import exp_outlier_postprocess_kernelized
-import exp_outlier_postprocess_NN
-import exp_outlier_postprocess_GD
+import exp_letter_postprocess_kernelized
+import exp_letter_postprocess_NN
+import exp_letter_postprocess_GD
 
 parameters = settings.parameters
 dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=settings.parameters)
@@ -17,10 +17,12 @@ lion_power_plot_data_file = exp_lion_power_performance.generate_lion_power_plot_
 with open(lion_power_plot_data_file, 'rb') as f:
     _, _, lion_optimal_power = pickle.load(f)
 
-cluster_results_file = exp_outlier_test_IDW_RBF_LION.generate_outlier_results_filename(parameters)
-
+cluster_results_file = exp_letter_test_IDW_RBF_LION.generate_letter_results_filename(parameters)
+print(cluster_results_file)
 with open(cluster_results_file, "rb") as f:
     all_RBF_IDW_LION_results = pickle.load(f)
+
+print(all_RBF_IDW_LION_results.keys())
 
 kl_multiquadric = np.mean(all_RBF_IDW_LION_results["RBF-multiquadric"]["KL-Divergence"])
 kl_gaussian = np.mean(all_RBF_IDW_LION_results["RBF-gaussian"]["KL-Divergence"])
@@ -91,22 +93,21 @@ lion_method_list = ["LION; $r_x$ at %dth perc.; $p$=%.1f"%(i, lion_optimal_power
 lion_distance_percentiles = [dist_lion90, dist_lion95, dist_lion99, dist_lion100]
 lion_avg_kl = [kl_lion90, kl_lion95, kl_lion99, kl_lion100]
 
-kernelized_results_file = exp_outlier_postprocess_kernelized.generate_kernelized_postprocess_filename(parameters)
+kernelized_results_file = exp_letter_postprocess_kernelized.generate_kernelized_postprocess_filename(parameters)
 with open(kernelized_results_file, 'rb') as f:
     kernelized_method_list, kernelized_avg_kl, kernelized_distance_percentiles = pickle.load(f)
 
-gd_input_file = exp_outlier_postprocess_GD.generate_gd_postprocess_filename(parameters)
+gd_input_file = exp_letter_postprocess_GD.generate_gd_postprocess_filename(parameters)
 with open(gd_input_file, "rb") as f:
-    gd_method_list, gd_avg_outliers_kl, gd_outliers_distance_percentiles = pickle.load(f)
+    gd_method_list, gd_avg_letters_kl, gd_letters_distance_percentiles = pickle.load(f)
 
-nn_input_file = exp_outlier_postprocess_NN.generate_nn_postprocess_filename(parameters)
+nn_input_file = exp_letter_postprocess_NN.generate_nn_postprocess_filename(parameters)
 with open(nn_input_file, "rb") as f:
-    nn_method_list, nn_avg_outliers_kl, nn_outliers_distance_percentiles = pickle.load(f)
-
+    nn_method_list, nn_avg_letters_kl, nn_letters_distance_percentiles = pickle.load(f)
 
 # ================= PRINTING THE TABLE ==========================
 
-print("HUMAN-READABLE OUTLIERS TABLE")
+print("HUMAN-READABLE LETTER TEST TABLE")
 print("METHOD - PERCENTILE - KL DIVERGENCE")
 
 for i in range(len(rbf_method_list)):
@@ -116,7 +117,7 @@ for i in range(len(idw_method_list)):
     print(idw_method_list[i], idw_distance_percentiles[i], idw_avg_kl[i])
 
 for i in range(len(nn_method_list)):
-    print(nn_method_list[i], nn_outliers_distance_percentiles[i], nn_avg_outliers_kl[i])
+    print(nn_method_list[i], nn_letters_distance_percentiles[i], nn_avg_letters_kl[i])
 
 for i in range(len(kernelized_method_list)):
     print(kernelized_method_list[i], kernelized_distance_percentiles[i], kernelized_avg_kl[i])
@@ -134,7 +135,7 @@ print("\n\nTABLE FOR COPY-PASTING TO LATEX\n\n\n")
 
 s = ""
 
-s +='''\\begin{table*}\\caption{Outliers test: methods comparison} \\label{tab_outliers_methods_comparison}
+s +='''\\begin{table*}\\caption{letters test: methods comparison} \\label{tab_letters_methods_comparison}
     \\begin{tabular}{| m{0.39\\textwidth} | m{0.20\\textwidth} | m{0.20\\textwidth} |}
         \\hline
             \\textbf{Method}
@@ -158,13 +159,13 @@ for j in range(len(idw_method_list)):
     s +='\t\\\\ \\hline\n'
 
 for j in range(len(gd_method_list)):
-    s +='\t GD - %s & %.3f & %.5f\n' % (gd_method_list[j], gd_outliers_distance_percentiles[j],
-                                               gd_avg_outliers_kl[j])
+    s +='\t GD - %s & %.3f & %.5f\n' % (gd_method_list[j], gd_letters_distance_percentiles[j],
+                                               gd_avg_letters_kl[j])
     s +='\t\\\\ \\hline\n'
 
 for j in range(len(nn_method_list)):
-    s +='\t %s & %.3f &%.5f\n' % (nn_method_list[j], nn_outliers_distance_percentiles[j],
-                                        nn_avg_outliers_kl[j])
+    s +='\t %s & %.3f &%.5f\n' % (nn_method_list[j], nn_letters_distance_percentiles[j],
+                                        nn_avg_letters_kl[j])
     s +='\t\\\\ \\hline\n'
 
 for j in range(len(kernelized_method_list)):
@@ -183,7 +184,7 @@ s +='''
 \\end{table*}
 '''
 
-tab_text_file = '../tables/tab-outliers-test.txt'
+tab_text_file = '../tables/tab-letters-test.txt'
 with open(tab_text_file, 'wt') as f:
     f.write(s)
 
