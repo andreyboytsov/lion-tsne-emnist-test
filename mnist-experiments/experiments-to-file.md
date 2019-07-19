@@ -153,6 +153,9 @@ File: ./table-generators/tab-cluster-attribution-test.py
 Table file: ./tables/tab-cluster-attribution-test.txt
 
 ## Table III
+TODO
+
+## Table IV
 File: ./table-generators/tab-outlier-test.py  
 Table file: ./tables/tab-outlier-test.txt
 
@@ -160,3 +163,12 @@ Table file: ./tables/tab-outlier-test.txt
 The same as figure II or III, but for letter test.
 File: ./table-generators/tab-letter-test.py  
 Table file: ./tables/tab-letter-test.txt
+
+## Table V
+TODO
+
+## Table VI
+TODO
+
+## Table VII
+TODO
