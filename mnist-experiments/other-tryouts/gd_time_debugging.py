@@ -14,7 +14,7 @@ fname = exp_outlier_test_GD.generate_time_results_filename(parameters=settings.p
 with open(fname, "rb") as f:
     a = pickle.load(f)
 
-for j in range(10):
+for j in range(170):
     print("================== ", j)
     print(a[0][j])
     print(a[1][j])
