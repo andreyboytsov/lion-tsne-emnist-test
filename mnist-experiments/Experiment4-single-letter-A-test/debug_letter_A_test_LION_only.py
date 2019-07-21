@@ -1,7 +1,7 @@
 """
 EXPERIMENT:
 
-letter placement test: LION interpolation.
+letter_A test: LION interpolation.
 
 For debug purposes only, does not save anything.
 """
@@ -17,15 +17,31 @@ import exp_lion_power_performance
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 
-import exp_letter_test_LION
+lion_percentiles = (90, 95, 99, 100)
+n_digits = 1
+
+
+def generate_all_embedders(dTSNE_mnist):
+    _, _, lion_optimal_powers = exp_lion_power_performance.load_lion_power_plot()
+
+    embedders = dict()
+    # Changing random state to make sure letter_As do not overlap
+    for p in lion_percentiles:
+        embedders["LION-"+str(p)+"-"+str(round(lion_optimal_powers[p], n_digits))] = \
+            dTSNE_mnist.generate_embedding_function(random_state=p,
+                    function_kwargs={'radius_x_percentile':p, 'power': lion_optimal_powers[p]})
+        logging.info("Generated embedder LION-%d (%f)",p, lion_optimal_powers[p])
+
+    return embedders
+
 
 def get_common_info(parameters):
     res = {}
     res['dTSNE_mnist'] = generate_data.load_dtsne_mnist(parameters=parameters)
     res['X_mnist'] = generate_data.load_x_mnist(parameters=parameters)
     res['Y_mnist'] = generate_data.load_y_mnist(parameters=parameters)
-    letter_samples, _, _ = generate_data.load_letters(parameters=parameters)
-    res['letter_samples'] = letter_samples
+    letter_A_samples, _ = generate_data.load_A_letters(parameters=parameters)
+    res['letter_A_samples'] = letter_A_samples
     D_Y = distance.squareform(distance.pdist(res['Y_mnist']))
     # Now find distance to closest neighbor
     np.fill_diagonal(D_Y, np.inf)  # ... but not to itself
@@ -46,18 +62,13 @@ def process_single_embedder(*, embedder, embedder_name, results, regenerate, com
     logging.info("Embedding is%srequired", " " if need_embedding else " NOT ")
 
     embedder_start_time = datetime.datetime.now()
-    #embedded_letters = np.zeros((common_info['letter_samples'].shape[0], 2))
-    #for i in range(common_info['letter_samples'].shape[0]):
-    #    embedded_letters[i,:] = embedder(common_info['letter_samples'][i,:])\
-    #        if need_embedding else results[embedder_name]["EmbeddedPoints"][i,:]
-    embedded_letters = embedder(common_info['letter_samples'])\
-            if need_embedding else results[embedder_name]["EmbeddedPoints"]
+    embedded_letter_As = embedder(common_info['letter_A_samples'])\
+        if need_embedding else results[embedder_name]["EmbeddedPoints"]
     embedder_end_time = datetime.datetime.now()
-    #print("EL", embedded_letters)
 
-    results[embedder_name]["TimePerPoint"] = (embedder_end_time - embedder_start_time) / len(embedded_letters) if save_time \
+    results[embedder_name]["TimePerPoint"] = (embedder_end_time - embedder_start_time) / len(embedded_letter_As) if save_time \
         else results[embedder_name]["TimePerPoint"]
-    results[embedder_name]["EmbeddedPoints"] = embedded_letters
+    results[embedder_name]["EmbeddedPoints"] = embedded_letter_As
     logging.info("Time %s", "SAVED" if save_time else "KEPT")
     logging.info("Embedding %s", "SAVED" if save_embedding else "KEPT")
 
@@ -66,11 +77,11 @@ def process_single_embedder(*, embedder, embedder_name, results, regenerate, com
 
 def main(*, regenerate=False, parameters=settings.parameters):
     start_time = datetime.datetime.now()
-    logging.info("LION debug letter experiment started: %s", start_time)
+    logging.info("IDW/RBF/LION letter_A experiment started: %s", start_time)
 
     common_info = get_common_info(parameters)
     results = dict()
-    embedders = exp_letter_test_LION.generate_all_embedders(common_info['dTSNE_mnist'])
+    embedders = generate_all_embedders(common_info['dTSNE_mnist'])
 
     for embedder_name in embedders.keys():
         process_single_embedder(embedder=embedders[embedder_name], embedder_name=embedder_name, results=results,
@@ -78,39 +89,25 @@ def main(*, regenerate=False, parameters=settings.parameters):
                                 parameters=parameters)
 
     end_time = datetime.datetime.now()
-    logging.info("letter experiment ended: %s", end_time)
-    logging.info("letter experiment duration: %s", end_time-start_time)
+    logging.info("letter_A experiment ended: %s", end_time)
+    logging.info("letter_A experiment duration: %s", end_time-start_time)
 
     _, _, lion_optimal_power = exp_lion_power_performance.load_lion_power_plot()
     lion_method_list = ["LION; $r_x$ at %dth perc.; $p$=%.1f" % (i, lion_optimal_power[i])
                         for i in sorted(lion_optimal_power)]
 
     lion90_name = [i for i in results.keys() if i.startswith('LION-90')][0]
-    letters_y_lion90 = results[lion90_name]['EmbeddedPoints']
+    letter_As_y_lion90 = results[lion90_name]['EmbeddedPoints']
     lion95_name = [i for i in results.keys() if i.startswith('LION-95')][0]
-    letters_y_lion95 = results[lion95_name]['EmbeddedPoints']
+    letter_As_y_lion95 = results[lion95_name]['EmbeddedPoints']
     lion99_name = [i for i in results.keys() if i.startswith('LION-99')][0]
-    letters_y_lion99 = results[lion99_name]['EmbeddedPoints']
+    letter_As_y_lion99 = results[lion99_name]['EmbeddedPoints']
     lion100_name = [i for i in results.keys() if i.startswith('LION-100')][0]
-    letters_y_lion100 = results[lion100_name]['EmbeddedPoints']
-
-    cur_shown_letter_indices_begin = 0
-    cur_shown_letter_indices_end = 20
-
-    #for k in ['LION-90-16.4']:  # embedders.keys():
-    #    print(k ,embedders[k](common_info['letter_samples']
-    #                                [cur_shown_letter_indices_begin:cur_shown_letter_indices_end]))
-
-    embedding_function = common_info['dTSNE_mnist'].generate_lion_tsne_embedder(
-        function_kwargs={'radius_x_percentile': 90, 'power': 16.4}, random_state=90, verbose=2)
-    #print(embedding_function(
-    #    common_info['letter_samples'][cur_shown_letter_indices_begin:cur_shown_letter_indices_end], verbose=2))
-    #print("\n\n\n")
-    #print(letters_y_lion90[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, :])
-
+    letter_As_y_lion100 = results[lion100_name]['EmbeddedPoints']
 
     Y_mnist = generate_data.load_y_mnist(parameters=parameters)
     point_size_gray = 10
+    cur_shown_letter_A_indices = 30
     point_size_interest = 15
 
     plt.figure(dpi=300)
@@ -123,18 +120,18 @@ def main(*, regenerate=False, parameters=settings.parameters):
 
     plt.scatter(Y_mnist[:, 0], Y_mnist[:, 1], c= 'gray', zorder=1, label=None, marker='.',
                               s = point_size_gray)
-    h1 = plt.scatter(letters_y_lion90[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
-                    letters_y_lion90[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
-                     c='red', zorder=1, label=None, marker='.', s = point_size_interest)
-    h2 = plt.scatter(letters_y_lion95[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
-                    letters_y_lion95[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
-                     c='blue', zorder=1, label=None, marker='.', s = point_size_interest)
-    h3 = plt.scatter(letters_y_lion99[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
-                    letters_y_lion99[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
-                     c='green', zorder=1, label=None, marker='.', s = point_size_interest)
-    h4 = plt.scatter(letters_y_lion100[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 0],
-                    letters_y_lion100[cur_shown_letter_indices_begin:cur_shown_letter_indices_end, 1],
-                     c='purple', zorder=1, label=None, marker='.', s = point_size_interest)
+    h1 = plt.scatter(letter_As_y_lion90[:cur_shown_letter_A_indices, 0],
+                    letter_As_y_lion90[:cur_shown_letter_A_indices, 1], c='red', zorder=1, label=None, marker='.',
+                                   s = point_size_interest)
+    h2 = plt.scatter(letter_As_y_lion95[:cur_shown_letter_A_indices, 0],
+                    letter_As_y_lion95[:cur_shown_letter_A_indices, 1], c='blue', zorder=1, label=None, marker='.',
+                                   s = point_size_interest)
+    h3 = plt.scatter(letter_As_y_lion99[:cur_shown_letter_A_indices, 0],
+                    letter_As_y_lion99[:cur_shown_letter_A_indices, 1], c='green', zorder=1, label=None, marker='.',
+                                   s = point_size_interest)
+    h4 = plt.scatter(letter_As_y_lion100[:cur_shown_letter_A_indices, 0],
+                    letter_As_y_lion100[:cur_shown_letter_A_indices, 1], c='purple', zorder=1, label=None, marker='.',
+                                   s = point_size_interest)
     plt.legend([h1,h2,h3,h4], lion_method_list, ncol=1, prop=font_properties, borderpad=0.1,handlelength=2,
                            columnspacing = 0, loc = 1, handletextpad=-0.7,frameon=True)
     plt.show()
@@ -142,5 +139,5 @@ def main(*, regenerate=False, parameters=settings.parameters):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    main(regenerate=True)
+    main(regenerate=False)
 
