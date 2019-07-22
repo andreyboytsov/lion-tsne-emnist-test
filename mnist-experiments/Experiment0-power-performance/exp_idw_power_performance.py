@@ -147,4 +147,4 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    generate_idw_power_performance(regenerate=False)
+    generate_idw_power_performance(regenerate=True)

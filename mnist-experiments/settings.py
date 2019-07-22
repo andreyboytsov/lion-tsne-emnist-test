@@ -2,12 +2,12 @@ parameters = {
     #"num_images_raw": 2559,
     #"selection_random_seed": 0,
     "old": True,
-    "num_pca_dimensions": 30,
+    "num_pca_dimensions": 784,  # 30, # 784 is the number of original dimensions. In that case PCA won't be used
     "pca_random_seed": 'full',
     "tsne_momentum": 0.8,
     "tsne_n_iters": 3000,
     "tsne_early_exaggeration_iters": 300,
-    "tsne_perplexity": 30,
+    "tsne_perplexity": 50, # 30, # 50 fits better for non-PCA, 30 is for 30-dim PCA, but is also OK for non-PCA
     "tsne_random_seed": 1,
     "neighbor_indices_to_pick": 1000,
     "neighbor_picking_random_seed": 10,

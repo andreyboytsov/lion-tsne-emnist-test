@@ -9,6 +9,7 @@ import generate_data
 import numpy as np
 import pickle
 import datetime
+import os
 
 
 def generate_outlier_results_filename(parameters=settings.parameters):
@@ -23,41 +24,62 @@ def generate_time_results_filename(parameters=settings.parameters):
         settings.tsne_parameter_set | settings.outlier_parameter_set, parameters)
 
 
-def main(parameters=settings.parameters, only_time=False):
+def main(parameters=settings.parameters, regenerate=False, only_time=False):
     dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
     Y_mnist= generate_data.load_y_mnist(parameters=parameters)
     outlier_samples, _ = generate_data.load_outliers(parameters=parameters)
 
-    # Doing it from scratch takes REALLY long time. If possible, save results & pre-load
-
-    covered_samples = list()
-
-    first_sample_inc = 0  # Change only if it is one of "Other notebooks just for parallelization"
-    last_sample_exclusive = len(outlier_samples)
     output_file = generate_outlier_results_filename(parameters)
     output_time_file = generate_time_results_filename(parameters)
 
-    outliers_y_gd_transformed = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
-    outliers_y_gd_variance_recalc_transformed = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
-    outliers_y_gd_transformed_random = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
-    outliers_y_gd_variance_recalc_transformed_random = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+    first_sample_inc = 0  # Change only if it is one of "Other notebooks just for parallelization"
+    last_sample_exclusive = len(outlier_samples)
 
-    outliers_y_gd_early_exagg_transformed_random = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
-    outliers_y_gd_early_exagg_transformed = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
-    outliers_y_gd_variance_recalc_early_exagg_transformed_random = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
-    outliers_y_gd_variance_recalc_early_exagg_transformed = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+    # Doing it from scratch takes REALLY long time. If possible, save results & pre-load
+    if os.path.isfile(output_file) and not regenerate:
+        logging.info("Found previous partially completed test. Starting from there.")
+        with open(output_file, 'rb') as f:
+            (outliers_y_gd_transformed, outliers_y_gd_variance_recalc_transformed,
+             outliers_y_gd_transformed_random,
+             outliers_y_gd_variance_recalc_transformed_random,
+             outliers_y_gd_early_exagg_transformed_random,
+             outliers_y_gd_early_exagg_transformed,
+             outliers_y_gd_variance_recalc_early_exagg_transformed_random,
+             outliers_random_starting_positions,
+             outliers_y_gd_variance_recalc_early_exagg_transformed, covered_samples) = pickle.load(f)
+        with open(output_time_file, 'rb') as f:
+            (outliers_y_time_gd_transformed, outliers_y_time_gd_variance_recalc_transformed,
+             outliers_y_time_gd_transformed_random,
+             outliers_y_time_gd_variance_recalc_transformed_random,
+             outliers_y_time_gd_early_exagg_transformed_random,
+             outliers_y_time_gd_early_exagg_transformed,
+             outliers_y_time_gd_variance_recalc_early_exagg_transformed_random,
+             outliers_y_time_gd_variance_recalc_early_exagg_transformed, covered_samples) = pickle.load(f)
+    else:
+        logging.info("No previous partially completed test, or regeneration requested. Starting from scratch.")
+        covered_samples = list()
 
-    outliers_random_starting_positions = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+        outliers_y_gd_transformed = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+        outliers_y_gd_variance_recalc_transformed = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+        outliers_y_gd_transformed_random = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+        outliers_y_gd_variance_recalc_transformed_random = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
 
-    outliers_y_time_gd_transformed = np.zeros((len(outlier_samples), ))
-    outliers_y_time_gd_variance_recalc_transformed = np.zeros((len(outlier_samples), ))
-    outliers_y_time_gd_transformed_random = np.zeros((len(outlier_samples), ))
-    outliers_y_time_gd_variance_recalc_transformed_random = np.zeros((len(outlier_samples), ))
+        outliers_y_gd_early_exagg_transformed_random = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+        outliers_y_gd_early_exagg_transformed = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+        outliers_y_gd_variance_recalc_early_exagg_transformed_random = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+        outliers_y_gd_variance_recalc_early_exagg_transformed = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
 
-    outliers_y_time_gd_early_exagg_transformed_random = np.zeros((len(outlier_samples), ))
-    outliers_y_time_gd_early_exagg_transformed = np.zeros((len(outlier_samples), ))
-    outliers_y_time_gd_variance_recalc_early_exagg_transformed_random = np.zeros((len(outlier_samples), ))
-    outliers_y_time_gd_variance_recalc_early_exagg_transformed = np.zeros((len(outlier_samples), ))
+        outliers_random_starting_positions = np.zeros((len(outlier_samples), Y_mnist.shape[1]))
+
+        outliers_y_time_gd_transformed = np.zeros((len(outlier_samples), ))
+        outliers_y_time_gd_variance_recalc_transformed = np.zeros((len(outlier_samples), ))
+        outliers_y_time_gd_transformed_random = np.zeros((len(outlier_samples), ))
+        outliers_y_time_gd_variance_recalc_transformed_random = np.zeros((len(outlier_samples), ))
+
+        outliers_y_time_gd_early_exagg_transformed_random = np.zeros((len(outlier_samples), ))
+        outliers_y_time_gd_early_exagg_transformed = np.zeros((len(outlier_samples), ))
+        outliers_y_time_gd_variance_recalc_early_exagg_transformed_random = np.zeros((len(outlier_samples), ))
+        outliers_y_time_gd_variance_recalc_early_exagg_transformed = np.zeros((len(outlier_samples), ))
 
     for i in range(first_sample_inc, last_sample_exclusive):
         np.random.seed(
@@ -185,4 +207,4 @@ def main(parameters=settings.parameters, only_time=False):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    main(only_time=True)
+    main(only_time=False)

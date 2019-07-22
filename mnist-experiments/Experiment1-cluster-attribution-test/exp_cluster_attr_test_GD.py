@@ -8,6 +8,7 @@ import pickle
 import settings
 import numpy as np
 import datetime
+import os
 
 import generate_data
 
@@ -38,34 +39,55 @@ def main(regenerate, only_time):
     output_file = generate_cluster_results_filename(parameters)
     output_time_file = generate_time_results_filename(parameters)
 
-    covered_samples = list()
-
     first_sample_inc = 0  # Change only if it is one of "Other notebooks just for parallelization"
     last_sample_exclusive = len(picked_neighbors)
 
-    # Let's build all possible combinations. Later we'll decide what to plot
-    picked_neighbors_y_gd_transformed = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
-    picked_neighbors_y_gd_variance_recalc_transformed = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
-    picked_neighbors_y_gd_transformed_random = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
-    picked_neighbors_y_gd_variance_recalc_transformed_random = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
+    if os.path.isfile(output_file) and not regenerate:
+        logging.info("Found previous partially completed test. Starting from there.")
+        with open(output_file, 'rb') as f:
+            (picked_neighbors_y_gd_transformed, picked_neighbors_y_gd_variance_recalc_transformed,
+             picked_neighbors_y_gd_transformed_random,
+             picked_neighbors_y_gd_variance_recalc_transformed_random,
+             picked_neighbors_y_gd_early_exagg_transformed_random,
+             picked_neighbors_y_gd_early_exagg_transformed,
+             picked_neighbors_y_gd_variance_recalc_early_exagg_transformed_random,
+             picked_random_starting_positions,
+             picked_neighbors_y_gd_variance_recalc_early_exagg_transformed, covered_samples) = pickle.load(f)
+        with open(output_time_file, 'rb') as f:
+            (picked_neighbors_y_time_gd_transformed, picked_neighbors_y_time_gd_variance_recalc_transformed,
+             picked_neighbors_y_time_gd_transformed_random,
+             picked_neighbors_y_time_gd_variance_recalc_transformed_random,
+             picked_neighbors_y_time_gd_early_exagg_transformed_random,
+             picked_neighbors_y_time_gd_early_exagg_transformed,
+             picked_neighbors_y_time_gd_variance_recalc_early_exagg_transformed_random,
+             picked_neighbors_y_time_gd_variance_recalc_early_exagg_transformed, covered_samples) = pickle.load(f)
+    else:
+        logging.info("No previous partially completed test, or regeneration requested. Starting from scratch.")
+        covered_samples = list()
 
-    picked_neighbors_y_gd_early_exagg_transformed_random = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
-    picked_neighbors_y_gd_early_exagg_transformed = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
-    picked_neighbors_y_gd_variance_recalc_early_exagg_transformed_random = np.zeros(
-         (len(picked_neighbors), Y_mnist.shape[1]))
-    picked_neighbors_y_gd_variance_recalc_early_exagg_transformed = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
-    
-    picked_neighbors_y_time_gd_transformed = np.zeros((len(picked_neighbors), ))
-    picked_neighbors_y_time_gd_variance_recalc_transformed = np.zeros((len(picked_neighbors), ))
-    picked_neighbors_y_time_gd_transformed_random = np.zeros((len(picked_neighbors), ))
-    picked_neighbors_y_time_gd_variance_recalc_transformed_random = np.zeros((len(picked_neighbors), ))
+        # Let's build all possible combinations. Later we'll decide what to plot
+        picked_neighbors_y_gd_transformed = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
+        picked_neighbors_y_gd_variance_recalc_transformed = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
+        picked_neighbors_y_gd_transformed_random = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
+        picked_neighbors_y_gd_variance_recalc_transformed_random = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
 
-    picked_neighbors_y_time_gd_early_exagg_transformed_random = np.zeros((len(picked_neighbors), ))
-    picked_neighbors_y_time_gd_early_exagg_transformed = np.zeros((len(picked_neighbors), ))
-    picked_neighbors_y_time_gd_variance_recalc_early_exagg_transformed_random = np.zeros((len(picked_neighbors), ))
-    picked_neighbors_y_time_gd_variance_recalc_early_exagg_transformed = np.zeros((len(picked_neighbors), ))
+        picked_neighbors_y_gd_early_exagg_transformed_random = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
+        picked_neighbors_y_gd_early_exagg_transformed = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
+        picked_neighbors_y_gd_variance_recalc_early_exagg_transformed_random = np.zeros(
+             (len(picked_neighbors), Y_mnist.shape[1]))
+        picked_neighbors_y_gd_variance_recalc_early_exagg_transformed = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
 
-    picked_random_starting_positions = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
+        picked_neighbors_y_time_gd_transformed = np.zeros((len(picked_neighbors), ))
+        picked_neighbors_y_time_gd_variance_recalc_transformed = np.zeros((len(picked_neighbors), ))
+        picked_neighbors_y_time_gd_transformed_random = np.zeros((len(picked_neighbors), ))
+        picked_neighbors_y_time_gd_variance_recalc_transformed_random = np.zeros((len(picked_neighbors), ))
+
+        picked_neighbors_y_time_gd_early_exagg_transformed_random = np.zeros((len(picked_neighbors), ))
+        picked_neighbors_y_time_gd_early_exagg_transformed = np.zeros((len(picked_neighbors), ))
+        picked_neighbors_y_time_gd_variance_recalc_early_exagg_transformed_random = np.zeros((len(picked_neighbors), ))
+        picked_neighbors_y_time_gd_variance_recalc_early_exagg_transformed = np.zeros((len(picked_neighbors), ))
+
+        picked_random_starting_positions = np.zeros((len(picked_neighbors), Y_mnist.shape[1]))
 
     for i in range(first_sample_inc, last_sample_exclusive):
          np.random.seed(i)  # We reset random seed every time. Otherwise, if you load partial results from file, everything

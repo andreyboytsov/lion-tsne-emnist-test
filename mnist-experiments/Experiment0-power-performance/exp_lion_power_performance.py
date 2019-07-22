@@ -170,3 +170,4 @@ def generate_lion_power_performance(*, regenerate=False, recursive_regenerate=Fa
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     generate_lion_power_performance(parameters=settings.parameters, regenerate=False, recursive_regenerate=False)
+

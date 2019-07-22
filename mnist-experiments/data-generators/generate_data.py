@@ -376,6 +376,17 @@ def load_mnist_chosen_indices(*, parameters=settings.parameters, regenerate=Fals
                    recursive_regenerate)
 
 
+class DummyPCA:
+    """
+    Dummy PCA transformer to hide the fact that no PCA transformation was performed
+    """
+    def fit_transform(self, X):
+        return X
+
+    def transform(self, X):
+        return X
+
+
 def generate_pca_mnist(*, parameters=settings.parameters, recursive_regenerate=False):
     """
     Generates PCA processor form MNIST data and its effect on X_mnist_raw.
@@ -401,7 +412,9 @@ def generate_pca_mnist(*, parameters=settings.parameters, recursive_regenerate=F
                                    recursive_regenerate=recursive_regenerate)
     num_pca_dimensions = parameters.get("num_pca_dimensions", settings.parameters["num_pca_dimensions"])
     pca_random_seed = parameters.get("pca_random_seed", settings.parameters["pca_random_seed"])
-    if pca_random_seed != 'full':
+    if num_pca_dimensions == X_mnist_raw.shape[1]:
+        mnist_pca = DummyPCA()
+    elif pca_random_seed != 'full':
         mnist_pca = PCA(n_components=num_pca_dimensions, random_state=pca_random_seed)
     else:
         mnist_pca = PCA(n_components=num_pca_dimensions, svd_solver='full')
