@@ -38,7 +38,7 @@ def load_all_kernelized_tsne_embedders(parameters=settings.parameters, regenerat
         D = distance.squareform(distance.pdist(X_mnist))
 
         step = 0.01
-        choice_K = np.arange(step, 3+step, step) # Let's try those K.
+        choice_K = np.arange(step, 2+step, step) # Let's try those K.
 
         np.fill_diagonal(D, np.inf)
         closest_neighbor_dist = np.min(D, axis = 1).reshape((1,-1))

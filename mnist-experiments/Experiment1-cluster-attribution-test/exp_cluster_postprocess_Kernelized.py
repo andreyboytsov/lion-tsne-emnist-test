@@ -36,10 +36,11 @@ def main(parameters = settings.parameters):
     Y_mnist = generate_data.load_y_mnist(parameters=parameters)
     X_mnist = generate_data.load_y_mnist(parameters=parameters)
     accuracy_nn = parameters.get("accuracy_nn", settings.parameters["accuracy_nn"])
+    precision_nn = parameters.get("precision_nn", settings.parameters["precision_nn"])
     picked_neighbor_labels = generate_data.load_picked_neighbors_labels(parameters=parameters)
     labels_mnist = generate_data.load_labels_mnist(parameters=parameters)
 
-    # =================== ACCURACY
+    # =================== Some starting stuff
     def get_nearest_neighbors_in_y(y, n=10):
         y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
         return np.argsort(y_distances)[:n]
@@ -47,7 +48,7 @@ def main(parameters = settings.parameters):
     kernelized_results_file = exp_cluster_attr_test_kernelized.generate_cluster_results_filename(parameters)
     with open(kernelized_results_file, 'rb') as f:
         kernelized_detailed_tsne_method_results, kernelized_detailed_tsne_accuracy, \
-        kernelized_detailed_tsne_method_list = pickle.load(f)
+        kernelized_detailed_tsne_precision, kernelized_detailed_tsne_method_list = pickle.load(f)
     ind = [4, 24, 49]
     kernelized_method_list = [
         kernelized_detailed_tsne_method_list[i][:10] + kernelized_detailed_tsne_method_list[i][-8:]
@@ -55,6 +56,7 @@ def main(parameters = settings.parameters):
     kernelized_method_results = [kernelized_detailed_tsne_method_results[i] for i in ind]
 
     kernelized_accuracy = np.zeros((len(kernelized_method_list,)))
+    kernelized_precision = np.zeros((len(kernelized_method_list,)))
 
     # ============================== Distance percentiles
     D_Y = distance.squareform(distance.pdist(Y_mnist))
@@ -72,16 +74,26 @@ def main(parameters = settings.parameters):
     for j in range(len(kernelized_method_list)):
         logging.info("%s %f", kernelized_method_list[j], kernelized_distance_percentiles[j])
 
-    # ============================== KL divergence
+    # ============================== Accuracy and precision
     for j in range(len(kernelized_method_results)):
         per_sample_accuracy = np.zeros((len(picked_neighbors),))
+        per_sample_precision = np.zeros((len(picked_neighbors),))
         for i in range(len(picked_neighbors)):
             expected_label = picked_neighbor_labels[i]
+            y = kernelized_method_results[j][i,:]
+            x = picked_neighbors[j, :]
+            nn_x_indices = get_nearest_neighbors_in_y(x, X_mnist, n=precision_nn)
+            nn_y_indices = get_nearest_neighbors_in_y(y, Y_mnist, n=precision_nn)
+            matching_indices = len([i for i in nn_x_indices if i in nn_y_indices])
+            per_sample_precision[i] = (matching_indices / precision_nn)
+
             kernelized_indices = get_nearest_neighbors_in_y(kernelized_method_results[j][i,:], n=accuracy_nn)
             obtained_labels = labels_mnist[kernelized_indices]
             per_sample_accuracy[i] = sum(obtained_labels==expected_label) / len(obtained_labels)
         kernelized_accuracy[j] = np.mean(per_sample_accuracy)
-        logging.info("%s :\t%f", kernelized_method_list[j], kernelized_accuracy[j])
+        kernelized_precision[j] = np.mean(per_sample_precision)
+        logging.info("%s :\t%f\t%f", kernelized_method_list[j], kernelized_precision[j],
+                     kernelized_accuracy[j])
 
     kernelized_kl = np.zeros((len(kernelized_method_list), len(picked_neighbors)))
 
@@ -92,6 +104,7 @@ def main(parameters = settings.parameters):
         with open(kl_kernelized_performance_file, 'rb') as f:
             kernelized_kl, processed_indices = pickle.load(f)
 
+    # ============================== KL divergence
     # KL divergence increase for all 1000 samples is very slow to calculate. Main part of that is calculating P-matrix.
     per_sample_KL = np.zeros((len(picked_neighbors),))
     for i in range(len(picked_neighbors)):
@@ -127,7 +140,8 @@ def main(parameters = settings.parameters):
 
     output_file = generate_kernelized_postprocess_filename(parameters)
     with open(output_file, "wb") as f:
-        pickle.dump((kernelized_method_list, kernelized_accuracy, kernelized_avg_kl, kernelized_distance_percentiles),f)
+        pickle.dump((kernelized_method_list, kernelized_accuracy, kernelized_precision,
+                     kernelized_avg_kl, kernelized_distance_percentiles),f)
 
 
 if __name__ == "__main__":

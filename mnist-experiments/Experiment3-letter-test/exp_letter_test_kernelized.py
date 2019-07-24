@@ -13,7 +13,7 @@ def generate_letter_results_filename(parameters=settings.parameters):
 
 def main(parameters = settings.parameters, regenerate_parameters_cache=False):
     step = 0.01
-    choice_K = np.arange(step, 3 + step, step)  # Let's try those K.
+    choice_K = np.arange(step, 2 + step, step)  # Let's try those K.
 
     letter_samples, _, _ = generate_data.load_letters(parameters=parameters)
     kernel_tsne_mapping = kernelized_tsne.generate_kernelized_tsne_mapping_function(
@@ -30,4 +30,4 @@ def main(parameters = settings.parameters, regenerate_parameters_cache=False):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    main(parameters=settings.parameters, regenerate_parameters_cache=False)
+    main(parameters=settings.parameters, regenerate_parameters_cache=True)
