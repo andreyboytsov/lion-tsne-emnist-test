@@ -7,7 +7,7 @@ import generate_data
 import pickle
 import os
 
-lion_power_options = np.arange(0.1, 50.1, step=0.1)
+lion_power_options = np.arange(0.1, 120.1, step=0.1)
 lion_percentile_options = [90, 95, 99, 100]
 lion_power_performance_prefix = '../results/lion_power'
 lion_power_plot_prefix = '../results/lion_power_plot'

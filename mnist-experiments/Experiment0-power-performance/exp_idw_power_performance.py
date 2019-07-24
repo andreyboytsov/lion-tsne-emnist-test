@@ -7,7 +7,7 @@ import pickle
 from scipy.spatial import distance
 import os
 
-idw_power_options = np.arange(0.1, 50.1, step=0.1)
+idw_power_options = np.arange(0.1, 120.1, step=0.1)
 idw_percentile_options = [90, 95, 99, 100]
 idw_power_performance_file_prefix = '../results/idw_power'
 idw_power_plot_file_prefix = '../results/idw_power_plot'
@@ -79,6 +79,11 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
         logging.info("Regeneration requested")
 
     for p in idw_power_options:
+        if p in global_idw_power_performance:
+            logging.info("Loaded p %f", p)
+            continue
+
+        logging.info("Processing p %f", p)
 
         interpolator = dTSNE_mnist.generate_embedding_function(
             embedding_function_type='weighted-inverse-distance',
@@ -93,10 +98,6 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
             per_sample_accuracy[i] = sum(obtained_labels == expected_label) / len(obtained_labels)
         cur_acc = np.mean(per_sample_accuracy)
 
-        if p in global_idw_power_performance:
-            logging.info("Loaded p %f", p)
-            continue
-        logging.info("Processing p %f", p)
         y_sum_square_dist = 0.0
         y_sum_abs_dist = 0.0
         y_abs_dist = 0.0
@@ -147,4 +148,4 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    generate_idw_power_performance(regenerate=True)
+    generate_idw_power_performance(regenerate=False)

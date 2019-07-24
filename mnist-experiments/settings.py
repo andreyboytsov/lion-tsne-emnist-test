@@ -12,6 +12,7 @@ parameters = {
     "neighbor_indices_to_pick": 1000,
     "neighbor_picking_random_seed": 10,
     "accuracy_nn" : 10,
+    "precision_nn" : 50,  # As perplexity, which is essentially a number of nearest neighbors
     "outlier_indices_to_pick" : 1000,
     "outlier_random_seed" : 23412,
     "keras_random_seed" : 123, # Anything will do, just keep it consistent

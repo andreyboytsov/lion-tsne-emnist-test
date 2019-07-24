@@ -37,6 +37,7 @@ for perc in all_percentages:
     h, = plt.plot(x, y[perc], c=color_dict[perc])
     legend_lines.append(h)
     legend_list.append("$r_x$: " + str(perc) + " NN percentile")
+    print(h, x[np.argmin(y[perc])])
 
 h, = plt.plot(x_global, y_global, c='purple', linestyle=":")
 legend_lines.append(h)
@@ -50,8 +51,8 @@ l = plt.legend(legend_lines, legend_list, bbox_to_anchor=[1.00, -0.15], ncol=2, 
 plt.xlabel("LION-tSNE: Power", fontproperties=font_properties)
 plt.ylabel("Average Square Distance", fontproperties=font_properties)
 
-plt.ylim([50, 200])
-plt.xlim([0, 50])
+plt.ylim([90, 800])
+plt.xlim([0, 120])
 
 # f.tight_layout()
 
