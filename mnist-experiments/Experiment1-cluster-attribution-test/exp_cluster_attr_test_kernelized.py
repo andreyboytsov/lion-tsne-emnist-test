@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import kernelized_tsne
 import logging
+import datetime
 
 
 def generate_cluster_results_filename(parameters=settings.parameters):
@@ -51,16 +52,22 @@ def main(parameters=settings.parameters,regenerate_parameters_cache=False):
 
     kernelized_detailed_tsne_method_list = ["Kernelized tSNE; K=%.2f" % (k) for k in choice_K]
     kernelized_detailed_tsne_method_results = list()
-    for k in range(len(choice_K)):
-        if k % 10 == 0:
-            logging.info("%d", k)
-        kernelized_detailed_tsne_method_results.append(kernel_tsne_mapping(picked_neighbors, k=k))
-    #kernelized_detailed_tsne_method_results = [kernel_tsne_mapping(picked_neighbors, k=k) for k in choice_K]
 
     kernelized_detailed_tsne_accuracy = np.zeros((len(kernelized_detailed_tsne_method_list),))
     kernelized_detailed_tsne_precision = np.zeros((len(kernelized_detailed_tsne_method_list),))
+    kernelized_detailed_tsne_time = np.zeros((len(kernelized_detailed_tsne_method_list),))
 
-    for j in range(len(kernelized_detailed_tsne_method_results)):
+    for j in range(len(choice_K)):
+        k = choice_K[j]
+        logging.info("%f", k)
+
+        embedder_start_time = datetime.datetime.now()
+        kernelized_detailed_tsne_method_results.append(kernel_tsne_mapping(picked_neighbors, k=k))
+        embedder_end_time = datetime.datetime.now()
+        kernelized_detailed_tsne_time[j] = (embedder_end_time - embedder_start_time).total_seconds()
+        logging.info("%f complete", k)
+    #kernelized_detailed_tsne_method_results = [kernel_tsne_mapping(picked_neighbors, k=k) for k in choice_K]
+
         logging.info("%s", kernelized_detailed_tsne_method_list[j])
         per_sample_accuracy = np.zeros((len(picked_neighbors),))
         per_sample_precision = np.zeros((len(picked_neighbors),))
@@ -69,7 +76,7 @@ def main(parameters=settings.parameters,regenerate_parameters_cache=False):
                 logging.info("%d", i)
             expected_label = picked_neighbor_labels[i]
             y = kernelized_detailed_tsne_method_results[j][i,:]
-            x = picked_neighbors[j, :]
+            x = picked_neighbors[i, :]
             nn_x_indices = get_nearest_neighbors_in_y(x, X_mnist, n=precision_nn)
             nn_y_indices = get_nearest_neighbors_in_y(y, Y_mnist, n=precision_nn)
             matching_indices = len([k for k in nn_x_indices if k in nn_y_indices])
@@ -81,8 +88,8 @@ def main(parameters=settings.parameters,regenerate_parameters_cache=False):
             per_sample_accuracy[i] = sum(obtained_labels==expected_label) / len(obtained_labels)
         kernelized_detailed_tsne_accuracy[j] = np.mean(per_sample_accuracy)
         kernelized_detailed_tsne_precision[j] = np.mean(per_sample_precision)
-        logging.info("%s :\t%f\t%f", kernelized_detailed_tsne_method_list[j], kernelized_detailed_tsne_precision[j],
-                     kernelized_detailed_tsne_accuracy[j])
+        logging.info("%s :\t%f\t%f\t%f s", kernelized_detailed_tsne_method_list[j], kernelized_detailed_tsne_precision[j],
+                     kernelized_detailed_tsne_accuracy[j], kernelized_detailed_tsne_time[j])
 
     # Accuracy-vs-power plot
     legend_list = list()
@@ -121,9 +128,9 @@ def main(parameters=settings.parameters,regenerate_parameters_cache=False):
     output_file = generate_cluster_results_filename(parameters)
     with open(output_file, 'wb') as f:
         pickle.dump((kernelized_detailed_tsne_method_results, kernelized_detailed_tsne_accuracy,
-                     kernelized_detailed_tsne_precision, kernelized_detailed_tsne_method_list), f)
+                     kernelized_detailed_tsne_precision, kernelized_detailed_tsne_time, kernelized_detailed_tsne_method_list), f)
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    main(parameters=settings.parameters, regenerate_parameters_cache=True)
+    main(parameters=settings.parameters, regenerate_parameters_cache=False)

@@ -4,6 +4,7 @@ import pickle
 import generate_data
 import kernelized_tsne
 import logging
+import datetime
 
 
 def generate_outlier_results_filename(parameters=settings.parameters):
@@ -21,12 +22,24 @@ def main(parameters = settings.parameters, regenerate_parameters_cache=False):
         parameters=parameters,
         regenerate_parameters_cache=regenerate_parameters_cache
     )
-    kernelized_detailed_tsne_outliers_results = [kernel_tsne_mapping(outlier_samples, k=k) for k in choice_K]
     kernelized_detailed_tsne_method_list = ["Kernelized tSNE; K=%.2f" % (k) for k in choice_K]
+    kernelized_detailed_tsne_outliers_results = list()
+    kernelized_detailed_tsne_time = np.zeros((len(kernelized_detailed_tsne_method_list),))
+
+    for j in range(len(choice_K)):
+        k = choice_K[j]
+        logging.info("%f", k)
+
+        embedder_start_time = datetime.datetime.now()
+        kernelized_detailed_tsne_outliers_results.append(kernel_tsne_mapping(outlier_samples, k=k))
+        embedder_end_time = datetime.datetime.now()
+        kernelized_detailed_tsne_time[j] = (embedder_end_time - embedder_start_time).total_seconds()
+        logging.info("%f complete: %f s", k, kernelized_detailed_tsne_time[j])
 
     output_file = generate_outlier_results_filename(parameters=parameters)
     with open(output_file,'wb') as f:
-            pickle.dump((kernelized_detailed_tsne_outliers_results, kernelized_detailed_tsne_method_list), f)
+            pickle.dump((kernelized_detailed_tsne_outliers_results, kernelized_detailed_tsne_time,
+                         kernelized_detailed_tsne_method_list), f)
 
 
 if __name__ == '__main__':

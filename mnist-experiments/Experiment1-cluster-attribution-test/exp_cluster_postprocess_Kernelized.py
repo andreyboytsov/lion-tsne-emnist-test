@@ -48,7 +48,7 @@ def main(parameters = settings.parameters):
     kernelized_results_file = exp_cluster_attr_test_kernelized.generate_cluster_results_filename(parameters)
     with open(kernelized_results_file, 'rb') as f:
         kernelized_detailed_tsne_method_results, kernelized_detailed_tsne_accuracy, \
-        kernelized_detailed_tsne_precision, kernelized_detailed_tsne_method_list = pickle.load(f)
+        kernelized_detailed_tsne_precision, kernelized_detailed_tsne_time, kernelized_detailed_tsne_method_list = pickle.load(f)
     ind = [4, 24, 49]
     kernelized_method_list = [
         kernelized_detailed_tsne_method_list[i][:10] + kernelized_detailed_tsne_method_list[i][-8:]
@@ -57,6 +57,7 @@ def main(parameters = settings.parameters):
 
     kernelized_accuracy = np.zeros((len(kernelized_method_list,)))
     kernelized_precision = np.zeros((len(kernelized_method_list,)))
+    kernelized_per_item_time = np.zeros((len(kernelized_method_list, )))
 
     # ============================== Distance percentiles
     D_Y = distance.squareform(distance.pdist(Y_mnist))
@@ -92,6 +93,7 @@ def main(parameters = settings.parameters):
             per_sample_accuracy[i] = sum(obtained_labels==expected_label) / len(obtained_labels)
         kernelized_accuracy[j] = np.mean(per_sample_accuracy)
         kernelized_precision[j] = np.mean(per_sample_precision)
+        kernelized_per_item_time[j] = kernelized_detailed_tsne_time[j] / len(picked_neighbors)
         logging.info("%s :\t%f\t%f", kernelized_method_list[j], kernelized_precision[j],
                      kernelized_accuracy[j])
 
@@ -141,7 +143,7 @@ def main(parameters = settings.parameters):
     output_file = generate_kernelized_postprocess_filename(parameters)
     with open(output_file, "wb") as f:
         pickle.dump((kernelized_method_list, kernelized_accuracy, kernelized_precision,
-                     kernelized_avg_kl, kernelized_distance_percentiles),f)
+                     kernelized_avg_kl, kernelized_per_item_time, kernelized_distance_percentiles),f)
 
 
 if __name__ == "__main__":

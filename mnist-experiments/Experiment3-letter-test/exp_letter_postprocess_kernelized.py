@@ -43,7 +43,7 @@ def main(parameters = settings.parameters):
 
     kernelized_results_file = exp_letter_test_kernelized.generate_letter_results_filename(parameters)
     with open(kernelized_results_file, 'rb') as f:
-        kernelized_detailed_method_results, kernelized_detailed_method_list = pickle.load(f)
+        kernelized_detailed_method_results, kernelized_detailed_tsne_time, kernelized_detailed_method_list = pickle.load(f)
     ind = [4, 24, 49]
     
     kernelized_method_list = [
@@ -62,6 +62,7 @@ def main(parameters = settings.parameters):
             kernelized_letters_percentiles_matrix[i,j] = stats.percentileofscore(nearest_neighbors_y_dist, nn_dist)
     kernelized_letters_distance_percentiles = np.mean(kernelized_letters_percentiles_matrix, axis=0)
     kernelized_letters_distances = np.mean(kernelized_letters_distance_matrix, axis=0)
+    kernelized_per_item_time = kernelized_detailed_tsne_time / len(letter_samples)
     for j in range(len(kernelized_method_list)):
         logging.info("%s: %f, %f", kernelized_method_list[j], kernelized_letters_distances[j],
               kernelized_letters_distance_percentiles[j])
@@ -110,7 +111,8 @@ def main(parameters = settings.parameters):
 
     output_file = generate_kernelized_postprocess_filename(parameters)
     with open(output_file, "wb") as f:
-        pickle.dump((kernelized_method_list, kernelized_avg_letters_kl, kernelized_letters_distance_percentiles),f)
+        pickle.dump((kernelized_method_list, kernelized_avg_letters_kl,
+                     kernelized_per_item_time, kernelized_letters_distance_percentiles),f)
 
 
 if __name__ == '__main__':

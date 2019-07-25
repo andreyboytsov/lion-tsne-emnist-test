@@ -43,7 +43,7 @@ def main(parameters = settings.parameters):
 
     kernelized_results_file = exp_outlier_test_kernelized.generate_outlier_results_filename(parameters)
     with open(kernelized_results_file, 'rb') as f:
-        kernelized_detailed_method_results, kernelized_detailed_method_list = pickle.load(f)
+        kernelized_detailed_method_results, kermelized_detailed_tsne_time, kernelized_detailed_method_list = pickle.load(f)
     ind = [4, 24, 49]
     
     kernelized_method_list = [
@@ -62,6 +62,7 @@ def main(parameters = settings.parameters):
             kernelized_outliers_percentiles_matrix[i,j] = stats.percentileofscore(nearest_neighbors_y_dist, nn_dist)
     kernelized_outliers_distance_percentiles = np.mean(kernelized_outliers_percentiles_matrix, axis=0)
     kernelized_outliers_distances = np.mean(kernelized_outliers_distance_matrix, axis=0)
+    kernelized_per_item_time = kernelized_detailed_tsne_time / len(outlier_samples)
     for j in range(len(kernelized_method_list)):
         logging.info("%s: %f, %f", kernelized_method_list[j], kernelized_outliers_distances[j],
               kernelized_outliers_distance_percentiles[j])
@@ -110,7 +111,8 @@ def main(parameters = settings.parameters):
 
     output_file = generate_kernelized_postprocess_filename(parameters)
     with open(output_file, "wb") as f:
-        pickle.dump((kernelized_method_list, kernelized_avg_outliers_kl, kernelized_outliers_distance_percentiles),f)
+        pickle.dump((kernelized_method_list, kernelized_avg_outliers_kl, kernelized_per_item_time,
+                     kernelized_outliers_distance_percentiles),f)
 
 
 if __name__ == '__main__':
