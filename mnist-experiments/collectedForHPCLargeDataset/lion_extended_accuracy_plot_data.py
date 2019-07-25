@@ -27,7 +27,7 @@ ptsne_labels_train = ptsne_train_mat['train_labels'].reshape(-1)-1
 ptsne_X_test = ptsne_test_mat['test_X']
 ptsne_labels_test = ptsne_test_mat['test_labels'].reshape(-1)-1
 
-lion_extended_accuracy_plot_data_file = '../lion-processed-samples/lion_extended_accuracy_plot_data_'+str(i)+'.p'
+lion_extended_accuracy_plot_data_file = './lion-processed-samples/lion_extended_accuracy_plot_data_'+str(i)+'.p'
 
 with open('cell_centers.p', 'rb') as f:
     cell_centers = pickle.load(f)
