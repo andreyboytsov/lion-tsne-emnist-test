@@ -35,13 +35,13 @@ lion_cluster_results_file = cluster_lion_RBF_IDW_commons.generate_cluster_result
 with open(lion_cluster_results_file, "rb") as f:
     all_LION_results = pickle.load(f)
 
-accuracy_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]['Accuracy'])
-accuracy_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]['Accuracy'])
-accuracy_linear = np.mean(all_RBF_IDW_results["RBF-linear"]['Accuracy'])
-accuracy_cubic = np.mean(all_RBF_IDW_results["RBF-cubic"]['Accuracy'])
-accuracy_quintic = np.mean(all_RBF_IDW_results["RBF-quintic"]['Accuracy'])
-accuracy_inverse = np.mean(all_RBF_IDW_results["RBF-inverse"]['Accuracy'])
-accuracy_thin_plate = np.mean(all_RBF_IDW_results["RBF-thin-plate"]['Accuracy'])
+precision_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]['Precision'])
+precision_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]['Precision'])
+precision_linear = np.mean(all_RBF_IDW_results["RBF-linear"]['Precision'])
+precision_cubic = np.mean(all_RBF_IDW_results["RBF-cubic"]['Precision'])
+precision_quintic = np.mean(all_RBF_IDW_results["RBF-quintic"]['Precision'])
+precision_inverse = np.mean(all_RBF_IDW_results["RBF-inverse"]['Precision'])
+precision_thin_plate = np.mean(all_RBF_IDW_results["RBF-thin-plate"]['Precision'])
 
 kl_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]["KL-Divergence"])
 kl_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["KL-Divergence"])

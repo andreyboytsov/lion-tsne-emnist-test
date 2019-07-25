@@ -37,11 +37,12 @@ for perc in all_percentages:
     h, = plt.plot(x, y[perc], c=color_dict[perc])
     legend_lines.append(h)
     legend_list.append("$r_x$: " + str(perc) + " NN percentile")
-    print(h, x[np.argmin(y[perc])])
+    print(perc, x[np.argmin(y[perc])])
 
 h, = plt.plot(x_global, y_global, c='purple', linestyle=":")
 legend_lines.append(h)
 legend_list.append("Non-local IDW")
+print("IDW", x_global[np.argmin(y_global)])
 
 # plt.title("IDW - Accuracy vs Power") # We'd better use figure caption
 # ax.legend([h1,h2,h3,h4,h5,h6], ["Closest Training Set Image"]+idw_method_list)
