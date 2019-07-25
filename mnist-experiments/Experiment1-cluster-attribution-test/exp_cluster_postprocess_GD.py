@@ -34,13 +34,14 @@ def main(parameters = settings.parameters):
     dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
     picked_neighbors = generate_data.load_picked_neighbors(parameters=parameters)
     Y_mnist = generate_data.load_y_mnist(parameters=parameters)
-    X_mnist = generate_data.load_y_mnist(parameters=parameters)
+    X_mnist = generate_data.load_x_mnist(parameters=parameters)
     accuracy_nn = parameters.get("accuracy_nn", settings.parameters["accuracy_nn"])
+    precision_nn = parameters.get("precision_nn", settings.parameters["precision_nn"])
     picked_neighbor_labels = generate_data.load_picked_neighbors_labels(parameters=parameters)
     labels_mnist = generate_data.load_labels_mnist(parameters=parameters)
 
     # =================== ACCURACY
-    def get_nearest_neighbors_in_y(y, n=10):
+    def get_nearest_neighbors_in_y(y, Y_mnist, n=10):
         y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
         return np.argsort(y_distances)[:n]
 
@@ -76,6 +77,7 @@ def main(parameters = settings.parameters):
     ]
 
     gd_accuracy = np.zeros((len(gd_method_list,)))
+    gd_precision = np.zeros((len(gd_method_list, )))
 
     # ============================== Distance percentiles
     D_Y = distance.squareform(distance.pdist(Y_mnist))
@@ -95,13 +97,23 @@ def main(parameters = settings.parameters):
     # ============================== KL divergence
     for j in range(len(gd_method_results)):
         per_sample_accuracy = np.zeros((len(picked_neighbors),))
+        per_sample_precision = np.zeros((len(picked_neighbors),))
         for i in range(len(picked_neighbors)):
             expected_label = picked_neighbor_labels[i]
-            nn_indices = get_nearest_neighbors_in_y(gd_method_results[j][i,:], n=accuracy_nn)
+            nn_indices = get_nearest_neighbors_in_y(gd_method_results[j][i,:], Y_mnist, n=accuracy_nn)
             obtained_labels = labels_mnist[nn_indices]
             per_sample_accuracy[i] = sum(obtained_labels==expected_label) / len(obtained_labels)
+
+            x = picked_neighbors[i, :]
+            y = gd_method_results[j][i, :]
+            nn_x_indices = get_nearest_neighbors_in_y(x, X_mnist, n=precision_nn)
+            nn_y_indices = get_nearest_neighbors_in_y(y, Y_mnist, n=precision_nn)
+            matching_indices = len([i for i in nn_x_indices if i in nn_y_indices])
+            per_sample_precision[i] = (matching_indices / precision_nn)
+
         gd_accuracy[j] = np.mean(per_sample_accuracy)
-        logging.info("%s :\t%f", gd_method_list[j], gd_accuracy[j])
+        gd_precision[j] = np.mean(per_sample_precision)
+        logging.info("%s :\t%f\t%f", gd_method_list[j], gd_precision[j], gd_accuracy[j])
 
     gd_kl = np.zeros((len(gd_method_list), len(picked_neighbors)))
 

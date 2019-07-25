@@ -29,7 +29,8 @@ def generate_all_embedders(dTSNE_mnist):
     for p in lion_percentiles:
         embedders["LION-"+str(p)+"-"+str(round(lion_optimal_powers[p], n_digits))] = \
             dTSNE_mnist.generate_embedding_function(random_state=p,
-                    function_kwargs={'radius_x_percentile':p, 'power': lion_optimal_powers[p]})
+                    function_kwargs={'radius_x_percentile':p, 'power': lion_optimal_powers[p],
+                                     'radius_y_close_percentile': 100})
         logging.info("Generated embedder LION-%d (%f)",p, lion_optimal_powers[p])
 
     return embedders
@@ -107,7 +108,7 @@ def main(*, regenerate=False, parameters=settings.parameters):
 
     Y_mnist = generate_data.load_y_mnist(parameters=parameters)
     point_size_gray = 10
-    cur_shown_letter_A_indices = 30
+    cur_shown_letter_A_indices = 100
     point_size_interest = 15
 
     plt.figure(dpi=300)

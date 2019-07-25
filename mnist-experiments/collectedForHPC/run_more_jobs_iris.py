@@ -20,5 +20,5 @@ latest_job = max(latest_job, 0)
 jobs_to_run = [i for i in range(latest_job + 1, latest_job + 1 + (80-num_jobs)) if i <= 1000]
 print(len(jobs_to_run), jobs_to_run)
 for i in jobs_to_run:
-   os.system('sbatch -J job'+str(i)+' -N 1 -n 1 ./single_letter_job_script.sh '+str(i))
-   #print('sbatch -J job' + str(i) + ' -N 1 -n 1 ./single_letter_job_script.sh ' + str(i))
+   #os.system('sbatch -J job'+str(i)+' -N 1 -n 1 ./single_letter_job_script.sh '+str(i))
+   print('sbatch -J job' + str(i) + ' -N 1 -n 1 ./single_letter_job_script.sh ' + str(i))

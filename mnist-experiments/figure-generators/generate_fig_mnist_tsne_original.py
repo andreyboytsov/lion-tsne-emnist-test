@@ -11,6 +11,9 @@ font_properties.set_family('serif')
 font_properties.set_name('Times New Roman')
 font_properties.set_size(9)
 
+plt.xlim([-180, 180])
+plt.ylim([-150, 170])
+
 plt.gcf().set_size_inches(3.3,3.3) #Let's set the plot sizes that just fit paper margins
 legend_list = list()
 for l in set(sorted(labels_mnist)):

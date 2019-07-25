@@ -852,7 +852,7 @@ class LionTSNE:
 
             'radius_y_close_percentile' : if an algorithm requires to "place y close to y_i", it will be placed at a
             random angle at a distance not exceeding radius_y_close. Radius_y_close can be set at a percentile of
-            nearest neighbor distance in Y. Suppressew 'radius_y_close'. Default - 10 (if 'radius_y_close' not set)
+            nearest neighbor distance in Y. Suppresses 'radius_y_close'. Default - 10 (if 'radius_y_close' not set)
 
             'radius_y_coefficient' : default - 1.0. Radius_y will be mutiplied by it (before adding safety margin).
 

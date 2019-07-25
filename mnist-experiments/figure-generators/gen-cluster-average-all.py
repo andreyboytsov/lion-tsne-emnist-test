@@ -63,13 +63,12 @@ keys_copy -= {"IDW-1","IDW-10","IDW-20","IDW-40"}
 idw_optimal_name = [i for i in keys_copy if i.startswith("IDW")][0]
 print(idw_optimal_name)
 picked_neighbors_y_idw1 = all_RBF_IDW_results['IDW-1']['EmbeddedPoints']
-picked_neighbors_y_idw10 = all_RBF_IDW_results['IDW-10']['EmbeddedPoints']
 picked_neighbors_y_idw20 = all_RBF_IDW_results['IDW-20']['EmbeddedPoints']
-picked_neighbors_y_idw40 = all_RBF_IDW_results['IDW-40']['EmbeddedPoints']
+picked_neighbors_y_idw70 = all_RBF_IDW_results['IDW-70']['EmbeddedPoints']
 picked_neighbors_y_idw_optimal = all_RBF_IDW_results[idw_optimal_name]['EmbeddedPoints']
 
-idw_method_list = ["IDW - Power 1","IDW - Power 10", "IDW - Power 20",
-    "IDW - Power "+idw_optimal_name[-4:], "IDW - Power 40"]
+idw_method_list = ["IDW - Power 1","IDW - Power 20",
+    "IDW - Power "+idw_optimal_name[-4:], "IDW - Power 70"]
 
 lion90_name = [i for i in all_LION_results.keys() if i.startswith('LION-90')][0]
 picked_neighbors_y_lion90 = all_LION_results[lion90_name]['EmbeddedPoints']
@@ -108,8 +107,8 @@ print("DATA LOADED")
 rbf_method_results = [picked_neighbors_y_multiquadric, picked_neighbors_y_gaussian, picked_neighbors_y_inverse,
                       picked_neighbors_y_linear, picked_neighbors_y_cubic, picked_neighbors_y_quintic,
                       picked_neighbors_y_thin_plate]
-idw_method_results = [picked_neighbors_y_idw1, picked_neighbors_y_idw10, picked_neighbors_y_idw20,
-                      picked_neighbors_y_idw_optimal, picked_neighbors_y_idw40]
+idw_method_results = [picked_neighbors_y_idw1, picked_neighbors_y_idw20,
+                      picked_neighbors_y_idw_optimal, picked_neighbors_y_idw70]
 
 gd_method_list = [r'Closest $Y_{init}$',
               r'Random $Y_{init}$',
