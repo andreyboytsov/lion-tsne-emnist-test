@@ -852,7 +852,7 @@ class LionTSNE:
 
             'radius_y_close_percentile' : if an algorithm requires to "place y close to y_i", it will be placed at a
             random angle at a distance not exceeding radius_y_close. Radius_y_close can be set at a percentile of
-            nearest neighbor distance in Y. Suppresses 'radius_y_close'. Default - 10 (if 'radius_y_close' not set)
+            nearest neighbor distance in Y. Suppresses 'radius_y_close'. Default - 100 (if 'radius_y_close' not set)
 
             'radius_y_coefficient' : default - 1.0. Radius_y will be mutiplied by it (before adding safety margin).
 
@@ -917,7 +917,7 @@ class LionTSNE:
         if 'radius_y_close' in function_kwargs and 'radius_y_close_percentile' not in function_kwargs:
             radius_y_close = function_kwargs['radius_y_close']
         else:
-            radius_y_close_percentile = function_kwargs.get('radius_y_close_percentile', 10)
+            radius_y_close_percentile = function_kwargs.get('radius_y_close_percentile', 100)
             if verbose >= 2:
                 print("Setting radius_y_close at a percentile: ", radius_y_close_percentile)
             radius_y_close = np.percentile(nn_y_distance, radius_y_close_percentile)
@@ -1071,10 +1071,58 @@ class LionTSNE:
                         distance = self.get_distance(x[outlier_representatives[i], :],
                                                      x[outlier_representatives[j], :])
                         if distance <= radius_x:
-                            to_remove.append(i)
+                            to_remove.append(outlier_representatives[i])
                             outliers_close_to_representatives\
                                 [outlier_representatives[j]].append(outlier_representatives[i])
             outlier_representatives = [i for i in outlier_representatives if i not in to_remove]
+
+
+            # Merging the clusters to make sure close clusters are not affected by chosen far representatives.
+            nothing_changed = False
+            while not nothing_changed:
+                nothing_changed = True
+
+                clusters_to_merge = list()
+
+                for i in range(len(outlier_representatives)):
+                    list_including_representatives_i = list()
+                    list_including_representatives_i.append(outlier_representatives[i])
+                    list_including_representatives_i += outliers_close_to_representatives[outlier_representatives[i]]
+
+                    for j in range(i+1, len(outlier_representatives)):
+                        # So, let's check if clusters i and j need to be merged
+                        list_including_representatives_j = list()
+                        list_including_representatives_j.append(outlier_representatives[j])
+                        list_including_representatives_j += outliers_close_to_representatives[outlier_representatives[j]]
+
+                        merge_spots_count = 0
+                        for k in list_including_representatives_i:
+                            if (merge_spots_count > 0):
+                                break
+
+                            for l in list_including_representatives_j:
+                                distance = self.get_distance(x[k, :], x[l, :])
+                                if distance <= radius_x:
+                                    if verbose>=2:
+                                        print("Clusters should be merged: ", outlier_representatives[i],
+                                              outlier_representatives[j])
+                                    nothing_changed = False
+                                    merge_spots_count += 1
+                                    clusters_to_merge.append((outlier_representatives[i],outlier_representatives[j]))
+                                    break
+
+                to_remove = list()
+                for cl in clusters_to_merge:
+                    if verbose >= 2:
+                        print("Getting ready to merge: ", cl, outliers_close_to_representatives[cl[0]],
+                                        outliers_close_to_representatives[cl[1]])
+                    if cl[1] not in to_remove: # Already merged. And this cluster will be merged in the next iteration then
+                        outliers_close_to_representatives[cl[0]] += \
+                                list(set([cl[1], ] + outliers_close_to_representatives[cl[1]]))
+                        outliers_close_to_representatives[cl[1]] = list()
+                        to_remove.append(cl[1])
+
+                outlier_representatives = [i for i in outlier_representatives if i not in to_remove]
 
 
             if outlier_placement_method == 'circular':

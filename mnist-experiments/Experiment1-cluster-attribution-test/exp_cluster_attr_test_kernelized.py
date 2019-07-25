@@ -50,7 +50,12 @@ def main(parameters=settings.parameters,regenerate_parameters_cache=False):
     )
 
     kernelized_detailed_tsne_method_list = ["Kernelized tSNE; K=%.2f" % (k) for k in choice_K]
-    kernelized_detailed_tsne_method_results = [kernel_tsne_mapping(picked_neighbors, k=k) for k in choice_K]
+    kernelized_detailed_tsne_method_results = list()
+    for k in range(len(choice_K)):
+        if k % 10 == 0:
+            logging.info("%d", k)
+        kernelized_detailed_tsne_method_results.append(kernel_tsne_mapping(picked_neighbors, k=k))
+    #kernelized_detailed_tsne_method_results = [kernel_tsne_mapping(picked_neighbors, k=k) for k in choice_K]
 
     kernelized_detailed_tsne_accuracy = np.zeros((len(kernelized_detailed_tsne_method_list),))
     kernelized_detailed_tsne_precision = np.zeros((len(kernelized_detailed_tsne_method_list),))
@@ -67,7 +72,7 @@ def main(parameters=settings.parameters,regenerate_parameters_cache=False):
             x = picked_neighbors[j, :]
             nn_x_indices = get_nearest_neighbors_in_y(x, X_mnist, n=precision_nn)
             nn_y_indices = get_nearest_neighbors_in_y(y, Y_mnist, n=precision_nn)
-            matching_indices = len([i for i in nn_x_indices if i in nn_y_indices])
+            matching_indices = len([k for k in nn_x_indices if k in nn_y_indices])
             per_sample_precision[i] = (matching_indices / precision_nn)
 
             kernelized_indices = get_nearest_neighbors_in_y(kernelized_detailed_tsne_method_results[j][i,:], Y_mnist,
@@ -116,7 +121,7 @@ def main(parameters=settings.parameters,regenerate_parameters_cache=False):
     output_file = generate_cluster_results_filename(parameters)
     with open(output_file, 'wb') as f:
         pickle.dump((kernelized_detailed_tsne_method_results, kernelized_detailed_tsne_accuracy,
-                     kernelized_detailed_tsne_method_list), f)
+                     kernelized_detailed_tsne_precision, kernelized_detailed_tsne_method_list), f)
 
 
 if __name__ == "__main__":
