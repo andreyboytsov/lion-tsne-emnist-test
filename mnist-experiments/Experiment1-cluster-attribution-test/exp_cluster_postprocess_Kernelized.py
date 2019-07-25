@@ -34,14 +34,14 @@ def main(parameters = settings.parameters):
     dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
     picked_neighbors = generate_data.load_picked_neighbors(parameters=parameters)
     Y_mnist = generate_data.load_y_mnist(parameters=parameters)
-    X_mnist = generate_data.load_y_mnist(parameters=parameters)
+    X_mnist = generate_data.load_x_mnist(parameters=parameters)
     accuracy_nn = parameters.get("accuracy_nn", settings.parameters["accuracy_nn"])
     precision_nn = parameters.get("precision_nn", settings.parameters["precision_nn"])
     picked_neighbor_labels = generate_data.load_picked_neighbors_labels(parameters=parameters)
     labels_mnist = generate_data.load_labels_mnist(parameters=parameters)
 
     # =================== Some starting stuff
-    def get_nearest_neighbors_in_y(y, n=10):
+    def get_nearest_neighbors_in_y(y, Y_mnist, n=10):
         y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
         return np.argsort(y_distances)[:n]
 
@@ -88,7 +88,7 @@ def main(parameters = settings.parameters):
             matching_indices = len([i for i in nn_x_indices if i in nn_y_indices])
             per_sample_precision[i] = (matching_indices / precision_nn)
 
-            kernelized_indices = get_nearest_neighbors_in_y(kernelized_method_results[j][i,:], n=accuracy_nn)
+            kernelized_indices = get_nearest_neighbors_in_y(kernelized_method_results[j][i,:], Y_mnist, n=accuracy_nn)
             obtained_labels = labels_mnist[kernelized_indices]
             per_sample_accuracy[i] = sum(obtained_labels==expected_label) / len(obtained_labels)
         kernelized_accuracy[j] = np.mean(per_sample_accuracy)

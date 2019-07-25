@@ -30,7 +30,7 @@ def generate_kernelized_postprocess_filename(parameters):
         settings.tsne_parameter_set | settings.letter_parameter_set, parameters)
 
 
-def main(parameters = settings.parameters):
+def main(parameters = settings.parameters, regenerate = False):
     dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
     Y_mnist = generate_data.load_y_mnist(parameters=parameters)
     letter_samples, _, _ = generate_data.load_letters(parameters=parameters)
@@ -71,7 +71,7 @@ def main(parameters = settings.parameters):
     processed_indices = list()
 
     kl_kernelized_tsne_letters_performance_file = generate_kernelized_kl_temp_filename(parameters)
-    if os.path.isfile(kl_kernelized_tsne_letters_performance_file):
+    if os.path.isfile(kl_kernelized_tsne_letters_performance_file) and not regenerate:
         with open(kl_kernelized_tsne_letters_performance_file, 'rb') as f:
             kernelized_letters_kl, processed_indices = pickle.load(f)
 
@@ -117,4 +117,4 @@ def main(parameters = settings.parameters):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    main(parameters=settings.parameters)
+    main(parameters=settings.parameters, regenerate = True)
