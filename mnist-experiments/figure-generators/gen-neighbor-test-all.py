@@ -70,7 +70,7 @@ picked_neighbors_y_idw70 = all_RBF_IDW_results['IDW-70']['EmbeddedPoints']
 picked_neighbors_y_idw_optimal = all_RBF_IDW_results[idw_optimal_name]['EmbeddedPoints']
 
 idw_method_list = ["IDW - Power 1","IDW - Power 20",
-    "IDW - Power "+idw_optimal_name[-3:], "IDW - Power 70"]
+    "IDW - Power 70", "IDW - Power "+idw_optimal_name[-4:]]
 
 lion90_name = [i for i in all_LION_results.keys() if i.startswith('LION-90')][0]
 picked_neighbors_y_lion90 = all_LION_results[lion90_name]['EmbeddedPoints']
@@ -87,7 +87,7 @@ lion_method_list = ["LION; $r_x$ at %dth perc.; $p$=%.1f"%(i, lion_optimal_power
 kernelized_results_file = exp_cluster_attr_test_kernelized.generate_cluster_results_filename(parameters)
 with open(kernelized_results_file, 'rb') as f:
     kernelized_detailed_tsne_method_results, kernelized_detailed_tsne_accuracy, \
-            kernelized_detailed_tsne_method_list = pickle.load(f)
+    kernelized_detailed_tsne_precision, kernelized_detailed_tsne_time, kernelized_detailed_tsne_method_list = pickle.load(f)
 ind = [4,24,49]
 kernelized_tsne_method_list = [kernelized_detailed_tsne_method_list[i][:10]+kernelized_detailed_tsne_method_list[i][-8:]
                                for i in ind]
@@ -275,10 +275,6 @@ h2 = ax[idw_Y][idw_X].scatter(picked_neighbors_y_idw1[:shown_indices, 0],
 h4 = ax[idw_Y][idw_X].scatter(picked_neighbors_y_idw20[:shown_indices, 0],
                               picked_neighbors_y_idw20[:shown_indices, 1], c='green', marker='.', zorder=3, alpha=0.7,
                               s=point_size_interest)
-h5 = ax[idw_Y][idw_X].scatter(picked_neighbors_y_idw_optimal[:shown_indices, 0],
-                              picked_neighbors_y_idw_optimal[:shown_indices, 1], c='purple', marker='.', zorder=3,
-                              alpha=0.7,
-                              s=point_size_interest)
 h6 = ax[idw_Y][idw_X].scatter(picked_neighbors_y_idw70[:shown_indices, 0],
                               picked_neighbors_y_idw70[:shown_indices, 1], c='cyan', marker='.', zorder=3, alpha=0.7,
                               s=point_size_interest)
@@ -295,6 +291,11 @@ h9 = ax[idw_Y][idw_X].scatter(kernelized_tsne_method_results[2][:shown_indices, 
                                   kernelized_tsne_method_results[2][:shown_indices, 1], c='blue', marker='.', zorder=3,
                                   alpha=0.9,
                                   s=point_size_interest)
+
+h5 = ax[idw_Y][idw_X].scatter(picked_neighbors_y_idw_optimal[:shown_indices, 0],
+                              picked_neighbors_y_idw_optimal[:shown_indices, 1], c='purple', marker='.', zorder=3,
+                              alpha=0.7,
+                              s=point_size_interest)
 
 # ax[ktsne_Y][ktsne_X].legend([h1,h2,h3,h4], ["Closest training set image"]+kernelized_tsne_method_list, fontsize = 13)
 

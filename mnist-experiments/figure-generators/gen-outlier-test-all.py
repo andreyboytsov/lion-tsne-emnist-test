@@ -83,7 +83,7 @@ outliers_y_lion100 = all_LION_results[lion100_name]['EmbeddedPoints']
 
 kernelized_results_file = exp_outlier_test_kernelized.generate_outlier_results_filename(parameters)
 with open(kernelized_results_file, 'rb') as f:
-    kernelized_detailed_tsne_method_results, \
+    kernelized_detailed_tsne_method_results, kernelized_detailed_tsne_time, \
             kernelized_detailed_tsne_method_list = pickle.load(f)
 ind = [4,24,49]
 kernelized_tsne_method_list = [kernelized_detailed_tsne_method_list[i][:10]+kernelized_detailed_tsne_method_list[i][-8:]
@@ -155,8 +155,8 @@ for i in range(len(ax)):
         ax[i][j].axes.get_xaxis().set_visible(False)
         ax[i][j].axes.get_yaxis().set_visible(False)
 
-        ax[i][j].set_xlim([-180, 180])
-        ax[i][j].set_ylim([-150, 170])
+        #ax[i][j].set_xlim([-180, 180])
+        #ax[i][j].set_ylim([-150, 170])
 
 # ====================================== RBF =====================================
 

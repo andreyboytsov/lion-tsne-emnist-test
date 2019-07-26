@@ -41,21 +41,21 @@ legend_list = list()
 ax.scatter(Y_mnist[:, 0], Y_mnist[:, 1], marker = '.', s=5, c='gray')
 #l = plt.legend([dc,dcr],["Data Radius","Data Radius + $r_y$"], loc=2, borderaxespad = 0)
 #ax.plot(y_outl[:, 0], y_outl[:, 1], marker = '.', ms=5,linestyle=":", c='red')
-n_o = 212
-n_o_2 = 298
+n_o = 23
+n_o_2 = 69
 g1 = ax.scatter(y_outl[:n_o, 0], y_outl[:n_o, 1], marker = 'o', s=5,c='red', lw=0)
 g2 = ax.scatter(y_outl[n_o:n_o_2, 0], y_outl[n_o:n_o_2, 1], marker = 'o', s=5,c='blue',lw=0)
 g3 = ax.scatter(y_outl[n_o_2:, 0], y_outl[n_o_2:, 1], marker = 'o', s=5,c='green',lw=0)
 ax.plot([min(Y_mnist[:, 0]), min(Y_mnist[:, 0]), max(Y_mnist[:, 0]), max(Y_mnist[:, 0]), min(Y_mnist[:, 0])],
         [min(Y_mnist[:, 1]), max(Y_mnist[:, 1]), max(Y_mnist[:, 1]), min(Y_mnist[:, 1]), min(Y_mnist[:, 1])],
         linestyle='--', c='black',lw=1)
-ax.plot([min(Y_mnist[:, 0])-10, min(Y_mnist[:, 0])-10, max(Y_mnist[:, 0])+10, max(Y_mnist[:, 0])+10, min(Y_mnist[:, 0])-10],
-        [min(Y_mnist[:, 1])-10, max(Y_mnist[:, 1])+10, max(Y_mnist[:, 1])+10, min(Y_mnist[:, 1])-10, min(Y_mnist[:, 1])-10],
+ax.plot([min(Y_mnist[:, 0])-30, min(Y_mnist[:, 0])-30, max(Y_mnist[:, 0])+30, max(Y_mnist[:, 0])+30, min(Y_mnist[:, 0])-30],
+        [min(Y_mnist[:, 1])-30, max(Y_mnist[:, 1])+30, max(Y_mnist[:, 1])+30, min(Y_mnist[:, 1])-30, min(Y_mnist[:, 1])-30],
         linestyle='--', c='black',lw=1)
 plt.tick_params(axis='both', which='both',bottom=False,top=False,labelbottom=False,
                                           left=False,right=False,labelleft=False)
-ax.set_ylim([-150,150])
-ax.set_xlim([-160,160])
+ax.set_ylim([-190,210])
+ax.set_xlim([-220,220])
 # f.tight_layout()
 #l = plt.legend([g1,g2,g3],["First outliers will be mapped to \nthose positions",
 #                       "... then outliers will be mapped\nto outer layer positions",

@@ -44,6 +44,7 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
     global_idw_power_performance = dict()  # Start from scratch
     global_idw_power_performance_abs = dict()  # Start from scratch
     global_idw_accuracy = dict()
+    global_idw_precision = dict()
 
     start_time = datetime.datetime.now()
     logging.info("IDW power experiment started: %s", start_time)
@@ -60,8 +61,9 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
     labels_mnist = generate_data.load_labels_mnist(parameters=settings.parameters, regenerate=recursive_regenerate,
                                          recursive_regenerate=recursive_regenerate)
     accuracy_nn = parameters.get("accuracy_nn", settings.parameters["accuracy_nn"])
+    precision_nn = parameters.get("precision_nn", settings.parameters["precision_nn"])
 
-    def get_nearest_neighbors_in_y(y, n=10):
+    def get_nearest_neighbors_in_y(y, Y_mnist, n=10):
         y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
         return np.argsort(y_distances)[:n]
 
@@ -90,13 +92,23 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
             function_kwargs={'power': p})
 
         per_sample_accuracy = np.zeros((len(picked_neighbors),))
+        per_sample_precision = np.zeros((len(picked_neighbors),))
+
         for i in range(len(picked_neighbors)):
             expected_label = picked_neighbor_labels[i]
             result = interpolator(picked_neighbors[i], verbose=0)
-            nn_indices = get_nearest_neighbors_in_y(result, n=accuracy_nn)
+            nn_indices = get_nearest_neighbors_in_y(result, Y_mnist, n=accuracy_nn)
             obtained_labels = labels_mnist[nn_indices]
             per_sample_accuracy[i] = sum(obtained_labels == expected_label) / len(obtained_labels)
+
+            y = result
+            x = picked_neighbors[i, :]
+            nn_x_indices = get_nearest_neighbors_in_y(x, X_mnist, n=precision_nn)
+            nn_y_indices = get_nearest_neighbors_in_y(y, Y_mnist, n=precision_nn)
+            matching_indices = len([k for k in nn_x_indices if k in nn_y_indices])
+            per_sample_precision[i] = (matching_indices / precision_nn)
         cur_acc = np.mean(per_sample_accuracy)
+        cur_prec = np.mean(per_sample_precision)
 
         y_sum_square_dist = 0.0
         y_sum_abs_dist = 0.0
@@ -119,13 +131,15 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
         global_idw_power_performance[p] = y_sum_square_dist / y_count
         global_idw_power_performance_abs[p] = y_sum_abs_dist / y_count
         global_idw_accuracy[p] = cur_acc
+        global_idw_precision[p] = cur_prec
 
         # Just in case it will become unstable due to too few neighbors
         # lion_power_plot_data[(p, perc)]['PowerSquareDistSum'] = y_sum_square_dist
         # lion_power_plot_data[(p, perc)]['PowerSquareDistCount'] = y_count
 
         with open(idw_power_performance_file, 'wb') as f:
-            pickle.dump((global_idw_power_performance, global_idw_power_performance_abs, global_idw_accuracy), f)
+            pickle.dump((global_idw_power_performance, global_idw_power_performance_abs, global_idw_accuracy,
+                         global_idw_precision), f)
 
     EPS = 1e-5
     y = list()
@@ -139,7 +153,7 @@ def generate_idw_power_performance(*, regenerate=False, recursive_regenerate=Fal
 
     with open(idw_power_plot_file, 'wb') as f:
         pickle.dump((x_global, y, idw_optimal_power), f)
-    logging.info("IDW optial power: %f", idw_optimal_power)
+    logging.info("IDW optimal power: %f", idw_optimal_power)
 
     end_time = datetime.datetime.now()
     logging.info("IDW power experiment ended: %s", end_time)

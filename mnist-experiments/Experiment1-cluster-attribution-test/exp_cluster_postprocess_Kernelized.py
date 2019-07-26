@@ -81,11 +81,12 @@ def main(parameters = settings.parameters):
         per_sample_precision = np.zeros((len(picked_neighbors),))
         for i in range(len(picked_neighbors)):
             expected_label = picked_neighbor_labels[i]
+
             y = kernelized_method_results[j][i,:]
-            x = picked_neighbors[j, :]
+            x = picked_neighbors[i, :]
             nn_x_indices = get_nearest_neighbors_in_y(x, X_mnist, n=precision_nn)
             nn_y_indices = get_nearest_neighbors_in_y(y, Y_mnist, n=precision_nn)
-            matching_indices = len([i for i in nn_x_indices if i in nn_y_indices])
+            matching_indices = len([k for k in nn_x_indices if k in nn_y_indices])
             per_sample_precision[i] = (matching_indices / precision_nn)
 
             kernelized_indices = get_nearest_neighbors_in_y(kernelized_method_results[j][i,:], Y_mnist, n=accuracy_nn)

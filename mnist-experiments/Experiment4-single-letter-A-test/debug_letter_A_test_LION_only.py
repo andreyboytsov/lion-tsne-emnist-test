@@ -30,7 +30,7 @@ def generate_all_embedders(dTSNE_mnist):
         embedders["LION-"+str(p)+"-"+str(round(lion_optimal_powers[p], n_digits))] = \
             dTSNE_mnist.generate_embedding_function(random_state=p,
                     function_kwargs={'radius_x_percentile':p, 'power': lion_optimal_powers[p],
-                                     'radius_y_close_percentile': 100})
+                                     'radius_y_close_percentile': 100, 'y_safety_margin': 0})
         logging.info("Generated embedder LION-%d (%f)",p, lion_optimal_powers[p])
 
     return embedders

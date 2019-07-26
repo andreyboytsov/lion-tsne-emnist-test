@@ -8,6 +8,7 @@ mnist-experiments/data
 mnist-experiments/Experiment5-large-dataset/lion_extended_accuracy_plot_data.p
 mnist-experiments/Experiment5-large-dataset/ExtendedDistanceVectors/*
 mnist-experiments/collectedForHPCLargeDataset/ExtendedDistanceVectors/*
+mnist-experiments/collectedForHPCLargeDataset/lion-processed-samples/*
 experiment-temp-files/*.p
 
 

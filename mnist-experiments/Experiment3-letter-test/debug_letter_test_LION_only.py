@@ -19,6 +19,23 @@ from matplotlib.font_manager import FontProperties
 
 import exp_letter_test_LION
 
+lion_percentiles = (90, 95, 99, 100)
+n_digits = 1
+
+def generate_all_embedders(dTSNE_mnist):
+    _, _, lion_optimal_powers = exp_lion_power_performance.load_lion_power_plot()
+
+    embedders = dict()
+    # Changing random state to make sure letter_As do not overlap
+    for p in lion_percentiles:
+        embedders["LION-"+str(p)+"-"+str(round(lion_optimal_powers[p], n_digits))] = \
+            dTSNE_mnist.generate_embedding_function(random_state=p,
+                    function_kwargs={'radius_x_percentile':p, 'power': lion_optimal_powers[p],
+                                     'radius_y_close_percentile': 100, 'y_safety_margin': 0})
+        logging.info("Generated embedder LION-%d (%f)",p, lion_optimal_powers[p])
+
+    return embedders
+
 def get_common_info(parameters):
     res = {}
     res['dTSNE_mnist'] = generate_data.load_dtsne_mnist(parameters=parameters)
@@ -70,7 +87,7 @@ def main(*, regenerate=False, parameters=settings.parameters):
 
     common_info = get_common_info(parameters)
     results = dict()
-    embedders = exp_letter_test_LION.generate_all_embedders(common_info['dTSNE_mnist'])
+    embedders = generate_all_embedders(common_info['dTSNE_mnist'])
 
     for embedder_name in embedders.keys():
         process_single_embedder(embedder=embedders[embedder_name], embedder_name=embedder_name, results=results,

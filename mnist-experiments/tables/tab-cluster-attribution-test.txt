@@ -1,83 +1,73 @@
-\begin{table} \small\sf\centering \caption{Cluster attribution test: methods comparison}  \label{tab_cluster_methods_comparison}
-    \begin{tabular}{ m{0.18\textwidth}  m{0.07\textwidth}  m{0.07\textwidth}  m{0.06\textwidth} }
+\begin{table} \small\sf\centering \caption{Digits placement test: methods comparison}  \label{tab_cluster_methods_comparison}
+    \begin{tabular}{ m{0.19\textwidth}  m{0.07\textwidth}  m{0.07\textwidth}  m{0.06\textwidth} }
         \toprule
             \textbf{Method}
-            & \textbf{Accuracy}
-            & \textbf{Distance Percentile}
-            & \textbf{KL Divergence}
-        \\ \midrule	\textbf{Baseline} & 86.39\% & - & 1.11654
+            & \textbf{Precision}
+            & \textbf{KL Div.}
+            & \textbf{Time (ms)}
+        \\ \midrule	\textbf{Baseline} & 0.4536 & 1.00890 & -
 	\\
 \multicolumn{4}{c}{\textbf{RBF Interpolation}}
 	\\
-	 Multiquadric & 72.82\% & 56.965 & 1.11777
+	 Multiquadric & 0.3577 & 1.01244 & 6.54
 	\\
-	 Gaussian & 72.84\% & 57.255 & 1.11776
+	 Gaussian & 0.0175 & 1.01515 & 7.50
 	\\
-	 Inverse Multiquadric & 73.08\% & 55.140 & 1.11769
+	 Inverse Multiquadric & 0.2929 & 1.01295 & 10.43
 	\\
-	 Linear & 70.20\% & 55.237 & 1.11780
+	 Linear & 0.3515 & 1.01249 & 7.91
 	\\
-	 Cubic & 72.45\% & 57.302 & 1.11779
+	 Cubic & 0.0741 & 1.01498 & 8.24
 	\\
-	 Quintic & 67.58\% & 63.136 & 1.11828
+	 Quintic & 0.0202 & 1.01791 & 7.44
 	\\
-	 Thin Plate & 72.26\% & 54.938 & 1.11774
+	 Thin Plate & 0.0795 & 1.01510 & 7.37
 	\\
 \multicolumn{4}{c}{\textbf{IDW Interpolation}}
 	\\
-	 Power 1 & 8.66\% & 36.501 & 1.12114
+	 Power 1 & 0.0336 & 1.01496 & 102.95
 	\\
-	 Power 10 & 83.23\% & 25.042 & 1.11687
+	 Power 20 & 0.4535 & 1.01112 & 95.03
 	\\
-	 Power 20 & 87.36\% & 5.229 & 1.11656
+	 Power 44.9 & 0.4529 & 1.01088 & 118.53
 	\\
-	 Power 27.1 & 87.51\% & 1.934 & 1.11655
-	\\
-	 Power 40 & 87.48\% & 3.173 & 1.11655
+	 Power 70 & 0.4523 & 1.01086 & 110.00
 	\\
 \multicolumn{4}{c}{\textbf{Gradient Descent}}
 	\\
-	 Closest $Y_{init}$ & 87.55\% & 11.429 & 1.11998
+	 Closest $Y_{init}$ & 0.4546 & 1.01437 & >$10^4$
 	\\
-	 Random $Y_{init}$ & 36.33\% & 75.391 & 1.11957
+	 Random $Y_{init}$ & 0.1004 & 1.01400 & >$10^4$
 	\\
-	 Closest $Y_{init}$; new $\sigma$ & 87.44\% & 15.630 & 1.11995
+	 Closest $Y_{init}$; new $\sigma$ & 0.4557 & 1.01426 & >$10^4$
 	\\
-	 Random $Y_{init}$; new $\sigma$ & 35.43\% & 77.591 & 1.11956
+	 Random $Y_{init}$; new $\sigma$ & 0.0903 & 1.01398 & >$10^4$
 	\\
-	 Closest $Y_{init}$; EE & 87.55\% & 11.378 & 1.11999
+	 Closest $Y_{init}$; EE & 0.4545 & 1.01437 & >$10^4$
 	\\
-	 Random $Y_{init}$; EE & 50.87\% & 53.706 & 1.11967
+	 Random $Y_{init}$; EE & 0.1839 & 1.01403 & >$10^5$
 	\\
-	 Closest $Y_{init}$; new $\sigma$; EE & 87.49\% & 15.729 & 1.11995
+	 Closest $Y_{init}$; new $\sigma$; EE & 0.4555 & 1.01427 & >$10^4$
 	\\
-	 Random $Y_{init}$; new $\sigma$; EE & 49.23\% & 58.799 & 1.11964
-	\\
-\multicolumn{4}{c}{\textbf{Neural Networks}}
-	\\
-	 2L; 250N; ReLu; D0.25 & 75.84\% & 46.460 & 1.12184
-	\\
-	 2L; 500N; ReLu; D0.5 & 77.49\% & 45.226 & 1.12186
-	\\
-	 1L; 500N; tanh & 71.65\% & 55.114 & 1.12182
+	 Random $Y_{init}$; new $\sigma$; EE & 0.1704 & 1.01397 & >$10^5$
 	\\
 \multicolumn{4}{c}{\textbf{Kernelized tSNE}}
 	\\
-	 K=0.05 & 87.64\% & 0.210 & 1.12217
+	 K=0.05 & 0.4465 & 1.01593 & 86.54
 	\\
-	 K=0.25 & 86.15\% & 11.240 & 1.12210
+	 K=0.25 & 0.4389 & 1.01546 & 46.44
 	\\
-	 K=0.50 & 71.33\% & 52.553 & 1.12173
+	 K=0.50 & 0.3644 & 1.01528 & 62.78
 	\\
 \multicolumn{4}{c}{\textbf{LION tSNE}}
 	\\
-	  $r_x$ at 90th perc.; $p$=16.4 & \textbf{85.89\%} & \textbf{8.571} & \textbf{1.11665}
+	  $r_x$ at 90th perc.; $p$=104.8 & \textbf{0.4460} & \textbf{1.01104} & \textbf{6.38}
 	\\
-	  $r_x$ at 95th perc.; $p$=18.4 & \textbf{86.55\%} & \textbf{6.779} & \textbf{1.11660}
+	  $r_x$ at 95th perc.; $p$=75.8 & \textbf{0.4492} & \textbf{1.01097} & \textbf{54.10}
 	\\
-	  $r_x$ at 99th perc.; $p$=18.8 & \textbf{87.27\%} & \textbf{6.265} & \textbf{1.11657}
+	  $r_x$ at 99th perc.; $p$=50.6 & \textbf{0.4527} & \textbf{1.01090} & \textbf{58.86}
 	\\
-	  $r_x$ at 100th perc.; $p$=24.0 & \textbf{87.56\%} & \textbf{3.796} & \textbf{1.11655}
+	  $r_x$ at 100th perc.; $p$=49.8 & \textbf{0.4529} & \textbf{1.01087} & \textbf{14.20}
 	\\
 
     \bottomrule
