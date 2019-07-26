@@ -10,6 +10,7 @@ import exp_lion_power_performance
 import exp_outlier_postprocess_kernelized
 import exp_outlier_postprocess_NN
 import exp_outlier_postprocess_GD
+import exp_outlier_test_IDW_higher
 
 parameters = settings.parameters
 dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=settings.parameters)
@@ -23,6 +24,14 @@ idw_rbf_outlier_results_file = outlier_lion_RBF_IDW_commons.generate_outlier_res
     exp_outlier_test_IDW_RBF.outlier_results_file_prefix, parameters)
 with open(idw_rbf_outlier_results_file, "rb") as f:
     all_RBF_IDW_results = pickle.load(f)
+
+idw_rbf_cluster_results_file_higher = outlier_lion_RBF_IDW_commons.generate_outlier_results_filename(
+    exp_outlier_test_IDW_higher.outlier_results_file_prefix, parameters)
+with open(idw_rbf_cluster_results_file_higher, "rb") as f:
+    all_RBF_IDW_results_higher = pickle.load(f)
+
+for i in all_RBF_IDW_results_higher.keys():
+    all_RBF_IDW_results[i] = all_RBF_IDW_results_higher[i]
 
 lion_outlier_results_file = outlier_lion_RBF_IDW_commons.generate_outlier_results_filename(
     exp_outlier_test_LION.outlier_results_file_prefix, parameters)

@@ -33,7 +33,7 @@ chosen_labels_prefix = data_dir_prefix+'chosen_labels'
 outliers_prefix = data_dir_prefix+'generated_outliers'
 letters_prefix = data_dir_prefix+'generated_letters'
 letters_A_prefix = data_dir_prefix+'generated_A_letters'
-
+baseline_precision_prefix = data_dir_prefix+'baseline_precision'
 
 def combine_prefixes(prefixes, parameters, postfix='.p'):
     res = ""
@@ -62,6 +62,10 @@ def load_or_remake(get_filename_function, generator_function, parameters, regene
     with open(fname, 'rb') as f:
         logging.info("Loading %s", fname)
         return pickle.load(f)
+
+
+def get_baseline_precision_filename(parameters=settings.parameters):
+    return baseline_precision_prefix + combine_prefixes(settings.tsne_parameter_set | {"precision_nn"}, parameters)
 
 
 def get_outliers_filename(parameters=settings.parameters):
@@ -711,6 +715,37 @@ def load_letters(*, parameters=settings.parameters, regenerate=False, recursive_
 
 def load_A_letters(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
     return load_or_remake(get_A_letters_filename, generate_A_letters, parameters, regenerate,
+                          recursive_regenerate)
+
+
+def get_nearest_neighbors(y, Y_mnist, n=10):
+    y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
+    return np.argsort(y_distances)[:n]
+
+
+def generate_baseline_precision(parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
+    logging.info("Starting to calculate baseline precision...")
+    precision_nn = parameters.get("precision_nn", settings.parameters["precision_nn"])
+    dTSNE_mnist = load_dtsne_mnist(parameters=parameters, regenerate=recursive_regenerate,
+                                   recursive_regenerate=recursive_regenerate)
+
+    per_sample_precision = list()
+    for i in range(len(dTSNE_mnist.X)):
+        if i % 100 == 0:
+            logging.info("Processing for baseline precision: %d", i)
+        x = dTSNE_mnist.X[i, :]
+        y = dTSNE_mnist.Y[i, :]
+        nn_x_indices = get_nearest_neighbors(x, dTSNE_mnist.X, n=precision_nn+1) # +1 to account for "itself"
+        nn_y_indices = get_nearest_neighbors(y, dTSNE_mnist.Y, n=precision_nn+1) # +1 to account for "itself"
+        matching_indices = len([j for j in nn_x_indices if j in nn_y_indices and j != i])
+        per_sample_precision.append(matching_indices / precision_nn)
+    res = np.mean(per_sample_precision)
+    logging.info("Baseline precision: %f", res)
+    save_and_report(get_baseline_precision_filename, parameters, res)
+
+
+def load_baseline_precision(*, parameters=settings.parameters, regenerate=False, recursive_regenerate=False):
+    return load_or_remake(get_baseline_precision_filename, generate_baseline_precision, parameters, regenerate,
                           recursive_regenerate)
 
 

@@ -14,36 +14,20 @@ import exp_cluster_postprocess_GD
 import exp_cluster_postprocess_RBF_IDW_LION
 import exp_cluster_attr_test_IDW_higher
 import sys
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 parameters = settings.parameters
 Y_mnist = generate_data.load_y_mnist(parameters=parameters)
 picked_indices = generate_data.load_nearest_training_indices(parameters=parameters)
 picked_indices_y_mnist = Y_mnist[picked_indices,:]
-X_mnist_raw = generate_data.load_x_mnist_raw(parameters=parameters)
 dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=parameters)
 baseline_accuracy = generate_data.get_baseline_accuracy(parameters=parameters)
 
 lion_power_plot_data_file = exp_lion_power_performance.generate_lion_power_plot_filename(parameters=parameters)
 
-def get_nearest_neighbors(y, Y_mnist, n=10):
-    y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
-    return np.argsort(y_distances)[:n]
-
-
-def get_baseline_precision(X, Y, precision_nn = 50):
-    per_sample_precision = list()
-    for i in range(len(X)):
-        x = X[i, :]
-        y = Y[i, :]
-        nn_x_indices = get_nearest_neighbors(x, X, n=precision_nn+1) # +1 to account for "itself"
-        nn_y_indices = get_nearest_neighbors(y, Y, n=precision_nn+1) # +1 to account for "itself"
-        matching_indices = len([j for j in nn_x_indices if j in nn_y_indices and j != i])
-        per_sample_precision.append(matching_indices / precision_nn)
-    return np.mean(per_sample_precision)
-
-baseline_precision = get_baseline_precision(dTSNE_mnist.X, dTSNE_mnist.Y)
-
-
+baseline_precision = generate_data.load_baseline_precision(parameters=parameters)
 
 with open(lion_power_plot_data_file, 'rb') as f:
     _, _, lion_optimal_power = pickle.load(f)
@@ -183,7 +167,6 @@ print ("========== IDW ==========")
 for i in range(len(idw_method_list)):
     print(idw_method_list[i], get_tabs(idw_method_list[i]), "%.4f" % idw_accuracy[i], "%.4f" % idw_precision[i],
           "%.4f" % idw_avg_kl[i], "%2.2f" % idw_time[i])
-
 
 lion90_name = [i for i in all_LION_results.keys() if i.startswith('LION-90')][0]
 accuracy_lion90 = all_LION_results[lion90_name]['Accuracy']
