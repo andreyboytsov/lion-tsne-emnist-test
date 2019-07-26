@@ -61,13 +61,13 @@
 	\\
 \multicolumn{4}{c}{\textbf{LION tSNE}}
 	\\
-	  $r_x$ at 90th perc.; $p$=104.8 & \textbf{0.4460} & \textbf{1.01104} & \textbf{6.38}
+	  $r_x$ at 90th perc.; $p$=104.8 & \textbf{0.4460} & \textbf{1.01103} & \textbf{6.96}
 	\\
-	  $r_x$ at 95th perc.; $p$=75.8 & \textbf{0.4492} & \textbf{1.01097} & \textbf{54.10}
+	  $r_x$ at 95th perc.; $p$=75.8 & \textbf{0.4492} & \textbf{1.01097} & \textbf{13.20}
 	\\
-	  $r_x$ at 99th perc.; $p$=50.6 & \textbf{0.4527} & \textbf{1.01090} & \textbf{58.86}
+	  $r_x$ at 99th perc.; $p$=50.6 & \textbf{0.4527} & \textbf{1.01090} & \textbf{10.75}
 	\\
-	  $r_x$ at 100th perc.; $p$=49.8 & \textbf{0.4529} & \textbf{1.01087} & \textbf{14.20}
+	  $r_x$ at 100th perc.; $p$=49.8 & \textbf{0.4529} & \textbf{1.01087} & \textbf{11.16}
 	\\
 
     \bottomrule
