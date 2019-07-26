@@ -1,0 +1,74 @@
+\begin{table} \small\sf\centering \caption{Letter A placement test: methods comparison.
+    Original KL divergence of the dataset is 1.00890}  \label{tab_letter_a_methods_comparison}
+    \begin{tabular}{ m{0.19\textwidth}  m{0.07\textwidth}  m{0.07\textwidth}  m{0.06\textwidth} }
+        \toprule
+            \textbf{Method}
+            & \textbf{Distance Perc-le}
+            & \textbf{KL Div.}
+            & \textbf{Time (ms)}
+        \\ \midrule\multicolumn{4}{c}{\textbf{RBF Interpolation}}
+	\\
+	 Multiquadric & 76.78 & 1.01190 & 14.64
+	\\
+	 Gaussian & 76.12 & 1.01196 & 14.33
+	\\
+	 Inverse Multiquadric & 77.09 & 1.01193 & 12.56
+	\\
+	 Linear & 75.76 & 1.01190 & 11.86
+	\\
+	 Cubic & 95.53 & 1.01247 & 13.10
+	\\
+	 Quintic & 100.00 & 1.01356 & 15.64
+	\\
+	 Thin Plate & 91.42 & 1.01221 & 14.39
+	\\
+\multicolumn{4}{c}{\textbf{IDW Interpolation}}
+	\\
+	 IDW - Power 1 & 97.81 &1.01187 & 187.68
+	\\
+	 IDW - Power 20 & 71.13 &1.01184 & 131.33
+	\\
+	 IDW - Power 44.9 & 65.06 &1.01146 & 121.66
+	\\
+	 IDW - Power 70 & 61.38 &1.01135 & 126.76
+	\\
+\multicolumn{4}{c}{\textbf{Gradient Descent}}
+	\\
+	 Closest $Y_{init}$ & 70.21 & 0.10111 & >$10^4$
+	\\
+	 Random $Y_{init}$ & 97.82 & 0.10120 & >$10^4$
+	\\
+	 Closest $Y_{init}$; new $\sigma$ & 70.22 & 0.10111 & >$10^4$
+	\\
+	 Random $Y_{init}$; new $\sigma$ & 97.82 & 0.10120 & >$10^4$
+	\\
+	 Closest $Y_{init}$; EE & 82.14 & 0.10110 & >$10^4$
+	\\
+	 Random $Y_{init}$; EE & 96.85 & 0.10119 & >$10^4$
+	\\
+	 Closest $Y_{init}$; new $\sigma$; EE & 82.45 & 0.10110 & >$10^4$
+	\\
+	 Random $Y_{init}$; new $\sigma$; EE & 96.87 & 0.10119 & >$10^4$
+	\\
+\multicolumn{4}{c}{\textbf{Kernelized tSNE}}
+	\\
+	 K=0.05 & 9.76 & 1.01140 & 30.01
+	\\
+	 K=0.25 & 73.85 & 1.01103 & 34.42
+	\\
+	 K=0.50 & 78.49 & 1.01093 & 28.03
+	\\
+\multicolumn{4}{c}{\textbf{LION tSNE}}
+	\\
+	 \textbf{LION} -  $r_x$ at 90th perc. & \textbf{96.19} &\textbf{1.01195}  &\textbf{15.29}
+	\\
+	 \textbf{LION} -  $r_x$ at 95th perc. & \textbf{94.42} &\textbf{1.01179}  &\textbf{14.84}
+	\\
+	 \textbf{LION} -  $r_x$ at 99th perc. & \textbf{85.62} &\textbf{1.01166}  &\textbf{14.20}
+	\\
+	 \textbf{LION} -  $r_x$ at 100th perc. & \textbf{64.17} &\textbf{1.01150}  &\textbf{10.78}
+	\\
+
+    \bottomrule
+    \end{tabular}
+\end{table}

@@ -7,13 +7,11 @@ import numpy as np
 import cluster_lion_RBF_IDW_commons
 import exp_cluster_attr_test_IDW_RBF
 import exp_cluster_attr_test_LION
-import exp_cluster_postprocess_NN
 import exp_cluster_postprocess_Kernelized
 import exp_lion_power_performance
 import exp_cluster_postprocess_GD
 import exp_cluster_postprocess_RBF_IDW_LION
 import exp_cluster_attr_test_IDW_higher
-import sys
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -124,8 +122,6 @@ for i in range(len(rbf_method_list)):
 
 # =============================================================================================================
 keys_copy = all_RBF_IDW_results.keys()
-#keys_copy -= {"IDW-1","IDW-10","IDW-20","IDW-40"}
-#keys_copy -= {"IDW-1","IDW-10","IDW-40","IDW-20","IDW-50","IDW-70","IDW-100"}
 idw_optimal_name = [i for i in keys_copy if i.startswith("IDW") and '.' in i][0]
 
 #print(idw_optimal_name)

@@ -193,8 +193,6 @@ ax[rbf_X][rbf_Y].legend([h1,h2,h3,h4,h5,h6,h7], ["Multiquadric","Gaussian", 'Inv
 # ==================================== IDW =======================================
 
 ax[idw_Y][idw_X].scatter(Y_mnist[:, 0], Y_mnist[:, 1], c= 'gray', zorder=1, label=None, marker='.',s=point_size_gray)
-h1 = ax[idw_Y][idw_X].scatter(outliers_y_idw1[:shown_outlier_indices, 0],
-                outliers_y_idw1[:shown_outlier_indices, 1], c='red', zorder=1, label=None, marker='.',s=point_size_interest)
 h2 = ax[idw_Y][idw_X].scatter(outliers_y_idw20[:shown_outlier_indices, 0],
                 outliers_y_idw20[:shown_outlier_indices, 1], c='blue', zorder=1, label=None, marker='.',s=point_size_interest)
 h3 = ax[idw_Y][idw_X].scatter(outliers_y_idw70[:shown_outlier_indices, 0],
@@ -212,6 +210,8 @@ h6 = ax[idw_Y][idw_X].scatter(kernelized_tsne_outliers_results[1][:shown_outlier
 h7 = ax[idw_Y][idw_X].scatter(kernelized_tsne_outliers_results[2][:shown_outlier_indices, 0],
                 kernelized_tsne_outliers_results[2][:shown_outlier_indices, 1], c='black', zorder=1, label=None, marker='.',
                                  s = point_size_interest)
+h1 = ax[idw_Y][idw_X].scatter(outliers_y_idw1[:shown_outlier_indices, 0],
+                outliers_y_idw1[:shown_outlier_indices, 1], c='red', zorder=1, label=None, marker='.',s=point_size_interest)
 
 ax[idw_Y][idw_X].legend([h1,h2,h3,h4,h5,h6,h7], idw_method_list + kernelized_tsne_method_list, ncol=1, prop=font_properties,
                        borderpad=0.1,handlelength=2, columnspacing = 0, loc = 4, handletextpad=-0.7,frameon=True)
