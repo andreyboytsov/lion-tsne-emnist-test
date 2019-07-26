@@ -71,6 +71,28 @@ def main(parameters = settings.parameters):
         letters_y_gd_variance_recalc_early_exagg_transformed_random,
     ]
 
+    input_time_file = exp_letter_test_GD.generate_time_results_filename(parameters)
+    with open(input_time_file, 'rb') as f:
+        letters_y_time_gd_transformed, letters_y_time_gd_variance_recalc_transformed, \
+        letters_y_time_gd_transformed_random, \
+        letters_y_time_gd_variance_recalc_transformed_random, \
+        letters_y_time_gd_early_exagg_transformed_random, \
+        letters_y_time_gd_early_exagg_transformed, \
+        letters_y_time_gd_variance_recalc_early_exagg_transformed_random, \
+        letters_y_time_gd_variance_recalc_early_exagg_transformed, covered_samples = pickle.load(f)
+
+    gd_time = [
+        np.mean(letters_y_time_gd_transformed),
+        np.mean(letters_y_time_gd_transformed_random),
+        np.mean(letters_y_time_gd_variance_recalc_transformed),
+        np.mean(letters_y_time_gd_variance_recalc_transformed_random),
+        np.mean(letters_y_time_gd_early_exagg_transformed),
+        np.mean(letters_y_time_gd_early_exagg_transformed_random),
+        np.mean(letters_y_time_gd_variance_recalc_early_exagg_transformed),
+        np.mean(letters_y_time_gd_variance_recalc_early_exagg_transformed_random),
+    ]
+
+
     gd_letters_kl = np.zeros((len(gd_method_list), len(letter_samples)))
 
     processed_indices = list()
@@ -129,7 +151,7 @@ def main(parameters = settings.parameters):
 
     output_file = generate_gd_postprocess_filename(parameters)
     with open(output_file, "wb") as f:
-        pickle.dump((gd_method_list, gd_avg_letters_kl, gd_letters_distance_percentiles),f)
+        pickle.dump((gd_method_list, gd_time, gd_avg_letters_kl, gd_letters_distance_percentiles),f)
 
 
 if __name__ == '__main__':

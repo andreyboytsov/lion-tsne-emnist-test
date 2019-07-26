@@ -1,15 +1,15 @@
 import lion_tsne
 import settings
 import generate_data
-import letter_lion_RBF_IDW_commons
-import exp_letter_test_IDW_RBF
-import exp_letter_test_LION
+import letter_A_lion_RBF_IDW_commons
+import exp_letter_A_test_IDW_RBF
+import exp_letter_A_test_LION
 import numpy as np
 import pickle
 import exp_lion_power_performance
-import exp_letter_postprocess_kernelized
-import exp_letter_postprocess_GD
-import exp_letter_test_IDW_higher
+import exp_letter_A_postprocess_kernelized
+import exp_letter_A_postprocess_GD
+import exp_letter_A_test_IDW_higher
 
 parameters = settings.parameters
 dTSNE_mnist = generate_data.load_dtsne_mnist(parameters=settings.parameters)
@@ -19,22 +19,22 @@ lion_power_plot_data_file = exp_lion_power_performance.generate_lion_power_plot_
 with open(lion_power_plot_data_file, 'rb') as f:
     _, _, lion_optimal_power = pickle.load(f)
 
-idw_rbf_letter_results_file = letter_lion_RBF_IDW_commons.generate_letter_results_filename(
-    exp_letter_test_IDW_RBF.letter_results_file_prefix, parameters)
-with open(idw_rbf_letter_results_file, "rb") as f:
+idw_rbf_letter_A_results_file = letter_A_lion_RBF_IDW_commons.generate_letter_A_results_filename(
+    exp_letter_A_test_IDW_RBF.letter_A_results_file_prefix, parameters)
+with open(idw_rbf_letter_A_results_file, "rb") as f:
     all_RBF_IDW_results = pickle.load(f)
 
-idw_rbf_cluster_results_file_higher = letter_lion_RBF_IDW_commons.generate_letter_results_filename(
-    exp_letter_test_IDW_higher.letter_results_file_prefix, parameters)
+idw_rbf_cluster_results_file_higher = letter_A_lion_RBF_IDW_commons.generate_letter_A_results_filename(
+    exp_letter_A_test_IDW_higher.letter_A_results_file_prefix, parameters)
 with open(idw_rbf_cluster_results_file_higher, "rb") as f:
     all_RBF_IDW_results_higher = pickle.load(f)
 
 for i in all_RBF_IDW_results_higher.keys():
     all_RBF_IDW_results[i] = all_RBF_IDW_results_higher[i]
 
-lion_letter_results_file = letter_lion_RBF_IDW_commons.generate_letter_results_filename(
-    exp_letter_test_LION.letter_results_file_prefix, parameters)
-with open(lion_letter_results_file, "rb") as f:
+lion_letter_A_results_file = letter_A_lion_RBF_IDW_commons.generate_letter_A_results_filename(
+    exp_letter_A_test_LION.letter_A_results_file_prefix, parameters)
+with open(lion_letter_A_results_file, "rb") as f:
     all_LION_results = pickle.load(f)
 
 kl_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]["KL-Divergence"])
@@ -159,7 +159,7 @@ for i in range(len(lion_method_list)):
           "%.4f" % lion_avg_kl[i], "%2.2f" % lion_time[i])
 
 
-kernelized_results_file = exp_letter_postprocess_kernelized.generate_kernelized_postprocess_filename(parameters)
+kernelized_results_file = exp_letter_A_postprocess_kernelized.generate_kernelized_postprocess_filename(parameters)
 with open(kernelized_results_file, 'rb') as f:
     kernelized_method_list, kernelized_avg_kl, kernelized_per_item_time,\
     kernelized_distance_percentiles = pickle.load(f)
@@ -169,7 +169,7 @@ for i in range(len(kernelized_method_list)):
     print(kernelized_method_list[i], get_tabs(kernelized_method_list[i]), "%2.2f" % kernelized_distance_percentiles[i],
           "%.4f" % kernelized_avg_kl[i], "%2.2f" % (kernelized_per_item_time[i]*1000))
 
-gd_input_file = exp_letter_postprocess_GD.generate_gd_postprocess_filename(parameters)
+gd_input_file = exp_letter_A_postprocess_GD.generate_gd_postprocess_filename(parameters)
 with open(gd_input_file, "rb") as f:
     gd_method_list, gd_per_item_time, gd_avg_kl, gd_distance_percentiles = pickle.load(f)
 
@@ -202,8 +202,8 @@ s = ""
 
 initial_kl_divergence, _ = lion_tsne.kl_divergence_and_gradient(y=dTSNE_mnist.Y, p_matrix=dTSNE_mnist.P_matrix)
 
-s += '''\\begin{table} \small\sf\centering \caption{Letter placement test: methods comparison.
-    Original KL divergence of the dataset is %.5f}  \label{tab_letter_methods_comparison}
+s += '''\\begin{table} \small\sf\centering \caption{Letter A placement test: methods comparison.
+    Original KL divergence of the dataset is %.5f}  \label{tab_letter_a_methods_comparison}
     \\begin{tabular}{ m{0.19\\textwidth}  m{0.07\\textwidth}  m{0.07\\textwidth}  m{0.06\\textwidth} }
         \\toprule
             \\textbf{Method}
@@ -259,7 +259,7 @@ s += '''
 \\end{table}
 '''
 
-tab_text_file = '../tables/tab-letters-test.txt'
+tab_text_file = '../tables/tab-letter_As-test.txt'
 with open(tab_text_file, 'wt') as f:
     f.write(s)
 

@@ -71,6 +71,28 @@ def main(parameters = settings.parameters):
         outliers_y_gd_variance_recalc_early_exagg_transformed_random,
     ]
 
+    input_time_file = exp_outlier_test_GD.generate_time_results_filename(parameters)
+    with open(input_time_file, 'rb') as f:
+        outliers_y_time_gd_transformed, outliers_y_time_gd_variance_recalc_transformed, \
+        outliers_y_time_gd_transformed_random, \
+        outliers_y_time_gd_variance_recalc_transformed_random, \
+        outliers_y_time_gd_early_exagg_transformed_random, \
+        outliers_y_time_gd_early_exagg_transformed, \
+        outliers_y_time_gd_variance_recalc_early_exagg_transformed_random, \
+        outliers_y_time_gd_variance_recalc_early_exagg_transformed, covered_samples = pickle.load(f)
+
+
+    gd_time = [
+        np.mean(outliers_y_time_gd_transformed),
+        np.mean(outliers_y_time_gd_transformed_random),
+        np.mean(outliers_y_time_gd_variance_recalc_transformed),
+        np.mean(outliers_y_time_gd_variance_recalc_transformed_random),
+        np.mean(outliers_y_time_gd_early_exagg_transformed),
+        np.mean(outliers_y_time_gd_early_exagg_transformed_random),
+        np.mean(outliers_y_time_gd_variance_recalc_early_exagg_transformed),
+        np.mean(outliers_y_time_gd_variance_recalc_early_exagg_transformed_random),
+    ]
+
     gd_outliers_kl = np.zeros((len(gd_method_list), len(outlier_samples)))
 
     processed_indices = list()
@@ -129,7 +151,7 @@ def main(parameters = settings.parameters):
 
     output_file = generate_gd_postprocess_filename(parameters)
     with open(output_file, "wb") as f:
-        pickle.dump((gd_method_list, gd_avg_outliers_kl, gd_outliers_distance_percentiles),f)
+        pickle.dump((gd_method_list, gd_time, gd_avg_outliers_kl, gd_outliers_distance_percentiles),f)
 
 
 if __name__ == '__main__':
