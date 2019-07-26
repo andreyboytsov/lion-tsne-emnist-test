@@ -155,8 +155,8 @@ for i in range(len(ax)):
         ax[i][j].axes.get_xaxis().set_visible(False)
         ax[i][j].axes.get_yaxis().set_visible(False)
 
-        #ax[i][j].set_xlim([-180, 180])
-        #ax[i][j].set_ylim([-150, 170])
+        ax[i][j].set_xlim([-180, 180])
+        ax[i][j].set_ylim([-150, 170])
 
 # ====================================== RBF =====================================
 

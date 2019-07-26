@@ -83,7 +83,7 @@ letters_y_lion100 = all_LION_results[lion100_name]['EmbeddedPoints']
 
 kernelized_results_file = exp_letter_A_test_kernelized.generate_letter_A_results_filename(parameters)
 with open(kernelized_results_file, 'rb') as f:
-    kernelized_detailed_tsne_method_results, \
+    kernelized_detailed_tsne_method_results, _, \
             kernelized_detailed_tsne_method_list = pickle.load(f)
 ind = [4,24,49]
 kernelized_tsne_method_list = [kernelized_detailed_tsne_method_list[i][:10]+kernelized_detailed_tsne_method_list[i][-8:]
@@ -258,7 +258,7 @@ ax[gd_Y][gd_X].legend([h2,h3,h6,h7], [          r'Closest Y; no EE',
 
 # ==================================== LION ======================================
 
-cur_shown_letter_A_indices = 10
+cur_shown_letter_A_indices = shown_letter_A_indices
 ax[lion_Y][lion_X].scatter(Y_mnist[:, 0], Y_mnist[:, 1], c= 'gray', zorder=1, label=None, marker='.',
                           s = point_size_gray)
 h1 = ax[lion_Y][lion_X].scatter(letters_y_lion90[:cur_shown_letter_A_indices, 0],
@@ -274,7 +274,7 @@ h4 = ax[lion_Y][lion_X].scatter(letters_y_lion100[:cur_shown_letter_A_indices, 0
                 letters_y_lion100[:cur_shown_letter_A_indices, 1], c='purple', zorder=1, label=None, marker='.',
                                s = point_size_interest)
 ax[lion_Y][lion_X].legend([h1,h2,h3,h4], lion_method_list, ncol=1, prop=font_properties, borderpad=0.1,handlelength=2,
-                       columnspacing = 0, loc = 3, handletextpad=-0.7,frameon=True)
+                       columnspacing = 0, loc = 4, handletextpad=-0.7,frameon=True)
 
 # ====================================  Ending ===================================
 
