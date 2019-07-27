@@ -38,7 +38,7 @@ with open(lion_outlier_results_file, "rb") as f:
     all_LION_results = pickle.load(f)
 
 kl_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]["KL-Divergence"])
-kl_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["KL-Divergence"])
+#kl_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["KL-Divergence"])
 kl_linear = np.mean(all_RBF_IDW_results["RBF-linear"]["KL-Divergence"])
 kl_cubic = np.mean(all_RBF_IDW_results["RBF-cubic"]["KL-Divergence"])
 kl_quintic = np.mean(all_RBF_IDW_results["RBF-quintic"]["KL-Divergence"])
@@ -46,7 +46,7 @@ kl_inverse = np.mean(all_RBF_IDW_results["RBF-inverse"]["KL-Divergence"])
 kl_thin_plate = np.mean(all_RBF_IDW_results["RBF-thin-plate"]["KL-Divergence"])
 
 dist_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]["DistancePercentile"])
-dist_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["DistancePercentile"])
+#dist_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["DistancePercentile"])
 dist_linear = np.mean(all_RBF_IDW_results["RBF-linear"]["DistancePercentile"])
 dist_cubic = np.mean(all_RBF_IDW_results["RBF-cubic"]["DistancePercentile"])
 dist_quintic = np.mean(all_RBF_IDW_results["RBF-quintic"]["DistancePercentile"])
@@ -54,23 +54,23 @@ dist_inverse = np.mean(all_RBF_IDW_results["RBF-inverse"]["DistancePercentile"])
 dist_thin_plate = np.mean(all_RBF_IDW_results["RBF-thin-plate"]["DistancePercentile"])
 
 time_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]["TimePerPoint"]).total_seconds() * 1000
-time_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["TimePerPoint"]).total_seconds() * 1000
+#time_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["TimePerPoint"]).total_seconds() * 1000
 time_linear = np.mean(all_RBF_IDW_results["RBF-linear"]["TimePerPoint"]).total_seconds() * 1000
 time_cubic = np.mean(all_RBF_IDW_results["RBF-cubic"]["TimePerPoint"]).total_seconds() * 1000
 time_quintic = np.mean(all_RBF_IDW_results["RBF-quintic"]["TimePerPoint"]).total_seconds() * 1000
 time_inverse = np.mean(all_RBF_IDW_results["RBF-inverse"]["TimePerPoint"]).total_seconds() * 1000
 time_thin_plate = np.mean(all_RBF_IDW_results["RBF-thin-plate"]["TimePerPoint"]).total_seconds() * 1000
 
-rbf_time = [time_multiquadric, time_gaussian, time_inverse, time_linear, time_cubic, time_quintic,
+rbf_time = [time_multiquadric, time_inverse, time_linear, time_cubic, time_quintic,
                       time_thin_plate]
 
-rbf_method_list = ['RBF - Multiquadric', 'RBF - Gaussian',
+rbf_method_list = ['RBF - Multiquadric', #'RBF - Gaussian',
         'RBF - Inverse Multiquadric', 'RBF - Linear', 'RBF - Cubic', 'RBF - Quintic',
         'RBF - Thin Plate']
 
-rbf_distance_percentiles = [dist_multiquadric, dist_gaussian, dist_inverse, dist_linear, dist_cubic, dist_quintic,
+rbf_distance_percentiles = [dist_multiquadric, dist_inverse, dist_linear, dist_cubic, dist_quintic,
                       dist_thin_plate]
-rbf_avg_kl = [kl_multiquadric, kl_gaussian, kl_inverse, kl_linear, kl_cubic, kl_quintic, kl_thin_plate]
+rbf_avg_kl = [kl_multiquadric, kl_inverse, kl_linear, kl_cubic, kl_quintic, kl_thin_plate]
 
 print("HUMAN-READABLE OUTLIERS TABLE")
 print("METHOD - PERCENTILE - KL DIVERGENCE - TIME")
@@ -202,7 +202,7 @@ s = ""
 
 initial_kl_divergence, _ = lion_tsne.kl_divergence_and_gradient(y=dTSNE_mnist.Y, p_matrix=dTSNE_mnist.P_matrix)
 
-s += '''\\begin{table} \small\sf\centering \caption{Outlier placement test: methods comparison.
+s += '''\\begin{table} \small\sf\centering \caption{Noise placement test: methods comparison.
     Original KL divergence of the dataset is %.5f}  \label{tab_outliers_methods_comparison}
     \\begin{tabular}{ m{0.19\\textwidth}  m{0.07\\textwidth}  m{0.07\\textwidth}  m{0.06\\textwidth} }
         \\toprule

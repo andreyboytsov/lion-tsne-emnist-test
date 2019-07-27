@@ -1,4 +1,4 @@
-\begin{table} \small\sf\centering \caption{Outlier placement test: methods comparison.
+\begin{table} \small\sf\centering \caption{Noise placement test: methods comparison.
     Original KL divergence of the dataset is 1.00890}  \label{tab_outliers_methods_comparison}
     \begin{tabular}{ m{0.19\textwidth}  m{0.07\textwidth}  m{0.07\textwidth}  m{0.06\textwidth} }
         \toprule
@@ -9,8 +9,6 @@
         \\ \midrule\multicolumn{4}{c}{\textbf{RBF Interpolation}}
 	\\
 	 Multiquadric & 68.12 & 1.01102 & 8.36
-	\\
-	 Gaussian & 76.12 & 1.01084 & 7.17
 	\\
 	 Inverse Multiquadric & 70.50 & 1.01101 & 6.27
 	\\

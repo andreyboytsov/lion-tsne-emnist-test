@@ -164,29 +164,29 @@ ax[rbf_X][rbf_Y].scatter(Y_mnist[:, 0], Y_mnist[:, 1], c= 'gray', zorder=1, labe
 h1 = ax[rbf_X][rbf_Y].scatter(outliers_y_multiquadric[:shown_outlier_indices, 0],
                 outliers_y_multiquadric[:shown_outlier_indices, 1], c='red', zorder=1, label=None, marker='.',
                               s=point_size_interest)
-h2 = ax[rbf_X][rbf_Y].scatter(outliers_y_gaussian[:shown_outlier_indices, 0],
-                outliers_y_gaussian[:shown_outlier_indices, 1], c='blue', zorder=1, label=None, marker='.',
-                             s=point_size_interest)
+#h2 = ax[rbf_X][rbf_Y].scatter(outliers_y_gaussian[:shown_outlier_indices, 0],
+#                outliers_y_gaussian[:shown_outlier_indices, 1], c='blue', zorder=1, label=None, marker='.',
+#                             s=point_size_interest)
 h3 = ax[rbf_X][rbf_Y].scatter(outliers_y_inverse[:shown_outlier_indices, 0],
-                outliers_y_inverse[:shown_outlier_indices, 1], c='green', zorder=1, label=None, marker='.',
+                outliers_y_inverse[:shown_outlier_indices, 1], c='blue', zorder=1, label=None, marker='.',
                              s=point_size_interest)
 h4 = ax[rbf_X][rbf_Y].scatter(outliers_y_linear[:shown_outlier_indices, 0],
-                outliers_y_linear[:shown_outlier_indices, 1], c='purple', zorder=1, label=None, marker='.',
+                outliers_y_linear[:shown_outlier_indices, 1], c='green', zorder=1, label=None, marker='.',
                              s=point_size_interest)
 h5 = ax[rbf_X][rbf_Y].scatter(outliers_y_cubic[:shown_outlier_indices, 0],
-                outliers_y_cubic[:shown_outlier_indices, 1], c='cyan', zorder=1, label=None, marker='.',
+                outliers_y_cubic[:shown_outlier_indices, 1], c='purple', zorder=1, label=None, marker='.',
                              s=point_size_interest)
-h6 = ax[rbf_X][rbf_Y].scatter(outliers_y_quintic[:shown_outlier_indices, 0],
+h6 = ax[rbf_X][rbf_Y].scatter(outliers_y_thin_plate[:shown_outlier_indices,0],
+                outliers_y_thin_plate[:shown_outlier_indices,1], c='cyan', marker='.', zorder=3,alpha=0.9,
+                             s=point_size_interest)
+h7 = ax[rbf_X][rbf_Y].scatter(outliers_y_quintic[:shown_outlier_indices, 0],
                 outliers_y_quintic[:shown_outlier_indices, 1], c='orange', zorder=1, label=None, marker='.',
-                             s=point_size_interest)
-h7 = ax[rbf_X][rbf_Y].scatter(outliers_y_thin_plate[:shown_outlier_indices,0],
-                outliers_y_thin_plate[:shown_outlier_indices,1], c='pink', marker='.', zorder=3,alpha=0.9,
                              s=point_size_interest)
 
 #ax[rbf_X][rbf_Y].legend([h1,h2,h3,h4,h5,h6,h7], ["RBF - Multiquadric","RBF - Gaussian", 'RBF - Inverse Multiquadric', 'RBF - Linear',
 #                                  'RBF - Cubic','RBF - Quintic (out of scope)', 'RBF - Thin Plate'], fontsize = 14)
-ax[rbf_X][rbf_Y].legend([h1,h2,h3,h4,h5,h6,h7], ["Multiquadric","Gaussian", 'Inverse Multiquadr.', 'Linear',
-                                  'Cubic','Quintic', 'Thin Plate'], ncol=1,
+ax[rbf_X][rbf_Y].legend([h1,h3,h4,h5,h6,h7], ["Multiquadric",'Inverse Multiquadr.', 'Linear',
+                                  'Cubic','Thin Plate','Quintic'], ncol=1,
                        prop=font_properties, borderpad=0.1,handlelength=2,
                        columnspacing = 0, loc = 1, handletextpad=-0.7,frameon=True)
 

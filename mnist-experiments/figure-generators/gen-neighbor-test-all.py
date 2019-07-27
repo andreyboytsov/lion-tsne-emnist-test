@@ -52,10 +52,6 @@ picked_neighbors_y_quintic = all_RBF_IDW_results["RBF-quintic"]['EmbeddedPoints'
 picked_neighbors_y_inverse = all_RBF_IDW_results["RBF-inverse"]['EmbeddedPoints']
 picked_neighbors_y_thin_plate = all_RBF_IDW_results["RBF-thin-plate"]['EmbeddedPoints']
 
-rbf_method_list = ["RBF - Multiquadric","RBF - Gaussian",
-                        "RBF - Inverse Multiquadric","RBF - Linear",'RBF - Cubic', 'RBF - Quintic',
-                        'RBF - Thin Plate']
-
 keys_copy = all_RBF_IDW_results.keys()
 #keys_copy -= {"IDW-1","IDW-10","IDW-20","IDW-40"}
 #keys_copy -= {"IDW-1","IDW-10","IDW-40","IDW-20","IDW-50","IDW-70","IDW-100"}
@@ -159,7 +155,7 @@ for i in range(len(ax)):
         ax[i][j].set_ylim([-150, 170])
 
 # ====================================== RBF =====================================
-cur_shown_indices = 5
+cur_shown_indices = 10
 
 for l in range(cur_shown_indices): #range(shown_indices):
     #if l in chosen_indices:
@@ -167,10 +163,10 @@ for l in range(cur_shown_indices): #range(shown_indices):
                               [picked_indices_y_mnist[l, 1], picked_neighbors_y_multiquadric[l, 1]], c='black',
                               label=None, zorder=2,
                               linewidth=lw)
-        ax[rbf_Y][rbf_X].plot([picked_indices_y_mnist[l, 0], picked_neighbors_y_gaussian[l, 0]],
-                              [picked_indices_y_mnist[l, 1], picked_neighbors_y_gaussian[l, 1]], c='black', label=None,
-                              zorder=2,
-                              linewidth=lw)
+        #ax[rbf_Y][rbf_X].plot([picked_indices_y_mnist[l, 0], picked_neighbors_y_gaussian[l, 0]],
+        #                      [picked_indices_y_mnist[l, 1], picked_neighbors_y_gaussian[l, 1]], c='black', label=None,
+        #                      zorder=2,
+        #                      linewidth=lw)
         ax[rbf_Y][rbf_X].plot([picked_indices_y_mnist[l, 0], picked_neighbors_y_linear[l, 0]],
                               [picked_indices_y_mnist[l, 1], picked_neighbors_y_linear[l, 1]], c='black', label=None,
                               zorder=2,
@@ -183,10 +179,10 @@ for l in range(cur_shown_indices): #range(shown_indices):
                               [picked_indices_y_mnist[l, 1], picked_neighbors_y_cubic[l, 1]], c='black', label=None,
                               zorder=2,
                               linewidth=lw)
-        ax[rbf_Y][rbf_X].plot([picked_indices_y_mnist[l, 0], picked_neighbors_y_quintic[l, 0]],
-                              [picked_indices_y_mnist[l, 1], picked_neighbors_y_quintic[l, 1]], c='black', label=None,
-                              zorder=2,
-                              linewidth=lw)
+        #ax[rbf_Y][rbf_X].plot([picked_indices_y_mnist[l, 0], picked_neighbors_y_quintic[l, 0]],
+        #                      [picked_indices_y_mnist[l, 1], picked_neighbors_y_quintic[l, 1]], c='black', label=None,
+        #                      zorder=2,
+        #                      linewidth=lw)
         ax[rbf_Y][rbf_X].plot([picked_indices_y_mnist[l, 0], picked_neighbors_y_thin_plate[l, 0]],
                               [picked_indices_y_mnist[l, 1], picked_neighbors_y_thin_plate[l, 1]], c='black',
                               label=None, zorder=2,
@@ -199,30 +195,35 @@ h1 = ax[rbf_Y][rbf_X].scatter(picked_indices_y_mnist[:cur_shown_indices, 0],
 h2 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_multiquadric[:cur_shown_indices, 0],
                               picked_neighbors_y_multiquadric[:cur_shown_indices, 1], c='red', marker='.', zorder=3,
                               alpha=0.9, s=point_size_interest)
-h3 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_gaussian[:cur_shown_indices, 0],
-                              picked_neighbors_y_gaussian[:cur_shown_indices, 1], c='blue', marker='.', zorder=3, alpha=0.9,
-                              s=point_size_interest)
+#h3 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_gaussian[:cur_shown_indices, 0],
+#                              picked_neighbors_y_gaussian[:cur_shown_indices, 1], c='blue', marker='.', zorder=3, alpha=0.9,
+#                              s=point_size_interest)
 h4 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_inverse[:cur_shown_indices, 0],
-                              picked_neighbors_y_inverse[:cur_shown_indices, 1], c='green', marker='.', zorder=3, alpha=0.9,
+                              picked_neighbors_y_inverse[:cur_shown_indices, 1], c='blue', marker='.', zorder=3, alpha=0.9,
                               s=point_size_interest)
 h5 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_linear[:cur_shown_indices, 0],
-                              picked_neighbors_y_linear[:cur_shown_indices, 1], c='purple', marker='.', zorder=3, alpha=0.9,
+                              picked_neighbors_y_linear[:cur_shown_indices, 1], c='green', marker='.', zorder=3, alpha=0.9,
                               s=point_size_interest)
 h6 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_cubic[:cur_shown_indices, 0],
-                              picked_neighbors_y_cubic[:cur_shown_indices, 1], c='cyan', marker='.', zorder=3, alpha=0.9,
+                              picked_neighbors_y_cubic[:cur_shown_indices, 1], c='purple', marker='.', zorder=3, alpha=0.9,
                               s=point_size_interest)
-h7 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_quintic[:cur_shown_indices, 0],
-                              picked_neighbors_y_quintic[:cur_shown_indices, 1], c='orange', marker='.', zorder=3,
+h7 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_thin_plate[:cur_shown_indices, 0],
+                              picked_neighbors_y_thin_plate[:cur_shown_indices, 1], c='cyan', marker='.', zorder=3,
                               alpha=0.9, s=point_size_interest)
-h8 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_thin_plate[:cur_shown_indices, 0],
-                              picked_neighbors_y_thin_plate[:cur_shown_indices, 1], c='pink', marker='.', zorder=3,
-                              alpha=0.9, s=point_size_interest)
+#h8 = ax[rbf_Y][rbf_X].scatter(picked_neighbors_y_quintic[:cur_shown_indices, 0],
+#                              picked_neighbors_y_quintic[:cur_shown_indices, 1], c='orange', marker='.', zorder=3,
+#                              alpha=0.9, s=point_size_interest)
 
-legend_names = [i[6:] for i in rbf_method_list]
-legend_names[2] = 'Inverse Multiq.'
+rbf_method_list = ["Multiquadric",
+                   "Inverse Multiquadric",
+                   "Linear",
+                   'Cubic',
+                   'Thin Plate']
 ax[rbf_Y][rbf_X].legend(  # [h1,h2,h3,h4,h5,h6,h7,h8], ["Closest Tr-g Set Image"]+
-    [h2, h3, h4, h5, h6, h7, h8],
-    legend_names, ncol=1, prop=font_properties, borderpad=0.1, handlelength=2,
+    [h2, #h3, Removing Gaussian
+     h4, h5, h6, # h7, - removing quintic
+     h8],
+    rbf_method_list, ncol=1, prop=font_properties, borderpad=0.1, handlelength=2,
     columnspacing=0, loc=1, handletextpad=-0.7, frameon=True)
 
 # ====================================== IDW =====================================

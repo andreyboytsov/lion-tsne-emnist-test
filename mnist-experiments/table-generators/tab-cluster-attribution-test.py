@@ -55,7 +55,7 @@ with open(fname, "rb") as f:
 
 
 precision_multiquadric = precision["RBF-multiquadric"]
-precision_gaussian = precision["RBF-gaussian"]
+#precision_gaussian = precision["RBF-gaussian"]
 precision_linear = precision["RBF-linear"]
 precision_cubic = precision["RBF-cubic"]
 precision_quintic = precision["RBF-quintic"]
@@ -63,7 +63,7 @@ precision_inverse = precision["RBF-inverse"]
 precision_thin_plate = precision["RBF-thin-plate"]
 
 accuracy_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]["Accuracy"])
-accuracy_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["Accuracy"])
+#accuracy_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["Accuracy"])
 accuracy_linear = np.mean(all_RBF_IDW_results["RBF-linear"]["Accuracy"])
 accuracy_cubic = np.mean(all_RBF_IDW_results["RBF-cubic"]["Accuracy"])
 accuracy_quintic = np.mean(all_RBF_IDW_results["RBF-quintic"]["Accuracy"])
@@ -71,7 +71,7 @@ accuracy_inverse = np.mean(all_RBF_IDW_results["RBF-inverse"]["Accuracy"])
 accuracy_thin_plate = np.mean(all_RBF_IDW_results["RBF-thin-plate"]["Accuracy"])
 
 kl_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]["KL-Divergence"])
-kl_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["KL-Divergence"])
+#kl_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["KL-Divergence"])
 kl_linear = np.mean(all_RBF_IDW_results["RBF-linear"]["KL-Divergence"])
 kl_cubic = np.mean(all_RBF_IDW_results["RBF-cubic"]["KL-Divergence"])
 kl_quintic = np.mean(all_RBF_IDW_results["RBF-quintic"]["KL-Divergence"])
@@ -79,25 +79,25 @@ kl_inverse = np.mean(all_RBF_IDW_results["RBF-inverse"]["KL-Divergence"])
 kl_thin_plate = np.mean(all_RBF_IDW_results["RBF-thin-plate"]["KL-Divergence"])
 
 time_multiquadric = np.mean(all_RBF_IDW_results["RBF-multiquadric"]["TimePerPoint"]).total_seconds() * 1000
-time_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["TimePerPoint"]).total_seconds() * 1000
+#time_gaussian = np.mean(all_RBF_IDW_results["RBF-gaussian"]["TimePerPoint"]).total_seconds() * 1000
 time_linear = np.mean(all_RBF_IDW_results["RBF-linear"]["TimePerPoint"]).total_seconds() * 1000
 time_cubic = np.mean(all_RBF_IDW_results["RBF-cubic"]["TimePerPoint"]).total_seconds() * 1000
 time_quintic = np.mean(all_RBF_IDW_results["RBF-quintic"]["TimePerPoint"]).total_seconds() * 1000
 time_inverse = np.mean(all_RBF_IDW_results["RBF-inverse"]["TimePerPoint"]).total_seconds() * 1000
 time_thin_plate = np.mean(all_RBF_IDW_results["RBF-thin-plate"]["TimePerPoint"]).total_seconds() * 1000
 
-rbf_method_list = ['RBF - Multiquadric', 'RBF - Gaussian',
+rbf_method_list = ['RBF - Multiquadric', #'RBF - Gaussian',
         'RBF - Inverse Multiquadric', 'RBF - Linear', 'RBF - Cubic', 'RBF - Quintic',
         'RBF - Thin Plate']
 
-rbf_precision = [precision_multiquadric, precision_gaussian, precision_inverse,
+rbf_precision = [precision_multiquadric, precision_inverse,
                  precision_linear, precision_cubic, precision_quintic,
                  precision_thin_plate]
-rbf_time = [time_multiquadric, time_gaussian, time_inverse, time_linear, time_cubic, time_quintic,
+rbf_time = [time_multiquadric, time_inverse, time_linear, time_cubic, time_quintic,
                       time_thin_plate]
-rbf_accuracy = [accuracy_multiquadric, accuracy_gaussian, accuracy_inverse, accuracy_linear, accuracy_cubic,
+rbf_accuracy = [accuracy_multiquadric, accuracy_inverse, accuracy_linear, accuracy_cubic,
                 accuracy_quintic, accuracy_thin_plate]
-rbf_avg_kl = [kl_multiquadric, kl_gaussian, kl_inverse, kl_linear, kl_cubic, kl_quintic, kl_thin_plate]
+rbf_avg_kl = [kl_multiquadric, kl_inverse, kl_linear, kl_cubic, kl_quintic, kl_thin_plate]
 
 print("HUMAN-READABLE CLUSTER ATTRIBUTION TEST TABLE")
 print("Baseline accurancy: ", baseline_accuracy, "(exceeding it is unlikely)")
