@@ -47,14 +47,16 @@ precision_30_plot = dict()
 precision_50_plot = dict()
 
 for lp in lion_perc_set:
-    accuracy_plot[lp] = list()
-    precision_30_plot[lp] = list()
-    precision_50_plot[lp] = list()
+    accuracy_plot[int(lp)] = list()
+    precision_30_plot[int(lp)] = list()
+    precision_50_plot[int(lp)] = list()
     for p in power_list:
-        accuracy_plot[lp].append(np.mean(accuracy[lp+";"+"%.3f" % (p)]))
-        precision_30_plot[lp].append(np.mean(precision_30[lp+";"+"%.3f" % (p)]))
-        precision_50_plot[lp].append(np.mean(precision_50[lp+";"+"%.3f" % (p)]))
+        accuracy_plot[int(lp)].append(np.mean(accuracy[lp+";"+"%.3f" % (p)]))
+        precision_30_plot[int(lp)].append(np.mean(precision_30[lp+";"+"%.3f" % (p)]))
+        precision_50_plot[int(lp)].append(np.mean(precision_50[lp+";"+"%.3f" % (p)]))
 
+with open('precision_plots.p', 'wb') as f:
+    pickle.dump((accuracy_plot, precision_30_plot, precision_50_plot, {int(i) for i in lion_perc_set}, power_list), f)
 
 plt.gcf().set_size_inches(8,8)
 plt.title("Accuracy")
@@ -62,8 +64,8 @@ plt.title("Accuracy")
 legend_list = list()
 
 for lp in lion_perc_set:
-    plt.plot(power_list, accuracy_plot[lp])
-    legend_list.append(str(lp))
+    plt.plot(power_list, accuracy_plot[int(lp)])
+    legend_list.append(lp)
 #plt.title("MNIST Dataset - TSNE visualization")
 #plt.tight_layout()
 plt.legend(legend_list)
@@ -76,8 +78,8 @@ plt.title("Precision-30")
 legend_list = list()
 
 for lp in lion_perc_set:
-    plt.plot(power_list, precision_30_plot[lp])
-    legend_list.append(str(lp))
+    plt.plot(power_list, precision_30_plot[int(lp)])
+    legend_list.append(lp)
 #plt.title("MNIST Dataset - TSNE visualization")
 #plt.tight_layout()
 plt.legend(legend_list)
@@ -90,8 +92,8 @@ plt.title("Precision-50")
 legend_list = list()
 
 for lp in lion_perc_set:
-    plt.plot(power_list, precision_50_plot[lp])
-    legend_list.append(str(lp))
+    plt.plot(power_list, precision_50_plot[int(lp)])
+    legend_list.append(lp)
 #plt.title("MNIST Dataset - TSNE visualization")
 #plt.tight_layout()
 plt.legend(legend_list)

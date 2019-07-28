@@ -10,27 +10,7 @@ parameters = settings.parameters
 lion_power_plot_data = exp_lion_power_performance.load_lion_power_performance(parameters=parameters)
 idw_power_plot_data = exp_idw_power_performance.load_idw_power_performance(parameters=parameters)[-1]
 
-
-def get_nearest_neighbors(y, Y_mnist, n):
-    y_distances = np.sum((Y_mnist - y) ** 2, axis=1)
-    return np.argsort(y_distances)[:n]
-
-
-dTSNE_mnist = generate_data.load_dtsne_mnist()
-
-
-def get_baseline_precision(X, Y, precision_nn = 50):
-    per_sample_precision = list()
-    for i in range(len(X)):
-        x = X[i, :]
-        y = Y[i, :]
-        nn_x_indices = get_nearest_neighbors(x, X, n=precision_nn+1) # +1 to account for "itself"
-        nn_y_indices = get_nearest_neighbors(y, Y, n=precision_nn+1) # +1 to account for "itself"
-        matching_indices = len([j for j in nn_x_indices if j in nn_y_indices and j != i])
-        per_sample_precision.append(matching_indices / precision_nn)
-    return np.mean(per_sample_precision)
-
-baseline_precision = get_baseline_precision(dTSNE_mnist.X, dTSNE_mnist.Y)
+baseline_precision = generate_data.load_baseline_precision(parameters=parameters)
 
 # Accuracy-vs-power plot
 legend_list = list()
@@ -53,7 +33,7 @@ for perc in all_percentages:
     y = list()
     for cur_power in x:
         key = "%d;%.3f"%(perc,cur_power)
-        y.append(lion_power_plot_data[key]["Accuracy"])
+        y.append(lion_power_plot_data[key]["Precision"])
     h, = plt.plot(x,y, c=color_dict[perc])
     legend_lines.append(h)
     legend_list.append(r"LION: $r_x$ = "+str(perc)+"th NN perc-le")
@@ -76,7 +56,7 @@ for label in ax.get_xticklabels():
 for label in ax.get_yticklabels():
     label.set_fontproperties(font_properties)
 
-plt.ylim([0,1])
-plt.xlim([0,40])
+plt.ylim([0,0.5])
+plt.xlim([0,120])
 f.tight_layout(rect=[-0.04,-0.08,1.04,1.06])
 plt.savefig("../figures/LION-and-IDW-power-vs-precision.png")

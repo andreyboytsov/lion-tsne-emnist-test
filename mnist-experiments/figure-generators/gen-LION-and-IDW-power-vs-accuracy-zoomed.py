@@ -45,7 +45,7 @@ y = [idw_power_plot_data[p] for p in x]
 h2, = plt.plot(x,y, c='blue',linestyle=':')
 plt.xlabel("LION-tSNE: Power",fontproperties=font_properties)
 plt.ylabel("10-NN Accuracy",fontproperties=font_properties)
-plt.ylim([0.85,0.882])
+plt.ylim([0.8,0.882])
 plt.xlim([7,50])
 
 ax = plt.gca()
@@ -56,4 +56,4 @@ for label in ax.get_yticklabels():
     label.set_fontproperties(font_properties)
 
 f.tight_layout(rect=[-0.04,-0.08,1.04,1.06])
-plt.savefig("../figures/LION-and-IDW-power-vs-accuracy-zoomed.png")
+plt.savefig("../figures/LION-and-IDW-power-vs-precision-zoomed.png")
