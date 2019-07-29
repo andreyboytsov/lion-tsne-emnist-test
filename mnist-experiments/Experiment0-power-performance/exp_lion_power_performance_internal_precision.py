@@ -7,7 +7,7 @@ import generate_data
 import pickle
 import os
 
-lion_power_options = np.arange(0.1, 40.1, step=0.1)
+lion_power_options = np.arange(0.1, 200.1, step=0.1)
 lion_percentile_options = [90, 95, 99, 100]
 lion_power_performance_prefix = '../results/lion_power_internal_precision'
 lion_power_plot_prefix = '../results/lion_power_plot_internal_precision'
@@ -135,7 +135,7 @@ def generate_lion_power_performance(*, regenerate=False, recursive_regenerate=Fa
             # print(cur_power, perc, lion_power_plot_data[key])
             y.append(lion_power_performance_data[key]['InternalPrecisionByX'])
         lion_power_plot_x[perc] = y
-        lion_optimal_power_x[perc] = lion_power_options[np.argmin(y)]
+        lion_optimal_power_x[perc] = lion_power_options[np.argmax(y)]
 
     lion_optimal_power_y = dict()
     lion_power_plot_y = dict()
@@ -146,7 +146,7 @@ def generate_lion_power_performance(*, regenerate=False, recursive_regenerate=Fa
             # print(cur_power, perc, lion_power_plot_data[key])
             y.append(lion_power_performance_data[key]['InternalPrecisionByY'])
         lion_power_plot_y[perc] = y
-        lion_optimal_power_y[perc] = lion_power_options[np.argmin(y)]
+        lion_optimal_power_y[perc] = lion_power_options[np.argmax(y)]
 
     with open(lion_power_plot_data_file, 'wb') as f:
         pickle.dump((lion_power_options, lion_power_plot_y, lion_optimal_power_y, lion_power_plot_x, lion_optimal_power_x), f)

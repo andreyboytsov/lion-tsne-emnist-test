@@ -7,7 +7,7 @@ import pickle
 from scipy.spatial import distance
 import os
 
-idw_power_options = np.arange(0.1, 60.1, step=0.1)
+idw_power_options = np.arange(0.1, 200.1, step=0.1)
 idw_percentile_options = [90, 95, 99, 100]
 idw_power_performance_file_prefix = '../results/idw_power_internal_precision_'
 idw_power_plot_file_prefix = '../results/idw_power_plot_internal_precision_'
