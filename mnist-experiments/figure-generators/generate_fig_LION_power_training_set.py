@@ -16,10 +16,10 @@ font_properties.set_size(8)
 
 legend_list = list()
 plt.figure(dpi=300)
-plt.gcf().set_size_inches(3.3, 3.3)
+plt.gcf().set_size_inches(3.3, 2.5)
 
 lion_power_plot_data = exp_lion_power_performance.load_lion_power_performance()
-global_idw_power_performance, global_idw_power_performance_abs, _ = exp_idw_power_performance.load_idw_power_performance()
+global_idw_power_performance, global_idw_power_performance_abs, _, _ = exp_idw_power_performance.load_idw_power_performance()
 x_global, y_global, _ = exp_idw_power_performance.load_idw_power_plot()
 x, y, _ = exp_lion_power_performance.load_lion_power_plot()
 
@@ -48,11 +48,11 @@ print("IDW", x_global[np.argmin(y_global)])
 # ax.legend([h1,h2,h3,h4,h5,h6], ["Closest Training Set Image"]+idw_method_list)
 # h = plt.axhline(y=baseline_accuracy, c = 'black', linestyle='--')
 
-l = plt.legend(legend_lines, legend_list, bbox_to_anchor=[1.00, -0.15], ncol=2, prop=font_properties)
+l = plt.legend(legend_lines, legend_list, bbox_to_anchor=[1.00, -0.21], ncol=2, prop=font_properties)
 plt.xlabel("LION-tSNE: Power", fontproperties=font_properties)
 plt.ylabel("Average Square Distance", fontproperties=font_properties)
 
-plt.ylim([90, 800])
+plt.ylim([90, 500])
 plt.xlim([0, 120])
 
 # f.tight_layout()
@@ -64,7 +64,7 @@ for label in ax.get_xticklabels():
 for label in ax.get_yticklabels():
     label.set_fontproperties(font_properties)
 
-plt.tight_layout(rect=[-0.035, -0.045, 1.044, 1.042])
+plt.tight_layout(rect=[-0.035, -0.09, 1.044, 1.05])
 
 plt.savefig("../figures/LION-power-training-set.png")
 #plt.show(f)

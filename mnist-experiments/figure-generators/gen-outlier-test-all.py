@@ -260,20 +260,22 @@ ax[gd_Y][gd_X].legend([h2,h3,h6,h7], [          r'Closest Y; no EE',
 
 # ==================================== LION ======================================
 
-cur_shown_outlier_indices = 10
+shift = 2
+
+cur_shown_outlier_indices = 20
 ax[lion_Y][lion_X].scatter(Y_mnist[:, 0], Y_mnist[:, 1], c= 'gray', zorder=1, label=None, marker='.',
                           s = point_size_gray)
-h1 = ax[lion_Y][lion_X].scatter(outliers_y_lion90[:cur_shown_outlier_indices, 0],
-                outliers_y_lion90[:cur_shown_outlier_indices, 1], c='red', zorder=1, label=None, marker='.',
+h1 = ax[lion_Y][lion_X].scatter(outliers_y_lion90[:cur_shown_outlier_indices, 0]-shift,
+                outliers_y_lion90[:cur_shown_outlier_indices, 1]-shift, c='red', zorder=1, label=None, marker='.',
                                s = point_size_interest)
-h2 = ax[lion_Y][lion_X].scatter(outliers_y_lion95[:cur_shown_outlier_indices, 0],
-                outliers_y_lion95[:cur_shown_outlier_indices, 1], c='blue', zorder=1, label=None, marker='.',
+h2 = ax[lion_Y][lion_X].scatter(outliers_y_lion95[:cur_shown_outlier_indices, 0]-shift,
+                outliers_y_lion95[:cur_shown_outlier_indices, 1]+shift, c='blue', zorder=1, label=None, marker='.',
                                s = point_size_interest)
-h3 = ax[lion_Y][lion_X].scatter(outliers_y_lion99[:cur_shown_outlier_indices, 0],
-                outliers_y_lion99[:cur_shown_outlier_indices, 1], c='green', zorder=1, label=None, marker='.',
+h3 = ax[lion_Y][lion_X].scatter(outliers_y_lion99[:cur_shown_outlier_indices, 0]+shift,
+                outliers_y_lion99[:cur_shown_outlier_indices, 1]-shift, c='green', zorder=1, label=None, marker='.',
                                s = point_size_interest)
-h4 = ax[lion_Y][lion_X].scatter(outliers_y_lion100[:cur_shown_outlier_indices, 0],
-                outliers_y_lion100[:cur_shown_outlier_indices, 1], c='purple', zorder=1, label=None, marker='.',
+h4 = ax[lion_Y][lion_X].scatter(outliers_y_lion100[:cur_shown_outlier_indices, 0]+shift,
+                outliers_y_lion100[:cur_shown_outlier_indices, 1]+shift, c='purple', zorder=1, label=None, marker='.',
                                s = point_size_interest)
 ax[lion_Y][lion_X].legend([h1,h2,h3,h4], lion_method_list, ncol=1, prop=font_properties, borderpad=0.1,handlelength=2,
                        columnspacing = 0, loc = 3, handletextpad=-0.7,frameon=True)

@@ -941,6 +941,8 @@ class LionTSNE:
 
         power = function_kwargs.get('power', 1.0)
 
+        # TODO Cell-based outlier placement based on KL divergence and nearest neighbor distances.
+
         if outlier_placement_method == 'cell-based':
             available_cells = list() #Contain number of cells counting on each axis
             if verbose >= 2:
